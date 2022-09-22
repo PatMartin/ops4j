@@ -1,0 +1,7 @@
+org.ops4j.nodeop.gen.FirstNameGenerator
+org.ops4j.nodeop.gen.LastNameGenerator
+org.ops4j.nodeop.gen.NameGenerator
+org.ops4j.nodeop.gen.PersonGenerator
+org.ops4j.nodeop.gen.TextGenerator
+org.ops4j.nodeop.NoOp
+org.ops4j.nodeop.Now

@@ -1,0 +1,51 @@
+package org.ops4j.io;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
+
+import org.ops4j.exception.OpsException;
+
+import lombok.Getter;
+import lombok.Setter;
+import picocli.CommandLine.Command;
+import picocli.CommandLine.Parameters;
+
+@Command(name = "file", mixinStandardHelpOptions = false,
+    description = "Streams a file into an output destination.")
+public class FileDestination extends BaseDestination<FileDestination>
+{
+  @Parameters(index = "0", arity = "1", paramLabel = "<destination>",
+      description = "The location of the output destination.")
+  private @Getter @Setter String location = null;
+
+  public FileDestination()
+  {
+    super();
+    setName("file");
+  }
+
+  public FileDestination create()
+  {
+    return new FileDestination();
+  }
+
+  @Override
+  public OutputStream stream() throws OpsException
+  {
+    try
+    {
+      return new FileOutputStream(new File(getLocation()));
+    }
+    catch(FileNotFoundException ex)
+    {
+      throw new OpsException(ex);
+    }
+  }
+
+  public static void main(String args[]) throws OpsException
+  {
+    OutputDestinationCLI.cli(new FileDestination(), args);
+  }
+}
