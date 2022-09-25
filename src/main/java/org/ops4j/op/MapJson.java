@@ -6,6 +6,7 @@ import java.util.Map;
 import org.ops4j.BaseOp;
 import org.ops4j.OpCLI;
 import org.ops4j.OpData;
+import org.ops4j.Ops4J;
 import org.ops4j.exception.OpsException;
 import org.ops4j.util.JsonMapper;
 
@@ -18,7 +19,7 @@ import picocli.CommandLine.Parameters;
     + "documents to alternate forms.")
 public class MapJson extends BaseOp<MapJson>
 {
-  @Parameters(index = "0", arity = "1..*", description = "<dest>=<source>")
+  @Parameters(index = "0", arity = "0..*", description = "<dest>=<source>")
   private @Getter @Setter Map<String, String> mapping;
 
   private JsonMapper                          mapper;
@@ -30,7 +31,7 @@ public class MapJson extends BaseOp<MapJson>
 
   public MapJson initialize() throws OpsException
   {
-    mapper = new JsonMapper(getMapping());
+    mapper = new JsonMapper(getMapping(), Ops4J.getLocator());
     mapper.setOpLogger(getOpLogger());
     return this;
   }

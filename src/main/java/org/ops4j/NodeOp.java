@@ -25,7 +25,7 @@ public interface NodeOp<T extends NodeOp<T>> extends LocalOpLogger
 
   public NodeOp<T> create();
 
-  public void configure(String... config) throws OpsException;
+  public void configure(String args[]) throws OpsException;
 
   public void setLogLevel(LogLevel logLevel);
 

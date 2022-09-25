@@ -95,7 +95,7 @@ public class OpCLI implements Callable<Integer>
       op.initialize().open();
 
       // Open up a stream
-      Iterator<JsonNode> jnIt;
+      Iterator<JsonNode> jnIt = null;
       if (op instanceof JsonSource)
       {
         jnIt = ((JsonSource) op).getIterator();
@@ -105,44 +105,29 @@ public class OpCLI implements Callable<Integer>
         InputSource<?> is = null;
         try
         {
-          is = Ops4J.locator().resolveSource(cli.getDataSource());
-        }
-        catch(OpsException opsEx)
-        {
-
-        }
-        try
-        {
           count = Integer.parseInt(cli.getDataSource());
+          jnIt = new CountdownIterator(count);
         }
         catch(Exception ex)
         {
-
-        }
-
-        if (is != null)
-        {
-          jnIt = JsonNodeIterator.fromInputStream(is.stream());
-        }
-        else if (count > 0)
-        {
-          jnIt = new CountdownIterator(Integer.parseInt(cli.getDataSource()));
-        }
-        else
-        {
-          throw new OpsException("Invalid data source.");
+          ex.printStackTrace();
+          try
+          {
+            is = Ops4J.locator().resolveSource(cli.getDataSource());
+            jnIt = JsonNodeIterator.fromInputStream(is.stream());
+          }
+          catch(OpsException opsEx)
+          {
+            opsEx.printStackTrace();
+            throw new OpsException("Invalid data source.", opsEx);
+          }
         }
       }
-      else if (count > 0)
-      {
-        jnIt = new CountdownIterator(count);
-      }
-      else
-      {
+      else {
         jnIt = JsonNodeIterator.fromInputStream(System.in);
       }
 
-      while (jnIt.hasNext() && (count == 0 || (currentCount < count)))
+      while (jnIt.hasNext())
       {
         currentCount++;
 

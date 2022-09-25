@@ -1,7 +1,10 @@
 package org.ops4j;
 
+import java.util.List;
+
 import org.ops4j.OpLogger.LogLevel;
 import org.ops4j.exception.OpsException;
+import org.ops4j.util.JacksonUtil;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -62,18 +65,27 @@ public class BaseNodeOp<T extends BaseNodeOp<T>> implements NodeOp<T>
     return null;
   }
 
-  public void configure(String... config) throws OpsException
+  public void configure(String args[]) throws OpsException
   {
-    //OpsLogger.syserr("CONFIG: ", config.length);
-    if (config.length > 0 && config[0].trim().length() > 0)
+    //OpsLogger.syserr("CONFIG: ", config.length);s
+    if (args != null && args.length > 0)
     {
       CommandSpec spec = CommandSpec.create();
-      new CommandLine(this).parseArgs(config);
+      new CommandLine(this).parseArgs(args);
       //OpsLogger.syserr("NodeOp Configuration ", getName(), ": ",
       //    JacksonUtil.toString(this, "N/A"));
     }
   }
 
+  public void configure(List<String> args) throws OpsException
+  {
+    // Do nothing for now.
+    CommandSpec spec = CommandSpec.create();
+    new CommandLine(this).parseArgs(args.toArray(new String[0]));
+    debug("Op Configuration ", getName(), ": ",
+        JacksonUtil.toString(this, "N/A"));
+  }
+  
   public void setLogLevel(LogLevel logLevel)
   {
     this.logLevel = logLevel;

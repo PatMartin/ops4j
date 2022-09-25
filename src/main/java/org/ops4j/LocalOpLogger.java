@@ -5,6 +5,7 @@ import org.apache.commons.lang3.StringUtils;
 public interface LocalOpLogger
 {
   public OpLogger getOpLogger();
+
   public void setOpLogger(OpLogger logger);
 
   default public void trace(Object... msg)
@@ -19,7 +20,6 @@ public interface LocalOpLogger
 
   default public void info(Object... msg)
   {
-
     getOpLogger().info(StringUtils.join(msg));
   }
 
@@ -33,12 +33,12 @@ public interface LocalOpLogger
     getOpLogger().error(StringUtils.join(msg));
   }
 
-  public static void syserr(Object... msg)
+  default public void syserr(Object... msg)
   {
     OpLogger.syserr(msg);
   }
 
-  public static void sysout(Object... msg)
+  default public void sysout(Object... msg)
   {
     OpLogger.sysout(msg);
   }

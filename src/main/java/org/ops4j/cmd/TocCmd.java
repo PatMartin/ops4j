@@ -1,6 +1,16 @@
 package org.ops4j.cmd;
 
+import java.util.Map;
 import java.util.concurrent.Callable;
+import java.util.stream.Collectors;
+
+import org.ops4j.InputSource;
+import org.ops4j.NodeOp;
+import org.ops4j.Op;
+import org.ops4j.Ops4J;
+import org.ops4j.OutputDestination;
+import org.ops4j.util.StringBuddy;
+import org.ops4j.util.StringUtil;
 
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
@@ -19,6 +29,30 @@ public class TocCmd extends SubCmd implements Callable<Integer>
     {
       help(this);
     }
+    Map<String, Op<?>> ops = Ops4J.locator().getOps();
+    Map<String, NodeOp<?>> nodeOps = Ops4J.locator().getNodeOps();
+    Map<String, InputSource<?>> sources = Ops4J.locator().getSources();
+    Map<String, OutputDestination<?>> destinations = Ops4J.locator()
+        .getDestinations();
+    System.out.println(StringBuddy.from("OPERATIONS").banner("-", 40));
+
+    System.out.println(StringUtil.align(
+        ops.values().stream().map(Op::getName).collect(Collectors.toList()))
+        + "\n");
+
+    System.out
+        .println(StringBuddy.from("NODE-OPERATIONS").banner("-", 40) + "");
+    System.out.println(StringUtil.align(nodeOps.values().stream()
+        .map(NodeOp::getName).collect(Collectors.toList())) + "\n");
+    System.out.println(StringBuddy.from("INPUT-SOURCES").banner("-", 40));
+    System.out.println(StringUtil.align(sources.values().stream()
+        .map(InputSource::getName).collect(Collectors.toList())) + "\n");
+    System.out.println(StringBuddy.from("OUTPUT-DESTINATIONS").banner("-", 40));
+    System.out
+        .println(StringUtil
+            .align(destinations.values().stream()
+                .map(OutputDestination::getName).collect(Collectors.toList()))
+            + "\n");
     return 0;
   }
 

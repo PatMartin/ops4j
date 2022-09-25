@@ -12,19 +12,20 @@ import com.github.javafaker.Faker;
 
 import picocli.CommandLine.Command;
 
-@Command(name = "gen:name", mixinStandardHelpOptions = false, description = "Generate a full name.%n"
-    + "%nExample: gen:name")
+@Command(name = "gen:person", mixinStandardHelpOptions = false,
+    description = "Generate a person.%n" + "%nExample: gen:person")
 public class PersonGenerator extends BaseNodeOp<PersonGenerator>
 {
   public PersonGenerator()
   {
-    name("gen:name");
+    name("gen:person");
   }
 
   public JsonNode execute(JsonNode input) throws OpsException
   {
     Faker faker = FakerUtil.faker();
     ObjectNode person = JacksonUtil.createObjectNode();
+
     person.put("first", faker.name().firstName());
     person.put("last", faker.name().lastName());
     person.put("cell-phone", faker.phoneNumber().cellPhone());

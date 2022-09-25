@@ -24,7 +24,8 @@ import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
 import picocli.CommandLine.ParseResult;
 
-@Command(name = "Additional CLI Options:", mixinStandardHelpOptions = false, description = "OpCli description")
+@Command(name = "Additional CLI Options:", mixinStandardHelpOptions = false,
+    description = "OpCli description")
 public class NodeOpCLI implements Callable<Integer>
 {
   public NodeOpCLI()
@@ -35,14 +36,15 @@ public class NodeOpCLI implements Callable<Integer>
     NONE, JSON, YAML, XML
   }
 
-  @Parameters(index = "0", arity = "0..*", description = "Zero or more targets "
-      + "to nodes contained in the JSON.  Default = /%n%nExamples:%n"
-      + "/          = The root node.%n"
-      + "/account   = A child node of the root named 'account'")
+  @Parameters(index = "0", arity = "0..*",
+      description = "Zero or more targets "
+          + "to nodes contained in the JSON.  Default = /%n%nExamples:%n"
+          + "/          = The root node.%n"
+          + "/account   = A child node of the root named 'account'")
   private @Getter @Setter List<String> targets    = new ArrayList<String>();
 
-  @Option(names = { "-O", "--output" }, description = "The output format for "
-      + "this operation.")
+  @Option(names = { "-O", "--output" },
+      description = "The output format for " + "this operation.")
   private @Getter @Setter OutputType   outputType = OutputType.JSON;
 
   @Option(names = { "-h", "--help" }, description = "Get help.")
@@ -51,9 +53,9 @@ public class NodeOpCLI implements Callable<Integer>
   @Option(names = { "-H", "--HELP" }, description = "Get detailed help.")
   private @Getter @Setter boolean      help       = false;
 
-  @Option(names = { "-c",
-      "--count" }, description = "The number of input records to generate")
-  private @Getter @Setter int          count;
+  @Option(names = { "-D", "--data-source" }, required = false,
+      description = "The datasource.")
+  private @Getter @Setter String       dataSource = null;
 
   public static int cli(NodeOp<?> op, String[] args) throws OpsException
   {
@@ -101,21 +103,33 @@ public class NodeOpCLI implements Callable<Integer>
 
       // Open up a stream
       Iterator<JsonNode> jnIt;
-      if (op instanceof JsonSource)
+      if (cli.getDataSource() != null)
       {
-        jnIt = ((JsonSource) op).getIterator();
-      }
-      else if (cli.getCount() > 0)
-      {
-        jnIt = new CountdownIterator(cli.getCount());
+        InputSource<?> is = null;
+        try
+        {
+          jnIt = new CountdownIterator(Integer.parseInt(cli.getDataSource()));
+        }
+        catch(Exception ex)
+        {
+          try
+          {
+            is = Ops4J.locator().resolveSource(cli.getDataSource());
+            jnIt = JsonNodeIterator.fromInputStream(is.stream());
+          }
+          catch(OpsException opsEx)
+          {
+            opsEx.printStackTrace();
+            throw new OpsException("Invalid data source.", opsEx);
+          }
+        }
       }
       else
       {
         jnIt = JsonNodeIterator.fromInputStream(System.in);
       }
 
-      while (jnIt.hasNext()
-          && (cli.getCount() == 0 || (currentCount < cli.getCount())))
+      while (jnIt.hasNext())
       {
         currentCount++;
 

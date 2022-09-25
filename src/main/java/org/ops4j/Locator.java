@@ -8,6 +8,7 @@ import java.util.ServiceLoader;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.StringUtils;
 import org.ops4j.exception.OpsException;
 import org.ops4j.io.FileSource;
 import org.ops4j.util.JacksonUtil;
@@ -24,6 +25,8 @@ public class Locator
   private @Getter Map<String, OutputDestination<?>> destinations = new HashMap<String, OutputDestination<?>>();
   private Pattern                                   fnPattern    = Pattern
       .compile("^\\s*(\\S+)\\((.*)\\)\\s*", Pattern.CASE_INSENSITIVE);
+  private Pattern                                   noargsPattern    = Pattern
+      .compile("^\\s*(\\S+)\\s*$", Pattern.CASE_INSENSITIVE);
   private Map<String, NodeOp<?>>                    nodeOpCache  = new HashMap<String, NodeOp<?>>();
   private Map<String, InputSource<?>>               sourceCache  = new HashMap<String, InputSource<?>>();
   private Map<String, OutputDestination<?>>         destCache    = new HashMap<String, OutputDestination<?>>();
@@ -85,7 +88,8 @@ public class Locator
     logger.info("*************************");
     logger.info("**** Output Destinations:");
     logger.info("*************************");
-    ServiceLoader<OutputDestination> loader = ServiceLoader.load(OutputDestination.class);
+    ServiceLoader<OutputDestination> loader = ServiceLoader
+        .load(OutputDestination.class);
     Iterator<OutputDestination> it = loader.iterator();
     while (it.hasNext())
     {
@@ -94,7 +98,7 @@ public class Locator
       destinations.put(dest.getName(), dest);
     }
   }
-  
+
   public boolean isNodeOp(String expression)
   {
     try
@@ -111,14 +115,15 @@ public class Locator
   // <module>:<node-op>([[name=value][, name=value]*])
   public NodeOp<?> resolveNodeOp(String expression) throws OpsException
   {
+    //System.out.println("Attempting to resolve: '" + expression + "'");
     Matcher matcher = fnPattern.matcher(expression);
     boolean matchFound = matcher.find();
     if (matchFound)
     {
       String fnName = matcher.group(1);
       String fnArgs = matcher.group(2);
-      logger.trace("Resolving node-op: FN: '", fnName, "', ARGS: '", fnArgs,
-          "'");
+      logger.debug(
+          "Resolving node-op: FN: '" + fnName + "', ARGS: '" + fnArgs + "'");
 
       if (nodeOpCache.containsKey(expression))
       {
@@ -126,9 +131,11 @@ public class Locator
       }
       else if (nodeOps.containsKey(fnName))
       {
+        // System.out.println("FOUND: " + fnName);
         NodeOp<?> ctor = nodeOps.get(fnName);
         NodeOp<?> op = ctor.create();
-        op.configure(fnArgs);
+        String args[] = StringUtils.split(fnArgs, " ");
+        op.configure(args);
         nodeOpCache.put(expression, op);
         return op;
       }
@@ -138,6 +145,34 @@ public class Locator
             + "', expression='" + expression + "'");
       }
     }
+    
+    matcher = noargsPattern.matcher(expression);
+    matchFound = matcher.find();
+    if (matchFound)
+    {
+      String fnName = matcher.group(1);
+      logger.debug(
+          "Resolving node-op: FN: '" + fnName + "'");
+
+      if (nodeOpCache.containsKey(expression))
+      {
+        return nodeOpCache.get(expression);
+      }
+      else if (nodeOps.containsKey(fnName))
+      {
+        // System.out.println("FOUND: " + fnName);
+        NodeOp<?> ctor = nodeOps.get(fnName);
+        NodeOp<?> op = ctor.create();
+        nodeOpCache.put(expression, op);
+        return op;
+      }
+      else
+      {
+        throw new OpsException("Unresolved operation: fn='" + fnName
+            + "', expression='" + expression + "'");
+      }
+    }
+    
     else
     {
       throw new OpsException(expression + " is not a valid function.");
