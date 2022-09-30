@@ -8,13 +8,14 @@ import org.apache.commons.lang3.StringUtils;
 import org.ops4j.NodeOp;
 import org.ops4j.Op;
 import org.ops4j.Ops4J;
+import org.ops4j.exception.OpsException;
 
 import picocli.CommandLine;
 import picocli.CommandLine.Model.CommandSpec;
 
 public class NodeOps
 {
-  public static List<NodeOp<?>> create(String args)
+  public static List<NodeOp<?>> create(String args) throws OpsException
   {
     if (args == null || args.trim().length() == 0)
     {
@@ -23,48 +24,20 @@ public class NodeOps
     return create(StringUtils.split(args, "=>"));
   }
 
-  public static List<NodeOp<?>> create(List<String> args)
+  public static List<NodeOp<?>> create(List<String> args) throws OpsException
   {
     return create(args.toArray(new String[0]));
   }
 
-  public static List<NodeOp<?>> create(String args[])
+  public static List<NodeOp<?>> create(String args[]) throws OpsException
   {
-    Map<String, NodeOp<?>> opMap = Ops4J.locator().getNodeOps();
     List<NodeOp<?>> ops = new ArrayList<NodeOp<?>>();
 
-    String opName;
-    String opArgs[] = null;
     if (args != null)
     {
       for (String arg : args)
       {
-        arg = arg.trim();
-        int opMarker = arg.indexOf(" ");
-        if (opMarker < 0)
-        {
-          opName = arg;
-          opArgs = new String[0];
-        }
-        else
-        {
-          opName = arg.substring(0, opMarker);
-          opArgs = StringUtils.split(arg.substring(opMarker), " ");
-        }
-        //System.err.println("OP-NAME: " + opName + ", ARGS=["
-        //    + StringUtils.join(opArgs, ", ") + "]");
-        //System.out.println("OP-MAP: " + opMap);
-        if (opMap.containsKey(opName))
-        {
-          //System.err.println("OP " + opName + " was found.");
-          NodeOp<?> ctor = opMap.get(opName);
-          NodeOp<?> op = ctor.create();
-          CommandSpec spec = CommandSpec.create();
-          new CommandLine(op).parseArgs(opArgs);
-          //System.err.println(
-          //    "Ops.create(" + opName + ")=" + JacksonUtil.toString(op, "N/A"));
-          ops.add(op);
-        }
+        ops.add(Ops4J.locator().resolveNodeOp(arg));
       }
     }
     return ops;

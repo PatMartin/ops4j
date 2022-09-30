@@ -55,15 +55,19 @@ public class JsonMapper implements LocalOpLogger
     JsonNode srcNode;
     if (traceEnabled())
     {
-      trace("**************************");
-      trace("SRC-PATH: '", srcPath, "'");
-      trace("DST-PATH: '", dstPath, "'");
-      trace("DST: '", dst, "'");
-      trace("DST-NODE: '", dst.at(dstPath), "'");
-      trace("**************************");
+      trace("map(srcPath='", srcPath, "', dstPath='", dstPath,
+          "', src='", src, "', dst='", dst, "')");
+      
+      //trace("**************************");
+      //trace("SRC-PATH: '", srcPath, "'");
+      //trace("DST-PATH: '", dstPath, "'");
+      //trace("DST: '", dst, "'");
+      //trace("DST-NODE: '", dst.at(dstPath), "'");
+      //trace("**************************");
     }
     if (locator.isNodeOp(srcPath))
     {
+      trace("NodeOp(srcPath='", srcPath, "', src='", src.toString(), "')");
       srcNode = locator.evaluate(srcPath, src);
     }
     else if (srcPath.startsWith("/"))
@@ -74,7 +78,7 @@ public class JsonMapper implements LocalOpLogger
     {
       srcNode = new TextNode(srcPath);
     }
-    
+
     JacksonUtil.put(dstPath, dst, srcNode);
 
     return dst;

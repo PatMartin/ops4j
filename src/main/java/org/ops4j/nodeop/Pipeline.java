@@ -10,6 +10,7 @@ import org.ops4j.exception.OpsException;
 import org.ops4j.util.NodeOps;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.TextNode;
 import com.google.auto.service.AutoService;
 
 import lombok.Getter;
@@ -22,11 +23,7 @@ import picocli.CommandLine.Parameters;
     description = "Returns current time as milliseconds " + "since 1/1/1970")
 public class Pipeline extends BaseNodeOp<Pipeline>
 {
-  @Parameters(index = "0", arity = "1",
-      description = "The path to the input node.")
-  private @Getter @Setter String path;
-
-  @Parameters(index = "1", arity = "0..*",
+  @Parameters(index = "0", arity = "1..*",
       description = "Run a series of node operations in a pipeline.")
   private @Getter @Setter List<String> commands;
 
@@ -39,20 +36,50 @@ public class Pipeline extends BaseNodeOp<Pipeline>
 
   public JsonNode execute(JsonNode input) throws OpsException
   {
-    syserr("PATH : ", getPath());
-    syserr("INPUT: ", input);
-    
-    JsonNode srcNode = input.at(getPath());
-    
+    String cmd = StringUtils.join(getCommands(), "");
+    //syserr("input=", input, " - cmd='", cmd, "'");
+    String cmds[] = StringUtils.split(cmd, "=>");
+    JsonNode srcNode;
+    if (cmds != null && cmds.length > 0)
+    {
+      if (cmds[0].startsWith("/"))
+      {
+        srcNode = input.at(cmds[0]);
+      }
+      else
+      {
+        srcNode = input;
+      }
+    }
+    else
+    {
+      return new TextNode(cmd);
+    }
+
+    if (cmds.length == 1 && cmds[0].startsWith("/"))
+    {
+      return srcNode.deepCopy();
+    }
+
+    // If we get here, we should have at least one => separator
     if (nodeOps == null)
     {
-      nodeOps = NodeOps.create(StringUtils.join(getCommands(), ""));
+      if (cmds[0].startsWith("/"))
+      {
+        //syserr("substring cmd: ", cmd.substring(cmd.indexOf("=>") + 2));
+        nodeOps = NodeOps.create(cmd.substring(cmd.indexOf("=>")+2));
+      }
+      else
+      {
+        nodeOps = NodeOps.create(cmd);
+      }
     }
-    
+
+    //syserr("nodeops: ", nodeOps.size());
     JsonNode output = srcNode.deepCopy();
     for (NodeOp<?> op : nodeOps)
     {
-      syserr("OUTPUT: ", output);
+      //syserr("Executing: ", op.getName() + " on - ", output);
       output = op.execute(output);
     }
     return output;

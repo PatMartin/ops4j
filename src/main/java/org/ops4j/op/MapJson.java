@@ -38,6 +38,7 @@ public class MapJson extends BaseOp<MapJson>
 
   public List<OpData> execute(OpData input) throws OpsException
   {
+    //syserr("MAP-INPUT: ", input.toString());
     return new OpData(mapper.map(input.getJson())).asList();
   }
 
