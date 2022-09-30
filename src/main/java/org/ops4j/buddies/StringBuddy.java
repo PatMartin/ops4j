@@ -1,4 +1,4 @@
-package org.ops4j.util;
+package org.ops4j.buddies;
 
 import java.nio.charset.Charset;
 import java.util.ArrayList;
@@ -8,6 +8,7 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang3.RegExUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.ops4j.exception.OpsException;
+import org.ops4j.util.JacksonUtil;
 
 import com.fasterxml.jackson.databind.JsonNode;
 

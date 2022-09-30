@@ -1,43 +1,44 @@
 package org.ops4j.nodeop;
 
+import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
 import org.ops4j.BaseNodeOp;
 import org.ops4j.NodeOp;
 import org.ops4j.cli.NodeOpCLI;
 import org.ops4j.exception.OpsException;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.LongNode;
+import com.fasterxml.jackson.databind.node.TextNode;
 import com.google.auto.service.AutoService;
 
 import lombok.Getter;
 import lombok.Setter;
 import picocli.CommandLine.Command;
-import picocli.CommandLine.Option;
+import picocli.CommandLine.Parameters;
 
 @AutoService(NodeOp.class)
-@Command(name = "now", mixinStandardHelpOptions = false,
+@Command(name = "text", mixinStandardHelpOptions = false,
     description = "Returns current time as milliseconds " + "since 1/1/1970")
-public class Now extends BaseNodeOp<Now>
+public class Text extends BaseNodeOp<Text>
 {
-  @Option(names = { "-o", "--offset" }, required = false,
+  @Parameters(index = "0", arity = "1..*",
       description = "An optional offset to be "
           + "applied to the value returned by the now node operation.")
-  private @Getter @Setter Long offset = 0L;
+  private @Getter @Setter List<String> text;
 
-  public Now()
+  public Text()
   {
-    name("gen:now");
+    name("text");
   }
 
   public JsonNode execute(JsonNode input) throws OpsException
   {
-    JsonNode node = new LongNode(System.currentTimeMillis() + offset);
-    debug("NODE: ", node);
-    return node;
+    return new TextNode(StringUtils.join(getText(), " "));
   }
 
   public static void main(String args[]) throws OpsException
   {
-    NodeOpCLI.cli(new Now(), args);
+    NodeOpCLI.cli(new Text(), args);
   }
 }

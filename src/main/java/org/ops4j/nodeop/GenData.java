@@ -3,7 +3,7 @@ package org.ops4j.nodeop;
 import org.apache.commons.math3.distribution.UniformIntegerDistribution;
 import org.ops4j.BaseNodeOp;
 import org.ops4j.NodeOp;
-import org.ops4j.NodeOpCLI;
+import org.ops4j.cli.NodeOpCLI;
 import org.ops4j.exception.OpsException;
 import org.ops4j.util.JacksonUtil;
 

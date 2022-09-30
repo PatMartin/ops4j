@@ -3,7 +3,6 @@ package org.ops4j.io;
 import java.io.InputStream;
 import java.util.concurrent.Callable;
 
-import org.ops4j.InputSource;
 import org.ops4j.exception.OpsException;
 
 import lombok.Getter;

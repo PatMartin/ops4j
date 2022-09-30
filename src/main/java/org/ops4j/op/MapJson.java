@@ -4,9 +4,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.ops4j.BaseOp;
-import org.ops4j.OpCLI;
 import org.ops4j.OpData;
 import org.ops4j.Ops4J;
+import org.ops4j.cli.OpCLI;
 import org.ops4j.exception.OpsException;
 import org.ops4j.util.JsonMapper;
 
@@ -32,7 +32,7 @@ public class MapJson extends BaseOp<MapJson>
   public MapJson initialize() throws OpsException
   {
     mapper = new JsonMapper(getMapping(), Ops4J.getLocator());
-    mapper.setOpLogger(getOpLogger());
+    mapper.setLogLevel(getOpLogger().getLogLevel());
     return this;
   }
 

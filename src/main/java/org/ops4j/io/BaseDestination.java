@@ -3,10 +3,9 @@ package org.ops4j.io;
 import java.io.File;
 import java.io.OutputStream;
 
-import org.ops4j.OpLogger;
-import org.ops4j.OpLogger.LogLevel;
-import org.ops4j.OutputDestination;
 import org.ops4j.exception.OpsException;
+import org.ops4j.log.OpLogger;
+import org.ops4j.log.OpLogger.LogLevel;
 
 import lombok.Getter;
 import lombok.Setter;

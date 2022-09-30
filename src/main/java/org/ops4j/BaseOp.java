@@ -2,11 +2,13 @@ package org.ops4j;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
-import org.ops4j.OpLogger.LogLevel;
 import org.ops4j.exception.OpsException;
+import org.ops4j.log.OpLogger;
+import org.ops4j.log.OpLogger.LogLevel;
 import org.ops4j.util.JacksonUtil;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -18,17 +20,18 @@ import picocli.CommandLine.Option;
 @Command(name = "base-op", mixinStandardHelpOptions = false)
 public class BaseOp<T extends BaseOp<T>> implements Op<T>
 {
-  private @Getter @Setter Map<PhaseType, Boolean> phases   = null;
+  @JsonIgnore
+  private @Getter @Setter Lifecycle lifecycle = new Lifecycle();
 
-  private OpLogger                               logger;
+  private OpLogger                  logger;
 
-  @Option(names = { "-N",
-      "--name" }, description = "The name of this operation.")
-  private @Getter @Setter String                  name     = null;
+  @Option(names = { "-N", "--name" },
+      description = "The name of this operation.")
+  private @Getter @Setter String    name      = null;
 
-  @Option(names = { "-L",
-      "--log-level" }, description = "The log level of this operation.")
-  private @Getter LogLevel                        logLevel = LogLevel.INFO;
+  @Option(names = { "-L", "--log-level" },
+      description = "The log level of this operation.")
+  private @Getter LogLevel          logLevel  = LogLevel.INFO;
 
   public BaseOp()
   {
@@ -43,12 +46,8 @@ public class BaseOp<T extends BaseOp<T>> implements Op<T>
     logger = new OpLogger(getName());
   }
 
-  public Map<PhaseType, Boolean> getPhases()
-  {
-    return phases;
-  }
-
-  @SuppressWarnings("unchecked") public T create()
+  @SuppressWarnings("unchecked")
+  public T create()
   {
     try
     {

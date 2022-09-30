@@ -3,16 +3,20 @@ package org.ops4j.op;
 import java.util.List;
 
 import org.ops4j.BaseOp;
+import org.ops4j.Op;
 import org.ops4j.OpData;
-import org.ops4j.OpCLI;
+import org.ops4j.cli.OpCLI;
 import org.ops4j.exception.OpsException;
 import org.ops4j.util.ThreadUtil;
+
+import com.google.auto.service.AutoService;
 
 import lombok.Getter;
 import lombok.Setter;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Parameters;
 
+@AutoService(Op.class)
 @Command(name = "pause", description = "Pause execution for the specified number of milliseconds.")
 public class Pause extends BaseOp<Pause>
 {

@@ -1,7 +1,8 @@
-package org.ops4j;
+package org.ops4j.cli;
 
 import java.util.concurrent.Callable;
 
+import org.ops4j.Ops4J;
 import org.ops4j.cmd.EnvCmd;
 import org.ops4j.cmd.GetCmd;
 import org.ops4j.cmd.SetCmd;

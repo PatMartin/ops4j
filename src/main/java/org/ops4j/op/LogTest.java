@@ -1,0 +1,35 @@
+package org.ops4j.op;
+
+import org.ops4j.BaseOp;
+import org.ops4j.Op;
+import org.ops4j.cli.OpCLI;
+import org.ops4j.exception.OpsException;
+
+import com.google.auto.service.AutoService;
+
+import picocli.CommandLine.Command;
+
+@AutoService(Op.class)
+@Command(name = "logtest", description = "This operation does nothing.")
+public class LogTest extends BaseOp<LogTest>
+{
+  public LogTest()
+  {
+    super("logtest");
+  }
+
+  public LogTest initialize() throws OpsException
+  {
+    error("ERROR");
+    warn("WARN");
+    info("INFO");
+    debug("DEBUG");
+    debug("TRACE");
+    return this;
+  }
+
+  public static void main(String args[]) throws OpsException
+  {
+    OpCLI.cli(new LogTest(), args);
+  }
+}

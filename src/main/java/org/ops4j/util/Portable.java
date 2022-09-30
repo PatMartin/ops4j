@@ -1,7 +1,6 @@
-package org.ops4j;
+package org.ops4j.util;
 
 import org.ops4j.exception.OpsException;
-import org.ops4j.util.JacksonUtil;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;

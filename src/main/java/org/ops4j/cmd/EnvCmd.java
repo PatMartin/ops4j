@@ -4,11 +4,11 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.Callable;
 
-import org.ops4j.InputSource;
 import org.ops4j.NodeOp;
 import org.ops4j.Op;
 import org.ops4j.Ops4J;
-import org.ops4j.OutputDestination;
+import org.ops4j.io.InputSource;
+import org.ops4j.io.OutputDestination;
 
 import lombok.Getter;
 import lombok.Setter;

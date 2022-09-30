@@ -1,4 +1,4 @@
-package org.ops4j;
+package org.ops4j.log;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -25,6 +25,39 @@ public class OpLogger
   public OpLogger(Object obj)
   {
     this(obj.getClass().getName());
+  }
+
+  public boolean traceEnabled()
+  {
+    return logLevel == LogLevel.TRACE;
+  }
+
+  public boolean debugEnabled()
+  {
+    return logLevel == LogLevel.TRACE || logLevel == LogLevel.DEBUG;
+  }
+
+  public boolean infoEnabled()
+  {
+    return logLevel == LogLevel.TRACE || logLevel == LogLevel.DEBUG
+        || logLevel == LogLevel.INFO;
+  }
+
+  public boolean warnEnabled()
+  {
+    return logLevel == LogLevel.TRACE || logLevel == LogLevel.DEBUG
+        || logLevel == LogLevel.INFO || logLevel == LogLevel.WARN;
+  }
+
+  public boolean errorEnabled()
+  {
+    return !(logLevel == LogLevel.NONE);
+  }
+
+  public boolean info()
+  {
+    return logLevel == LogLevel.TRACE || logLevel == LogLevel.DEBUG
+        || logLevel == LogLevel.INFO;
   }
 
   public void trace(Object... msg)

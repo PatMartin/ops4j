@@ -3,12 +3,16 @@ package org.ops4j.op;
 import java.util.List;
 
 import org.ops4j.BaseOp;
+import org.ops4j.Op;
 import org.ops4j.OpData;
-import org.ops4j.OpCLI;
+import org.ops4j.cli.OpCLI;
 import org.ops4j.exception.OpsException;
+
+import com.google.auto.service.AutoService;
 
 import picocli.CommandLine.Command;
 
+@AutoService(Op.class)
 @Command(name = "noop", description = "This operation does nothing.")
 public class NoOp extends BaseOp<NoOp>
 {

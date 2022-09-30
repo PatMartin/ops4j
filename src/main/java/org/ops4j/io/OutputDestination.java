@@ -1,13 +1,15 @@
-package org.ops4j;
+package org.ops4j.io;
 
-import java.io.InputStream;
+import java.io.OutputStream;
 
-import org.ops4j.OpLogger.LogLevel;
 import org.ops4j.exception.OpsException;
+import org.ops4j.log.LocalOpLogger;
+import org.ops4j.log.OpLogger;
+import org.ops4j.log.OpLogger.LogLevel;
 
-public interface InputSource<T extends InputSource<T>> extends LocalOpLogger
+public interface OutputDestination<T extends OutputDestination<T>> extends LocalOpLogger
 {
-  public InputStream stream() throws OpsException;
+  public OutputStream stream() throws OpsException;
 
   public boolean canResolve(String location);
 
@@ -15,7 +17,7 @@ public interface InputSource<T extends InputSource<T>> extends LocalOpLogger
 
   public void setName(String name);
 
-  default InputSource<T> name(String name)
+  default OutputDestination<T> name(String name)
   {
     setName(name);
     return this;
@@ -29,5 +31,5 @@ public interface InputSource<T extends InputSource<T>> extends LocalOpLogger
 
   public void setLogLevel(LogLevel logLevel);
 
-  public InputSource<T> create();
+  public OutputDestination<T> create();
 }

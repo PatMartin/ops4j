@@ -1,22 +1,27 @@
 package org.ops4j;
 
 import java.util.List;
-import java.util.Map;
 
-import org.ops4j.OpLogger.LogLevel;
 import org.ops4j.exception.OpsException;
+import org.ops4j.log.LocalOpLogger;
+import org.ops4j.log.OpLogger.LogLevel;
 
 public interface Op<T extends Op<T>> extends LocalOpLogger
 {
   public enum PhaseType {
-    INITIALIZE, OPEN, EXECUTE, EOS, FLUSH, CLEANUP, CLOSE
+    INITIALIZE, OPEN, EXECUTE, FLUSH, CLEANUP, CLOSE
   }
 
-  public Map<PhaseType, Boolean> getPhases();
+  public Lifecycle getLifecycle();
 
-  public default boolean hasPhase(PhaseType phase)
+  public default Lifecycle lifecycle()
   {
-    return getPhases().containsKey(phase);
+    return getLifecycle();
+  }
+
+  public default boolean provides(PhaseType phase)
+  {
+    return getLifecycle().provides(phase);
   }
 
   public T initialize() throws OpsException;

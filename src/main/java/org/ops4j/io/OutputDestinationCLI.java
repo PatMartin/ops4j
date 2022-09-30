@@ -5,9 +5,7 @@ import java.io.OutputStream;
 import java.util.Iterator;
 import java.util.concurrent.Callable;
 
-import org.ops4j.InputSource;
 import org.ops4j.Ops4J;
-import org.ops4j.OutputDestination;
 import org.ops4j.exception.OpsException;
 import org.ops4j.util.CountdownIterator;
 import org.ops4j.util.JsonNodeIterator;

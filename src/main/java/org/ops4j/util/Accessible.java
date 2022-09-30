@@ -1,4 +1,4 @@
-package org.ops4j;
+package org.ops4j.util;
 
 import java.util.List;
 import java.util.Map;

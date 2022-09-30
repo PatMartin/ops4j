@@ -7,7 +7,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import org.ops4j.BaseOp;
 import org.ops4j.OpData;
-import org.ops4j.OpCLI;
+import org.ops4j.cli.OpCLI;
 import org.ops4j.exception.OpsException;
 
 import lombok.Getter;

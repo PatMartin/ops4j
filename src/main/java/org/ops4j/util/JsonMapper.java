@@ -1,28 +1,28 @@
 package org.ops4j.util;
 
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
-import org.ops4j.LocalOpLogger;
 import org.ops4j.Locator;
 import org.ops4j.Ops4J;
-import org.ops4j.OpLogger;
 import org.ops4j.exception.OpsException;
+import org.ops4j.log.LocalOpLogger;
+import org.ops4j.log.OpLogger;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.NullNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.TextNode;
 
 import lombok.Getter;
 import lombok.Setter;
 
 public class JsonMapper implements LocalOpLogger
 {
-  private OpLogger               logger = new OpLogger("json-mapper");
+  private OpLogger                logger = new OpLogger("json-mapper");
   private Map<String, String>     mappings;
 
   private @Getter @Setter Locator locator;
@@ -40,7 +40,7 @@ public class JsonMapper implements LocalOpLogger
 
   public JsonNode map(JsonNode source) throws OpsException
   {
-    debug("JsonMapper.map(", source, ")");
+    trace("JsonMapper.map(", source, ")");
     ObjectNode dest = JacksonUtil.createObjectNode();
     for (String destPath : mappings.keySet())
     {
@@ -53,24 +53,30 @@ public class JsonMapper implements LocalOpLogger
       JsonNode dst) throws OpsException
   {
     JsonNode srcNode;
+    if (traceEnabled())
+    {
+      trace("**************************");
+      trace("SRC-PATH: '", srcPath, "'");
+      trace("DST-PATH: '", dstPath, "'");
+      trace("DST: '", dst, "'");
+      trace("DST-NODE: '", dst.at(dstPath), "'");
+      trace("**************************");
+    }
     if (locator.isNodeOp(srcPath))
     {
       srcNode = locator.evaluate(srcPath, src);
     }
-    else
+    else if (srcPath.startsWith("/"))
     {
       srcNode = (srcPath.equals("/") ? src : src.at(srcPath));
     }
-
-    //OpsLogger.syserr("**************************");
-    //OpsLogger.syserr("SRC-NODE: '", srcNode, "'");
-    //OpsLogger.syserr("DST-PATH: '", dstPath, "'");
-    //OpsLogger.syserr("DST: '", dst, "'");
-    //OpsLogger.syserr("DST-NODE: '", dst.at(dstPath), "'");
-    //OpsLogger.syserr("**************************");
+    else
+    {
+      srcNode = new TextNode(srcPath);
+    }
     
     JacksonUtil.put(dstPath, dst, srcNode);
- 
+
     return dst;
   }
 

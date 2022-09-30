@@ -4,8 +4,7 @@ import java.io.PrintStream;
 
 public class OpsException extends Exception
 {
-  // generated
-  private static final long serialVersionUID = -5240903664743533452L;
+  private static final long serialVersionUID = -6461938269500144633L;
   private Exception ex = null;
 
   public OpsException()

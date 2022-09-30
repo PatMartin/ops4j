@@ -5,12 +5,13 @@ import java.util.Iterator;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
-import org.ops4j.OpLogger;
 import org.ops4j.exception.OpsException;
+import org.ops4j.log.OpLogger;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.dataformat.cbor.databind.CBORMapper;
@@ -20,6 +21,7 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 public class JacksonUtil
 {
   public static ObjectMapper mapper;
+  public static ObjectMapper prettyMapper;
   public static XmlMapper    xmlMapper;
   public static YAMLMapper   yamlMapper;
   public static CBORMapper   cborMapper;
@@ -35,6 +37,16 @@ public class JacksonUtil
     return mapper;
   }
 
+  public final static ObjectMapper prettyMapper()
+  {
+    if (prettyMapper == null)
+    {
+      prettyMapper = new ObjectMapper();
+      prettyMapper.enable(SerializationFeature.INDENT_OUTPUT);
+    }
+    return prettyMapper;
+  }
+  
   public final static XmlMapper xmlMapper()
   {
     if (xmlMapper == null)
@@ -86,6 +98,30 @@ public class JacksonUtil
     }
   }
 
+  public static String toPrettyString(Object obj) throws OpsException
+  {
+    try
+    {
+      return prettyMapper().writeValueAsString(obj);
+    }
+    catch(JsonProcessingException ex)
+    {
+      throw new OpsException(ex);
+    }
+  }
+  
+  public static String toPrettyString(Object obj, String fallback)
+  {
+    try
+    {
+      return toPrettyString(obj);
+    }
+    catch(OpsException ex)
+    {
+      return fallback;
+    }
+  }
+  
   public static String toXmlString(Object obj) throws OpsException
   {
     try

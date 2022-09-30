@@ -1,14 +1,18 @@
 package org.ops4j.nodeop;
 
 import org.ops4j.BaseNodeOp;
-import org.ops4j.NodeOpCLI;
+import org.ops4j.NodeOp;
+import org.ops4j.cli.NodeOpCLI;
 import org.ops4j.exception.OpsException;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.google.auto.service.AutoService;
 
 import picocli.CommandLine.Command;
 
-@Command(name = "noop", mixinStandardHelpOptions = false, description = "This node-op does nothing.")
+@AutoService(NodeOp.class)
+@Command(name = "noop", mixinStandardHelpOptions = false,
+    description = "This node-op does nothing.")
 public class NoOp extends BaseNodeOp<NoOp>
 {
   public NoOp()

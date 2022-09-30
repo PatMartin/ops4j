@@ -1,7 +1,8 @@
 package org.ops4j;
 
-import org.ops4j.OpLogger.LogLevel;
 import org.ops4j.exception.OpsException;
+import org.ops4j.log.LocalOpLogger;
+import org.ops4j.log.OpLogger.LogLevel;
 
 import com.fasterxml.jackson.databind.JsonNode;
 

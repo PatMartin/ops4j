@@ -6,7 +6,10 @@ import java.util.Map;
 
 import org.ops4j.exception.AccessibilityException;
 import org.ops4j.exception.OpsException;
+import org.ops4j.log.OpLogger;
+import org.ops4j.util.Accessible;
 import org.ops4j.util.JacksonUtil;
+import org.ops4j.util.Portable;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -87,6 +90,18 @@ public class OpData implements Portable<OpData>, Accessible<OpData>
     }
   }
 
+  public String toPrettyString()
+  {
+    try
+    {
+      return JacksonUtil.toPrettyString(getJson());
+    }
+    catch(OpsException ex)
+    {
+      return json.asText();
+    }
+  }
+
   @Override
   public OpData fromJson(JsonNode info) throws OpsException
   {
@@ -139,5 +154,12 @@ public class OpData implements Portable<OpData>, Accessible<OpData>
       throw new AccessibilityException(ex);
     }
     return this;
+  }
+
+  public OpData copy()
+  {
+    OpData copy = new OpData();
+    copy.setJson(json.deepCopy());
+    return copy;
   }
 }

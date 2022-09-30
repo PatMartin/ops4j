@@ -11,6 +11,9 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang3.StringUtils;
 import org.ops4j.exception.OpsException;
 import org.ops4j.io.FileSource;
+import org.ops4j.io.InputSource;
+import org.ops4j.io.OutputDestination;
+import org.ops4j.log.OpLogger;
 import org.ops4j.util.JacksonUtil;
 
 import com.fasterxml.jackson.databind.JsonNode;

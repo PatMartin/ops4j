@@ -4,10 +4,10 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.ops4j.OpLogger;
 import org.ops4j.exception.AccessibilityException;
 import org.ops4j.exception.ConfigurationException;
 import org.ops4j.exception.OpsException;
+import org.ops4j.log.OpLogger;
 import org.ops4j.util.JacksonUtil;
 
 import com.fasterxml.jackson.databind.JsonNode;

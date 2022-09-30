@@ -1,7 +1,7 @@
 package org.ops4j.nodeop.gen;
 
 import org.ops4j.BaseNodeOp;
-import org.ops4j.NodeOpCLI;
+import org.ops4j.cli.NodeOpCLI;
 import org.ops4j.exception.OpsException;
 import org.ops4j.util.FakerUtil;
 

@@ -1,16 +1,21 @@
-package org.ops4j;
+package org.ops4j.cli;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.Callable;
 
+import org.ops4j.NodeOp;
+import org.ops4j.Ops4J;
 import org.ops4j.exception.OpsException;
+import org.ops4j.io.InputSource;
 import org.ops4j.util.CountdownIterator;
+import org.ops4j.util.JacksonUtil;
 import org.ops4j.util.JsonNodeIterator;
-import org.ops4j.util.JsonSource;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -18,13 +23,14 @@ import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Help;
 import picocli.CommandLine.Option;
+import picocli.CommandLine.Parameters;
 import picocli.CommandLine.ParseResult;
 
 @Command(name = "Additional CLI Options:", mixinStandardHelpOptions = false,
     description = "OpCli description")
-public class OpCLI implements Callable<Integer>
+public class NodeOpCLI implements Callable<Integer>
 {
-  public OpCLI()
+  public NodeOpCLI()
   {
   }
 
@@ -32,29 +38,34 @@ public class OpCLI implements Callable<Integer>
     NONE, JSON, YAML, XML
   }
 
+  @Parameters(index = "0", arity = "0..*",
+      description = "Zero or more targets "
+          + "to nodes contained in the JSON.  Default = /%n%nExamples:%n"
+          + "/          = The root node.%n"
+          + "/account   = A child node of the root named 'account'")
+  private @Getter @Setter List<String> targets    = new ArrayList<String>();
+
   @Option(names = { "-O", "--output" },
       description = "The output format for " + "this operation.")
-  private @Getter @Setter OutputType outputType = OutputType.JSON;
+  private @Getter @Setter OutputType   outputType = OutputType.JSON;
 
   @Option(names = { "-h", "--help" }, description = "Get help.")
-  private @Getter @Setter boolean    usage      = false;
+  private @Getter @Setter boolean      usage      = false;
 
   @Option(names = { "-H", "--HELP" }, description = "Get detailed help.")
-  private @Getter @Setter boolean    help       = false;
+  private @Getter @Setter boolean      help       = false;
 
   @Option(names = { "-D", "--data-source" }, required = false,
       description = "The datasource.")
-  private @Getter @Setter String     dataSource = null;
+  private @Getter @Setter String       dataSource = null;
 
-  public static int cli(Op<?> op, String[] args) throws OpsException
+  public static int cli(NodeOp<?> op, String[] args) throws OpsException
   {
-    CommandLine cmd = new CommandLine(op);
     int currentCount = 0;
-    int count = 0;
-
+    CommandLine cmd = new CommandLine(op);
     try
     {
-      OpCLI cli = new OpCLI();
+      NodeOpCLI cli = new NodeOpCLI();
       CommandLine cliCmd = new CommandLine(cli);
       cliCmd.getCommandSpec().parser().collectErrors(true);
       ParseResult result = cliCmd.parseArgs(args);
@@ -88,29 +99,21 @@ public class OpCLI implements Callable<Integer>
         return 0;
       }
 
-      op.configure(result.unmatched());
+      op.configure((String[]) result.unmatched().toArray(new String[0]));
       // Required, to synchronize backing logger log-level to op's -L log level.
       op.setLogLevel(op.getLogLevel());
 
-      op.initialize().open();
-
       // Open up a stream
-      Iterator<JsonNode> jnIt = null;
-      if (op instanceof JsonSource)
-      {
-        jnIt = ((JsonSource) op).getIterator();
-      }
-      else if (cli.getDataSource() != null)
+      Iterator<JsonNode> jnIt;
+      if (cli.getDataSource() != null)
       {
         InputSource<?> is = null;
         try
         {
-          count = Integer.parseInt(cli.getDataSource());
-          jnIt = new CountdownIterator(count);
+          jnIt = new CountdownIterator(Integer.parseInt(cli.getDataSource()));
         }
         catch(Exception ex)
         {
-          ex.printStackTrace();
           try
           {
             is = Ops4J.locator().resolveSource(cli.getDataSource());
@@ -123,7 +126,8 @@ public class OpCLI implements Callable<Integer>
           }
         }
       }
-      else {
+      else
+      {
         jnIt = JsonNodeIterator.fromInputStream(System.in);
       }
 
@@ -131,23 +135,34 @@ public class OpCLI implements Callable<Integer>
       {
         currentCount++;
 
-        JsonNode node = jnIt.next();
-        // System.err.println(op.getName() + ": " + JacksonUtil.toString(node));
-        OpData data = new OpData(node);
-        // System.err.println(op.getName() + ": " + data);
-        List<OpData> results = op.execute(data);
-        for (OpData out : results)
+        ObjectNode results = JacksonUtil.createObjectNode();
+        JsonNode data = jnIt.next();
+
+        List<String> targets;
+        if (cli.getTargets().size() > 0)
         {
-          switch (cli.getOutputType())
+          targets = cli.getTargets();
+        }
+        else
+        {
+          targets = new ArrayList<String>(1);
+          targets.add("/output");
+        }
+        JsonNode output = data;
+        for (String target : targets)
+        {
+          // OpsLogger.syserr("RESULT: ", op.execute(data));
+          output = JacksonUtil.put(target, data, op.execute(output));
+        }
+        switch (cli.getOutputType())
+        {
+          case NONE:
           {
-            case NONE:
-            {
-              break;
-            }
-            default:
-            {
-              System.out.println(out.toString());
-            }
+            break;
+          }
+          default:
+          {
+            System.out.println(output.toString());
           }
         }
       }
@@ -157,7 +172,6 @@ public class OpCLI implements Callable<Integer>
       throw new OpsException(ex);
     }
 
-    op.close().cleanup();
     return 0;
   }
 
