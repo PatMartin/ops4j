@@ -1,4 +1,4 @@
-package org.ops4j;
+package org.ops4j.inf;
 
 import org.ops4j.exception.OpsException;
 import org.ops4j.log.LocalOpLogger;

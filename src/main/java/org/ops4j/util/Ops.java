@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
-import org.ops4j.Op;
 import org.ops4j.Ops4J;
+import org.ops4j.inf.Op;
 
 import picocli.CommandLine;
 import picocli.CommandLine.Model.CommandSpec;

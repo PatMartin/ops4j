@@ -14,10 +14,10 @@ import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 
-@Command(name = "ops4j", description = "This is the main CLI for ops4j.")
-public class CLI implements Callable<Integer>
+@Command(name = "ops", description = "This is the main CLI for ops4j.")
+public class Ops4JCLI implements Callable<Integer>
 {
-  public CLI()
+  public Ops4JCLI()
   {
   }
 

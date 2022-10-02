@@ -5,11 +5,11 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.bson.Document;
-import org.ops4j.Op;
 import org.ops4j.OpData;
 import org.ops4j.cli.OpCLI;
 import org.ops4j.exception.OpsException;
-import org.ops4j.util.JsonSource;
+import org.ops4j.inf.JsonSource;
+import org.ops4j.inf.Op;
 import org.ops4j.util.MongoIterator;
 
 import com.fasterxml.jackson.databind.JsonNode;

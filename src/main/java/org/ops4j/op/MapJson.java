@@ -3,18 +3,22 @@ package org.ops4j.op;
 import java.util.List;
 import java.util.Map;
 
-import org.ops4j.BaseOp;
 import org.ops4j.OpData;
 import org.ops4j.Ops4J;
+import org.ops4j.base.BaseOp;
 import org.ops4j.cli.OpCLI;
 import org.ops4j.exception.OpsException;
+import org.ops4j.inf.Op;
 import org.ops4j.util.JsonMapper;
+
+import com.google.auto.service.AutoService;
 
 import lombok.Getter;
 import lombok.Setter;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Parameters;
 
+@AutoService(Op.class)
 @Command(name = "map", description = "This operation is used to map JSON "
     + "documents to alternate forms.")
 public class MapJson extends BaseOp<MapJson>
@@ -38,7 +42,7 @@ public class MapJson extends BaseOp<MapJson>
 
   public List<OpData> execute(OpData input) throws OpsException
   {
-    //syserr("MAP-INPUT: ", input.toString());
+    // syserr("MAP-INPUT: ", input.toString());
     return new OpData(mapper.map(input.getJson())).asList();
   }
 

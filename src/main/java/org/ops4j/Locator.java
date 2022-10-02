@@ -10,6 +10,8 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 import org.ops4j.exception.OpsException;
+import org.ops4j.inf.NodeOp;
+import org.ops4j.inf.Op;
 import org.ops4j.io.FileSource;
 import org.ops4j.io.InputSource;
 import org.ops4j.io.OutputDestination;

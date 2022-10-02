@@ -5,15 +5,15 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-import org.ops4j.Op;
-import org.ops4j.Op.PhaseType;
 import org.ops4j.OpData;
 import org.ops4j.Ops4J;
 import org.ops4j.exception.OpsException;
+import org.ops4j.inf.JsonSource;
+import org.ops4j.inf.Op;
+import org.ops4j.inf.Op.PhaseType;
 import org.ops4j.io.InputSource;
 import org.ops4j.util.CountdownIterator;
 import org.ops4j.util.JsonNodeIterator;
-import org.ops4j.util.JsonSource;
 
 import com.fasterxml.jackson.databind.JsonNode;
 

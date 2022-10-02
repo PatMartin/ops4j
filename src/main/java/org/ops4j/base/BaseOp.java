@@ -1,9 +1,15 @@
-package org.ops4j;
+package org.ops4j.base;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import org.ops4j.Lifecycle;
+import org.ops4j.OpData;
+import org.ops4j.Ops4J;
+import org.ops4j.exception.ConfigurationException;
 import org.ops4j.exception.OpsException;
+import org.ops4j.inf.Configuration;
+import org.ops4j.inf.Op;
 import org.ops4j.log.OpLogger;
 import org.ops4j.log.OpLogger.LogLevel;
 import org.ops4j.util.JacksonUtil;
@@ -21,17 +27,23 @@ import picocli.CommandLine.Option;
 public class BaseOp<T extends BaseOp<T>> implements Op<T>
 {
   @JsonIgnore
-  private @Getter @Setter Lifecycle lifecycle = new Lifecycle();
+  private @Getter @Setter Lifecycle lifecycle   = new Lifecycle();
 
   private OpLogger                  logger;
 
   @Option(names = { "-N", "--name" },
       description = "The name of this operation.")
-  private @Getter @Setter String    name      = null;
+  private @Getter @Setter String    name        = null;
 
   @Option(names = { "-L", "--log-level" },
       description = "The log level of this operation.")
-  private @Getter LogLevel          logLevel  = LogLevel.INFO;
+  private @Getter LogLevel          logLevel    = LogLevel.INFO;
+
+  @Option(names = { "-C", "--config" },
+      description = "The configuration view for this operation.")
+  private @Getter @Setter String    view        = null;
+
+  private @Getter @Setter String    defaultView = null;
 
   public BaseOp()
   {
@@ -144,5 +156,21 @@ public class BaseOp<T extends BaseOp<T>> implements Op<T>
   public void setOpLogger(OpLogger logger)
   {
     this.logger = logger;
+  }
+
+  public Configuration<?> config() throws ConfigurationException
+  {
+    debug("VIEW: ", getView());
+    if (getView() != null)
+    {
+      return Ops4J.config().view(view);
+    }
+    else if (getDefaultView() != null)
+    {
+      debug("DEFAULT-VIEW: ", getDefaultView());
+      return Ops4J.config().view(Ops4J.config().getString(getDefaultView()));
+    }
+    throw new ConfigurationException(
+        "No configuration defined for view '" + view + "'");
   }
 }

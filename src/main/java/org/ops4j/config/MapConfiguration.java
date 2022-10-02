@@ -4,9 +4,9 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.ops4j.exception.AccessibilityException;
 import org.ops4j.exception.ConfigurationException;
 import org.ops4j.exception.OpsException;
+import org.ops4j.inf.Configuration;
 import org.ops4j.log.OpLogger;
 import org.ops4j.util.JacksonUtil;
 
@@ -27,23 +27,23 @@ public class MapConfiguration implements Configuration<MapConfiguration>
   }
 
   @Override
-  public String get(String name) throws AccessibilityException
+  public String get(String name) throws ConfigurationException
   {
     // TODO Auto-generated method stub
     return null;
   }
 
-  public String get(String name[], Object config) throws AccessibilityException
+  public String get(String name[], Object config) throws ConfigurationException
   {
     if (name == null)
     {
-      throw new AccessibilityException("name is null");
+      throw new ConfigurationException("name is null");
     }
     switch (name.length)
     {
       case 0:
       {
-        throw new AccessibilityException("invalid name");
+        throw new ConfigurationException("invalid name");
       }
       case 1:
       {
@@ -54,7 +54,7 @@ public class MapConfiguration implements Configuration<MapConfiguration>
             return "" + ((Map<String, ?>) config).get(name[0]);
           }
         }
-        throw new AccessibilityException("Invalid path");
+        throw new ConfigurationException("Invalid path");
       }
       default:
       {
@@ -67,7 +67,7 @@ public class MapConfiguration implements Configuration<MapConfiguration>
                 map.get(name[0]));
           }
         }
-        throw new AccessibilityException("Invalid path");
+        throw new ConfigurationException("Invalid path");
       }
     }
   }
@@ -85,7 +85,7 @@ public class MapConfiguration implements Configuration<MapConfiguration>
 
   @Override
   public MapConfiguration set(String name, Object value)
-      throws AccessibilityException
+      throws ConfigurationException
   {
     // TODO Auto-generated method stub
     return null;

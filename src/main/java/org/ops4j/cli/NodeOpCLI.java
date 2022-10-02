@@ -6,9 +6,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-import org.ops4j.NodeOp;
 import org.ops4j.Ops4J;
 import org.ops4j.exception.OpsException;
+import org.ops4j.inf.NodeOp;
 import org.ops4j.io.InputSource;
 import org.ops4j.util.CountdownIterator;
 import org.ops4j.util.JacksonUtil;

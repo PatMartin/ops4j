@@ -3,19 +3,17 @@ package org.ops4j.nodeop;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-import org.ops4j.BaseNodeOp;
-import org.ops4j.NodeOp;
+import org.ops4j.base.BaseNodeOp;
 import org.ops4j.cli.NodeOpCLI;
 import org.ops4j.exception.OpsException;
+import org.ops4j.inf.NodeOp;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.BigIntegerNode;
 import com.fasterxml.jackson.databind.node.DecimalNode;
 import com.fasterxml.jackson.databind.node.DoubleNode;
 import com.fasterxml.jackson.databind.node.IntNode;
 import com.fasterxml.jackson.databind.node.LongNode;
-import com.fasterxml.jackson.databind.node.TextNode;
 import com.google.auto.service.AutoService;
 
 import lombok.Getter;
@@ -38,23 +36,13 @@ public class Plus extends BaseNodeOp<Plus>
 
   public JsonNode execute(JsonNode input) throws OpsException
   {
-    //syserr("plus(", getOperand(), ") on ", input);
+    // syserr("plus(", getOperand(), ") on ", input);
     if (input == null)
     {
       return input;
     }
     switch (input.getNodeType())
     {
-      case STRING:
-      {
-        return new TextNode(input.asText() + getOperand());
-      }
-      case ARRAY:
-      {
-        ArrayNode array = ((ArrayNode) input).deepCopy();
-        array.add(getOperand());
-        return array;
-      }
       case NUMBER:
       {
         if (input.isInt())

@@ -5,16 +5,20 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
-import org.ops4j.BaseOp;
 import org.ops4j.OpData;
+import org.ops4j.base.BaseOp;
 import org.ops4j.cli.OpCLI;
 import org.ops4j.exception.OpsException;
+import org.ops4j.inf.Op;
+
+import com.google.auto.service.AutoService;
 
 import lombok.Getter;
 import lombok.Setter;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Parameters;
 
+@AutoService(Op.class)
 @Command(name = "benchmark", description = "Benchmark something.")
 public class Benchmark extends BaseOp<Benchmark>
 {

@@ -3,10 +3,10 @@ package org.ops4j.nodeop;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
-import org.ops4j.BaseNodeOp;
-import org.ops4j.NodeOp;
+import org.ops4j.base.BaseNodeOp;
 import org.ops4j.cli.NodeOpCLI;
 import org.ops4j.exception.OpsException;
+import org.ops4j.inf.NodeOp;
 import org.ops4j.util.NodeOps;
 
 import com.fasterxml.jackson.databind.JsonNode;

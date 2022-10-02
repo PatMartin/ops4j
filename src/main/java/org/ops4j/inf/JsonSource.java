@@ -1,4 +1,4 @@
-package org.ops4j.util;
+package org.ops4j.inf;
 
 import java.util.Iterator;
 

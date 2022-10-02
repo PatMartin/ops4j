@@ -1,0 +1,24 @@
+DEFAULT:
+  HTTP: "/HTTP/LOCAL"
+  MONGO: "/MONGO/LOCAL"
+  
+MONGO:
+  LOCAL:
+    connectionString: "mongodb://localhost:27017/ops"
+    database: "ops"
+HTTP:
+  LOCAL:
+    host: localhost
+    port: 4242
+    root: "C:/ws/ws1/ops4j/main/resources/site"
+    deployments:
+    - name: "ops"
+      path: "/servlet"
+      servlet:
+      - name: "MessageServlet"
+        class: "org.ops4j.servlet.MessageService.class"
+        mapping:
+        - path: "/msg"
+          initParams:
+          - name: "message"
+            value: "HOWDY, HOWDY"

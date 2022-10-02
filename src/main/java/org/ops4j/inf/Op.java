@@ -1,7 +1,9 @@
-package org.ops4j;
+package org.ops4j.inf;
 
 import java.util.List;
 
+import org.ops4j.Lifecycle;
+import org.ops4j.OpData;
 import org.ops4j.exception.OpsException;
 import org.ops4j.log.LocalOpLogger;
 import org.ops4j.log.OpLogger.LogLevel;

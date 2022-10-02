@@ -4,12 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.ops4j.exception.AccessibilityException;
+import org.ops4j.exception.ConfigurationException;
 import org.ops4j.exception.OpsException;
+import org.ops4j.inf.Getters;
+import org.ops4j.inf.Portable;
+import org.ops4j.inf.Setters;
 import org.ops4j.log.OpLogger;
-import org.ops4j.util.Accessible;
 import org.ops4j.util.JacksonUtil;
-import org.ops4j.util.Portable;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -20,7 +21,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.Getter;
 import lombok.Setter;
 
-public class OpData implements Portable<OpData>, Accessible<OpData>
+public class OpData implements Portable<OpData>, Setters<OpData>, Getters<OpData>
 {
   private @Getter @Setter ObjectNode json;
 
@@ -122,7 +123,7 @@ public class OpData implements Portable<OpData>, Accessible<OpData>
   }
 
   @Override
-  public String get(String name) throws AccessibilityException
+  public String get(String name) throws ConfigurationException
   {
     JsonNode got = json.at(name);
     if (got == null)
@@ -143,7 +144,7 @@ public class OpData implements Portable<OpData>, Accessible<OpData>
   }
 
   @Override
-  public OpData set(String name, Object value) throws AccessibilityException
+  public OpData set(String name, Object value) throws ConfigurationException
   {
     try
     {
@@ -151,7 +152,7 @@ public class OpData implements Portable<OpData>, Accessible<OpData>
     }
     catch(OpsException ex)
     {
-      throw new AccessibilityException(ex);
+      throw new ConfigurationException(ex);
     }
     return this;
   }

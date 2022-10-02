@@ -3,7 +3,7 @@ package org.ops4j;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.ops4j.Op.PhaseType;
+import org.ops4j.inf.Op.PhaseType;
 
 import lombok.Getter;
 import lombok.Setter;

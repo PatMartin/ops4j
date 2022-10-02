@@ -3,10 +3,10 @@ package org.ops4j.nodeop.gen;
 import java.security.SecureRandom;
 import java.util.Random;
 
-import org.ops4j.BaseNodeOp;
-import org.ops4j.NodeOp;
+import org.ops4j.base.BaseNodeOp;
 import org.ops4j.cli.NodeOpCLI;
 import org.ops4j.exception.OpsException;
+import org.ops4j.inf.NodeOp;
 import org.ops4j.util.StringUtil;
 
 import com.fasterxml.jackson.databind.JsonNode;

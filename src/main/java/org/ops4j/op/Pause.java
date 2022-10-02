@@ -2,11 +2,11 @@ package org.ops4j.op;
 
 import java.util.List;
 
-import org.ops4j.BaseOp;
-import org.ops4j.Op;
 import org.ops4j.OpData;
+import org.ops4j.base.BaseOp;
 import org.ops4j.cli.OpCLI;
 import org.ops4j.exception.OpsException;
+import org.ops4j.inf.Op;
 import org.ops4j.util.ThreadUtil;
 
 import com.google.auto.service.AutoService;

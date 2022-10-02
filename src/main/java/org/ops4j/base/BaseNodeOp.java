@@ -1,8 +1,9 @@
-package org.ops4j;
+package org.ops4j.base;
 
 import java.util.List;
 
 import org.ops4j.exception.OpsException;
+import org.ops4j.inf.NodeOp;
 import org.ops4j.log.OpLogger;
 import org.ops4j.log.OpLogger.LogLevel;
 import org.ops4j.util.JacksonUtil;

@@ -4,10 +4,10 @@ import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
 
-import org.ops4j.NodeOp;
-import org.ops4j.Op;
 import org.ops4j.Ops4J;
 import org.ops4j.buddies.StringBuddy;
+import org.ops4j.inf.NodeOp;
+import org.ops4j.inf.Op;
 import org.ops4j.io.InputSource;
 import org.ops4j.io.OutputDestination;
 import org.ops4j.util.StringUtil;

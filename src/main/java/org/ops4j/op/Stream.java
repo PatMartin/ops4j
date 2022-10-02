@@ -4,14 +4,14 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 
-import org.ops4j.BaseOp;
-import org.ops4j.Op;
 import org.ops4j.OpData;
+import org.ops4j.base.BaseOp;
 import org.ops4j.cli.OpCLI;
 import org.ops4j.exception.OpsException;
+import org.ops4j.inf.JsonSource;
+import org.ops4j.inf.Op;
 import org.ops4j.util.CircularIterator;
 import org.ops4j.util.JsonNodeIterator;
-import org.ops4j.util.JsonSource;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.auto.service.AutoService;

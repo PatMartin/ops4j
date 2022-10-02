@@ -1,9 +1,9 @@
 package org.ops4j.op;
 
-import org.ops4j.BaseOp;
-import org.ops4j.Op;
+import org.ops4j.base.BaseOp;
 import org.ops4j.cli.OpCLI;
 import org.ops4j.exception.OpsException;
+import org.ops4j.inf.Op;
 
 import com.google.auto.service.AutoService;
 

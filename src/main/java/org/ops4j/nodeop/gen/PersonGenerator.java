@@ -1,17 +1,20 @@
 package org.ops4j.nodeop.gen;
 
-import org.ops4j.BaseNodeOp;
+import org.ops4j.base.BaseNodeOp;
 import org.ops4j.cli.NodeOpCLI;
 import org.ops4j.exception.OpsException;
+import org.ops4j.inf.NodeOp;
 import org.ops4j.util.FakerUtil;
 import org.ops4j.util.JacksonUtil;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.github.javafaker.Faker;
+import com.google.auto.service.AutoService;
 
 import picocli.CommandLine.Command;
 
+@AutoService(NodeOp.class)
 @Command(name = "gen:person", mixinStandardHelpOptions = false,
     description = "Generate a person.%n" + "%nExample: gen:person")
 public class PersonGenerator extends BaseNodeOp<PersonGenerator>
