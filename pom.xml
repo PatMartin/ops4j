@@ -169,6 +169,13 @@
 			<artifactId>javalin</artifactId>
 			<version>5.0.0</version>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.codehaus.groovy/groovy-all -->
+		<dependency>
+			<groupId>org.codehaus.groovy</groupId>
+			<artifactId>groovy-all</artifactId>
+			<version>3.0.13</version>
+			<type>pom</type>
+		</dependency>
 
 	</dependencies>
 </project>

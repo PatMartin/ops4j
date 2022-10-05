@@ -1,32 +1,34 @@
 package org.ops4j.servlet;
 
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 
+import groovy.text.SimpleTemplateEngine;
+import groovy.text.Template;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-public class MessageServlet extends HttpServlet
+public class PerformanceServlet extends HttpServlet
 {
-  private static final long serialVersionUID = -9080416356031630480L;
+  private static final long serialVersionUID = 7032785581338862391L;
 
-  public MessageServlet()
+  public PerformanceServlet()
   {
     super();
   }
 
-  public static final String MESSAGE = "message";
-
-  private String             message;
+  public static final String TEMPLATE = "dexjs.gt";
+  private String             template;
 
   @Override
   public void init(final ServletConfig config) throws ServletException
   {
     super.init(config);
-    message = config.getInitParameter(MESSAGE);
+    template = config.getInitParameter(TEMPLATE);
   }
 
   @Override
@@ -34,7 +36,12 @@ public class MessageServlet extends HttpServlet
       final HttpServletResponse resp) throws ServletException, IOException
   {
     PrintWriter writer = resp.getWriter();
-    writer.write(message);
+    SimpleTemplateEngine engine = new SimpleTemplateEngine();
+    Template t = engine.createTemplate(
+        new InputStreamReader(this.getClass().getResourceAsStream(TEMPLATE)));
+    // .make(bindMap);
+    // Grab the data.
+    // Feed the data to a groovy template
     writer.close();
   }
 

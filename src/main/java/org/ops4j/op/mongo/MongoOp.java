@@ -2,7 +2,6 @@ package org.ops4j.op.mongo;
 
 import org.ops4j.base.BaseOp;
 import org.ops4j.exception.OpsException;
-import org.ops4j.inf.Configuration;
 
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoDatabase;
@@ -25,7 +24,6 @@ public abstract class MongoOp<T extends MongoOp<?>> extends BaseOp<MongoOp<T>>
 
   protected com.mongodb.client.MongoClient client  = null;
   protected MongoDatabase                  mongoDb = null;
-  private Configuration<?>                 config  = null;
 
   public MongoOp(String name)
   {
@@ -35,8 +33,7 @@ public abstract class MongoOp<T extends MongoOp<?>> extends BaseOp<MongoOp<T>>
 
   public MongoOp<T> initialize() throws OpsException
   {
-    config = config();
-    info("MONGO-CONFIG: ", config.toJson());
+    info("MONGO-CONFIG: ", config());
     return this;
   }
 
@@ -44,8 +41,9 @@ public abstract class MongoOp<T extends MongoOp<?>> extends BaseOp<MongoOp<T>>
   {
     super.open();
     this.client = MongoClients
-        .create(config.fallback("/connectionString", getUrl()));
-    this.mongoDb = client.getDatabase(config.fallback("/database", getDb()));
+        .create(fallback(getUrl(), config().getString("connectionString")));
+    this.mongoDb = client
+        .getDatabase(fallback(getDb(), config().getString("db")));
     return this;
   }
 

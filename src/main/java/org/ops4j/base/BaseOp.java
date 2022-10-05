@@ -8,13 +8,14 @@ import org.ops4j.OpData;
 import org.ops4j.Ops4J;
 import org.ops4j.exception.ConfigurationException;
 import org.ops4j.exception.OpsException;
-import org.ops4j.inf.Configuration;
+import org.ops4j.inf.Fallback;
 import org.ops4j.inf.Op;
 import org.ops4j.log.OpLogger;
 import org.ops4j.log.OpLogger.LogLevel;
 import org.ops4j.util.JacksonUtil;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.typesafe.config.Config;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -24,7 +25,7 @@ import picocli.CommandLine.Model.CommandSpec;
 import picocli.CommandLine.Option;
 
 @Command(name = "base-op", mixinStandardHelpOptions = false)
-public class BaseOp<T extends BaseOp<T>> implements Op<T>
+public class BaseOp<T extends BaseOp<T>> implements Op<T>, Fallback
 {
   @JsonIgnore
   private @Getter @Setter Lifecycle lifecycle   = new Lifecycle();
@@ -44,6 +45,8 @@ public class BaseOp<T extends BaseOp<T>> implements Op<T>
   private @Getter @Setter String    view        = null;
 
   private @Getter @Setter String    defaultView = null;
+
+  private Config                    config      = null;
 
   public BaseOp()
   {
@@ -158,19 +161,28 @@ public class BaseOp<T extends BaseOp<T>> implements Op<T>
     this.logger = logger;
   }
 
-  public Configuration<?> config() throws ConfigurationException
+  public Config config() throws ConfigurationException
   {
-    debug("VIEW: ", getView());
+    if (config != null)
+    {
+      return config;
+    }
     if (getView() != null)
     {
-      return Ops4J.config().view(view);
+      config = Ops4J.config().getConfig(getView());
     }
     else if (getDefaultView() != null)
     {
-      debug("DEFAULT-VIEW: ", getDefaultView());
-      return Ops4J.config().view(Ops4J.config().getString(getDefaultView()));
+      System.err.println("Using default view: " + getDefaultView() + "="
+          + Ops4J.config().getString(getDefaultView()));
+      config = Ops4J.config()
+          .getConfig(Ops4J.config().getString(getDefaultView()));
     }
-    throw new ConfigurationException(
-        "No configuration defined for view '" + view + "'");
+    if (config == null)
+    {
+      throw new ConfigurationException(
+          "No configuration defined for view '" + view + "'");
+    }
+    return config;
   }
 }

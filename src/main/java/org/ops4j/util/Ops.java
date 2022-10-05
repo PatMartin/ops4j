@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.ops4j.Ops4J;
+import org.ops4j.exception.OpsException;
 import org.ops4j.inf.Op;
 
 import picocli.CommandLine;
@@ -13,7 +14,7 @@ import picocli.CommandLine.Model.CommandSpec;
 
 public class Ops
 {
-  public static List<Op<?>> create(String args)
+  public static List<Op<?>> create(String args) throws OpsException
   {
     if (args == null || args.trim().length() == 0)
     {
@@ -22,12 +23,12 @@ public class Ops
     return create(StringUtils.split(args, '|'));
   }
 
-  public static List<Op<?>> create(List<String> args)
+  public static List<Op<?>> create(List<String> args) throws OpsException
   {
     return create(args.toArray(new String[0]));
   }
 
-  public static List<Op<?>> create(String args[])
+  public static List<Op<?>> create(String args[]) throws OpsException
   {
     Map<String, Op<?>> opMap = Ops4J.locator().getOps();
     List<Op<?>> ops = new ArrayList<Op<?>>();
