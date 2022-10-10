@@ -139,7 +139,8 @@ public class BaseOp<T extends BaseOp<T>> implements Op<T>, Fallback, OpLogging
   {
     // Do nothing for now.
     CommandSpec spec = CommandSpec.create();
-    new CommandLine(this).parseArgs(args.toArray(new String[0]));
+    new CommandLine(this).setCaseInsensitiveEnumValuesAllowed(true)
+        .parseArgs(args.toArray(new String[0]));
     debug("Op Configuration ", getName(), ": ",
         JacksonUtil.toString(this, "N/A"));
   }
