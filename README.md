@@ -1,10 +1,16 @@
 # ops4j
 
-Ops4j is a framework which is well suited for rapid prototyping, experimentation and innovation.  Developers write small units of code known as operations.  Operations are:
+>  PLEASE NOTE THAT THIS IS A EARLY WORK IN PROGRESS AND THAT I AM STILL WORKING ON BASIC APPLICATON ARCHITECTURE.   THE CODE WILL REMAIN RATHER FLUID FOR SOME TIME TO COME.
 
-* Singular of purpose with descriptive names such as `mongo:insert` or `benchmark`.
+Ops4j is a framework which is well suited for rapid prototyping, experimentation and innovation.  Developers write small units of code we refer to as `operations`.
+
+Operations are:
+
+* singular of purpose
+* self-documenting with command line help and descriptive names such as `mongo:insert` or `benchmark`.
 * Flexible and reusable
-* Interoperable with other operations so that more complex solutions can be constructed.
+* Interoperable with other operations
+* Interoperable with external programs such as command line utilities
 
 Operations adhere to a JSON IN / JSON OUT paradigm which allows them to be orchestrated directly from the shell.   Operations provide their own documentation in the form of online help and can be used as would any other CLI based utility.
 
