@@ -8,8 +8,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.ops4j.Locator;
 import org.ops4j.Ops4J;
 import org.ops4j.exception.OpsException;
-import org.ops4j.log.LocalOpLogger;
 import org.ops4j.log.OpLogger;
+import org.ops4j.log.OpLoggerFactory;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -20,9 +20,10 @@ import com.fasterxml.jackson.databind.node.TextNode;
 import lombok.Getter;
 import lombok.Setter;
 
-public class JsonMapper implements LocalOpLogger
+public class JsonMapper
 {
-  private OpLogger                logger = new OpLogger("json-mapper");
+  private OpLogger                logger = OpLoggerFactory
+      .getLogger("ops.mapper");
   private Map<String, String>     mappings;
 
   private @Getter @Setter Locator locator;
@@ -38,9 +39,11 @@ public class JsonMapper implements LocalOpLogger
     this(mappings, Ops4J.locator());
   }
 
+  // TODO: support output arrays
   public JsonNode map(JsonNode source) throws OpsException
   {
-    trace("JsonMapper.map(", source, ")");
+    logger.syserr("JsonMapper log-level: ", logger.getLogLevel());
+    logger.trace("JsonMapper.map(", source, ")");
     ObjectNode dest = JacksonUtil.createObjectNode();
     for (String destPath : mappings.keySet())
     {
@@ -53,21 +56,22 @@ public class JsonMapper implements LocalOpLogger
       JsonNode dst) throws OpsException
   {
     JsonNode srcNode;
-    if (traceEnabled())
+    if (logger.isTraceEnabled())
     {
-      trace("map(srcPath='", srcPath, "', dstPath='", dstPath,
+      logger.trace("map(srcPath='", srcPath, "', dstPath='", dstPath,
           "', src='", src, "', dst='", dst, "')");
-      
-      //trace("**************************");
-      //trace("SRC-PATH: '", srcPath, "'");
-      //trace("DST-PATH: '", dstPath, "'");
-      //trace("DST: '", dst, "'");
-      //trace("DST-NODE: '", dst.at(dstPath), "'");
-      //trace("**************************");
+
+      // trace("**************************");
+      // trace("SRC-PATH: '", srcPath, "'");
+      // trace("DST-PATH: '", dstPath, "'");
+      // trace("DST: '", dst, "'");
+      // trace("DST-NODE: '", dst.at(dstPath), "'");
+      // trace("**************************");
     }
     if (locator.isNodeOp(srcPath))
     {
-      trace("NodeOp(srcPath='", srcPath, "', src='", src.toString(), "')");
+      logger.trace("NodeOp(srcPath='", srcPath, "', src='", src.toString(),
+          "')");
       srcNode = locator.evaluate(srcPath, src);
     }
     else if (srcPath.startsWith("/"))
@@ -101,7 +105,7 @@ public class JsonMapper implements LocalOpLogger
 
   public ObjectNode makePath(String path[], JsonNode doc, boolean stopAtParent)
   {
-    trace("makePath(" + ((path == null || path.length <= 0) ? "NULL"
+    logger.trace("makePath(" + ((path == null || path.length <= 0) ? "NULL"
         : StringUtils.join(path, "/")) + ")");
     if (path == null || path.length <= 0)
     {
@@ -126,7 +130,7 @@ public class JsonMapper implements LocalOpLogger
         ((ObjectNode) doc).set(path[0], JacksonUtil.createObjectNode());
         return (ObjectNode) doc.get(path[0]);
       }
-      warn("Doc was of type ", doc.getNodeType(), " expected object.");
+      logger.warn("Doc was of type ", doc.getNodeType(), " expected object.");
       return null;
     }
     else
@@ -171,7 +175,7 @@ public class JsonMapper implements LocalOpLogger
       }
       else
       {
-        warn("Doc was of type ", doc.getNodeType(), " expected object.");
+        logger.warn("Doc was of type ", doc.getNodeType(), " expected object.");
         return null;
       }
     }
@@ -215,17 +219,5 @@ public class JsonMapper implements LocalOpLogger
     JsonNode mappedNode = mapper.map(srcNode);
     System.out.println("SRC: " + srcNode);
     System.out.println("DST: " + mappedNode);
-  }
-
-  @Override
-  public OpLogger getOpLogger()
-  {
-    return logger;
-  }
-
-  @Override
-  public void setOpLogger(OpLogger logger)
-  {
-    this.logger = logger;
   }
 }

@@ -23,6 +23,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.css"/>
     <link rel="stylesheet" href="/css/dex-bootstrap.css">
     <link rel="stylesheet" href="/css/dex.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tauCharts/1.2.2/tauCharts.min.css" integrity="sha512-N4flz5YFXDG77C4UYfX50qqcJngf9sqFQRqhmEdx05Blv+TdCoQEUIY8FgSTES6MvRubzdMlY9NKgbqD7r/UZQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="http://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
@@ -33,7 +34,9 @@
     <script src="/js/dex-libs.js"></script>
     <script src="/js/dex.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Faker/3.1.0/faker.min.js"></script>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/standalone/umd/vis-network.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.4.0/echarts.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tauCharts/1.2.2/tauCharts.min.js"></script>
 </head>
 <body>
 

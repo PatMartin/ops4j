@@ -1,7 +1,5 @@
 package org.ops4j.nodeop;
 
-import java.util.List;
-
 import org.ops4j.base.BaseNodeOp;
 import org.ops4j.cli.NodeOpCLI;
 import org.ops4j.exception.OpsException;

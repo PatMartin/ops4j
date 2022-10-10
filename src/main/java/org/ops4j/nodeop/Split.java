@@ -5,6 +5,7 @@ import org.ops4j.base.BaseNodeOp;
 import org.ops4j.cli.NodeOpCLI;
 import org.ops4j.exception.OpsException;
 import org.ops4j.inf.NodeOp;
+import org.ops4j.log.OpLogger;
 import org.ops4j.util.JacksonUtil;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -36,7 +37,7 @@ public class Split extends BaseNodeOp<Split>
   public JsonNode execute(JsonNode input) throws OpsException
   {
     JsonNode srcNode = input.at(getPath());
-    syserr("INPUT: '", srcNode.asText(), "'");
+    OpLogger.syserr("INPUT: '", srcNode.asText(), "'");
     if (srcNode != null && srcNode.isTextual())
     {
       String parts[] = StringUtils.split(srcNode.asText(), getSeparator());

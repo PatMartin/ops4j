@@ -12,6 +12,7 @@ import org.ops4j.inf.Fallback;
 import org.ops4j.inf.Op;
 import org.ops4j.log.OpLogger;
 import org.ops4j.log.OpLogger.LogLevel;
+import org.ops4j.log.OpLogging;
 import org.ops4j.util.JacksonUtil;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -25,40 +26,40 @@ import picocli.CommandLine.Model.CommandSpec;
 import picocli.CommandLine.Option;
 
 @Command(name = "base-op", mixinStandardHelpOptions = false)
-public class BaseOp<T extends BaseOp<T>> implements Op<T>, Fallback
+public class BaseOp<T extends BaseOp<T>> implements Op<T>, Fallback, OpLogging
 {
   @JsonIgnore
-  private @Getter @Setter Lifecycle lifecycle   = new Lifecycle();
+  private @Getter @Setter Lifecycle  lifecycle   = new Lifecycle();
 
-  private OpLogger                  logger;
+  protected @Getter @Setter OpLogger opLogger;
 
   @Option(names = { "-N", "--name" },
       description = "The name of this operation.")
-  private @Getter @Setter String    name        = null;
+  private @Getter @Setter String     name        = null;
 
-  @Option(names = { "-L", "--log-level" },
+  @Option(names = { "-L", "--log" },
       description = "The log level of this operation.")
-  private @Getter LogLevel          logLevel    = LogLevel.INFO;
+  private @Getter LogLevel           logLevel    = LogLevel.INFO;
 
   @Option(names = { "-C", "--config" },
       description = "The configuration view for this operation.")
-  private @Getter @Setter String    view        = null;
+  private @Getter @Setter String     view        = null;
 
-  private @Getter @Setter String    defaultView = null;
+  private @Getter @Setter String     defaultView = null;
 
-  private Config                    config      = null;
+  private @Getter @Setter Config     config      = null;
 
   public BaseOp()
   {
     setName(this.getClass().getName());
-    logger = new OpLogger(getName());
-    logger.setLogLevel(getLogLevel());
+    opLogger = new OpLogger(getName());
+    opLogger.setLogLevel(getLogLevel());
   }
 
   public BaseOp(String name)
   {
     setName(name);
-    logger = new OpLogger(getName());
+    opLogger = new OpLogger(getName());
   }
 
   @SuppressWarnings("unchecked")
@@ -146,19 +147,7 @@ public class BaseOp<T extends BaseOp<T>> implements Op<T>, Fallback
   public void setLogLevel(LogLevel logLevel)
   {
     this.logLevel = logLevel;
-    logger.setLogLevel(logLevel);
-  }
-
-  @Override
-  public OpLogger getOpLogger()
-  {
-    return this.logger;
-  }
-
-  @Override
-  public void setOpLogger(OpLogger logger)
-  {
-    this.logger = logger;
+    opLogger.setLogLevel(logLevel);
   }
 
   public Config config() throws ConfigurationException

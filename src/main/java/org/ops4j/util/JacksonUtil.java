@@ -1,12 +1,17 @@
 package org.ops4j.util;
 
+import java.util.AbstractMap.SimpleEntry;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.commons.lang3.StringUtils;
 import org.ops4j.exception.OpsException;
 import org.ops4j.log.OpLogger;
+import org.ops4j.log.OpLoggerFactory;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -24,15 +29,18 @@ import com.fasterxml.jackson.dataformat.cbor.databind.CBORMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 
+import lombok.NonNull;
+
 public class JacksonUtil
 {
+  // public static LogLevel logLevel = LogLevel.INFO;
   public static ObjectMapper mapper;
   public static ObjectMapper prettyMapper;
   public static XmlMapper    xmlMapper;
   public static YAMLMapper   yamlMapper;
   public static CBORMapper   cborMapper;
 
-  public static OpLogger     logger = new OpLogger("ops");
+  public static OpLogger     logger = OpLoggerFactory.getLogger("ops.jackson");
 
   public final static ObjectMapper mapper()
   {
@@ -221,6 +229,90 @@ public class JacksonUtil
     return makePath(StringUtils.split(path, "/"), doc);
   }
 
+  public static Entry<String, JsonNode> getParentEntry(@NonNull String path,
+      JsonNode doc)
+  {
+    int index = path.lastIndexOf("/");
+    if (index < 0)
+    {
+      return new SimpleEntry<String, JsonNode>(path.trim(), doc);
+    }
+    else
+    {
+      JsonNode node = doc.at(path.substring(0, path.lastIndexOf("/")));
+      return new SimpleEntry<String, JsonNode>(path.substring(index + 1), node);
+    }
+  }
+
+  public static void remove(String path, JsonNode node)
+  {
+    Entry<String, JsonNode> parentEntry = getParentEntry(path, node);
+    ((ObjectNode) parentEntry.getValue()).remove(parentEntry.getKey());
+  }
+
+  public static List<JsonNode> unwind(List<String> paths, JsonNode doc)
+      throws OpsException
+  {
+    List<JsonNode> nodes = null;
+
+    for (String path : paths)
+    {
+      if (nodes == null)
+      {
+        nodes = unwind(path, doc);
+      }
+      else
+      {
+        List<JsonNode> subNodes = new ArrayList<>();
+        for (JsonNode node : nodes)
+        {
+          logger.TRACE("L2: subNodes.addAll(unwind(", path, ", ", node, ")");
+          subNodes.addAll(unwind(path, node));
+        }
+        nodes.clear();
+        nodes.addAll(subNodes);
+        subNodes.clear();
+      }
+    }
+
+    return nodes;
+  }
+
+  public static List<JsonNode> unwind(@NonNull String path, JsonNode doc)
+      throws OpsException
+  {
+    List<JsonNode> unwound = new ArrayList<>();
+    @NonNull
+    JsonNode target = doc.at(path);
+
+    if (!target.isArray())
+    {
+      OpLogger.syserr("PATH: ", path, ", DOC: ", doc, ", TARGET: ", target);
+      throw new OpsException("target '" + path + "' is not an array but is a "
+          + target.getNodeType() + " instead with value=" + target);
+    }
+
+    // Prep the base record
+    ArrayNode array = (ArrayNode) target;
+    JsonNode base = doc.deepCopy();
+    remove(path, base);
+
+    logger.TRACE("array.size()=", array.size());
+    for (int i = 0; i < array.size(); i++)
+    {
+      JsonNode elt = base.deepCopy();
+      logger.TRACE("unwound.add(put(", path, ", ", elt, ", ", array.get(i),
+          ")");
+      logger.TRACE("BEFORE: ", elt);
+      JsonNode after = put(path, elt, array.get(i));
+      logger.TRACE("AFTER: ", elt);
+      logger.TRACE(logger.getName(), "=", logger.getLogLevel());
+      unwound.add(elt);
+    }
+
+    return unwound;
+  }
+
   public static ObjectNode makePath(String path[], JsonNode doc)
   {
     return makePath(path, doc, false);
@@ -229,7 +321,7 @@ public class JacksonUtil
   public static ObjectNode makePath(String path[], JsonNode doc,
       boolean stopAtParent)
   {
-    logger.trace("makePath(" + ((path == null || path.length <= 0) ? "NULL"
+    logger.TRACE("makePath(" + ((path == null || path.length <= 0) ? "NULL"
         : StringUtils.join(path, "/")) + ")");
     if (path == null || path.length <= 0)
     {
@@ -254,7 +346,7 @@ public class JacksonUtil
         ((ObjectNode) doc).set(path[0], JacksonUtil.createObjectNode());
         return (ObjectNode) doc.get(path[0]);
       }
-      logger.warn("Doc was of type ", doc.getNodeType(), " expected object.");
+      logger.WARN("Doc was of type ", doc.getNodeType(), " expected object.");
       return null;
     }
     else
@@ -276,7 +368,7 @@ public class JacksonUtil
       }
       else
       {
-        logger.warn("Doc was of type ", doc.getNodeType(), " expected object.");
+        logger.WARN("Doc was of type ", doc.getNodeType(), " expected object.");
         return null;
       }
     }
@@ -285,12 +377,12 @@ public class JacksonUtil
   public static JsonNode put(String path, JsonNode target, Object value)
       throws OpsException
   {
-    logger.trace("put(path=", path, ", target=", target, ", value=", value);
+    logger.TRACE("put(path=", path, ", target=", target, ", value=", value);
     if (path == null || !path.startsWith("/"))
     {
       throw new OpsException("Invalid path");
     }
-    logger.trace("target.isObject()=", target.isObject());
+    logger.TRACE("target.isObject()=", target.isObject());
     if (target != null && target.isObject() && path.equals("/"))
     {
       ObjectNode objNode = (ObjectNode) target;
@@ -323,7 +415,7 @@ public class JacksonUtil
   public static JsonNode put(String path[], JsonNode target, Object value)
       throws OpsException
   {
-    logger.trace("put(path=[", StringUtils.join(path, ","), "], target=",
+    logger.TRACE("put(path=[", StringUtils.join(path, ","), "], target=",
         target, ", value=", value);
     if (path == null || target == null)
     {
@@ -394,7 +486,7 @@ public class JacksonUtil
   public static JsonNode putObject(String name, JsonNode target, Object value)
       throws OpsException
   {
-    logger.trace("putObject(name=", name, ", target=", target, ", value=",
+    logger.TRACE("putObject(name=", name, ", target=", target, ", value=",
         value);
     if (name == null || target == null)
     {
@@ -408,6 +500,27 @@ public class JacksonUtil
         ((ObjectNode) target).set(name, valueNode);
         return target;
       }
+      case ARRAY:
+      {
+        ArrayNode dst = (ArrayNode) target;
+        dst.removeAll();
+        switch (valueNode.getNodeType())
+        {
+          case ARRAY:
+          {
+            ArrayNode array = (ArrayNode) valueNode;
+            for (int i = 0; i < array.size(); i++)
+            {
+              dst.add(array.get(i));
+            }
+          }
+          default:
+          {
+            dst.add(valueNode);
+          }
+        }
+        return target;
+      }
       default:
       {
         throw new OpsException("Unhandled nodetype: " + target.getNodeType()
@@ -415,5 +528,4 @@ public class JacksonUtil
       }
     }
   }
-
 }

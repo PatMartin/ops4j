@@ -3,11 +3,9 @@ package org.ops4j.io;
 import java.io.InputStream;
 
 import org.ops4j.exception.OpsException;
-import org.ops4j.log.LocalOpLogger;
-import org.ops4j.log.OpLogger;
 import org.ops4j.log.OpLogger.LogLevel;
 
-public interface InputSource<T extends InputSource<T>> extends LocalOpLogger
+public interface InputSource<T extends InputSource<T>>
 {
   public InputStream stream() throws OpsException;
 

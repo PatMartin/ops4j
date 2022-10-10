@@ -1,7 +1,5 @@
 package org.ops4j.cmd;
 
-import java.util.concurrent.Callable;
-
 import lombok.Getter;
 import lombok.Setter;
 import picocli.CommandLine;

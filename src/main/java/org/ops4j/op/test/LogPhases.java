@@ -1,4 +1,4 @@
-package org.ops4j.op;
+package org.ops4j.op.test;
 
 import java.util.List;
 

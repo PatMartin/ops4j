@@ -24,9 +24,9 @@ import picocli.CommandLine.ArgGroup;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 
-@AutoService(NodeOp.class)
-@Command(name = "series", mixinStandardHelpOptions = false,
-    description = "Generate a first name." + "%n%nExample: random:text")
+@AutoService(NodeOp.class) @Command(name = "series",
+    mixinStandardHelpOptions = false, description = "Generate a first name."
+        + "%n%nExample:%n%nmap series(-precision 2)")
 public class SeriesGenerator extends BaseNodeOp<SeriesGenerator>
 {
   @Option(names = { "-p", "-precision" },

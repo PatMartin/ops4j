@@ -3,11 +3,9 @@ package org.ops4j.io;
 import java.io.OutputStream;
 
 import org.ops4j.exception.OpsException;
-import org.ops4j.log.LocalOpLogger;
-import org.ops4j.log.OpLogger;
 import org.ops4j.log.OpLogger.LogLevel;
 
-public interface OutputDestination<T extends OutputDestination<T>> extends LocalOpLogger
+public interface OutputDestination<T extends OutputDestination<T>>
 {
   public OutputStream stream() throws OpsException;
 
@@ -25,7 +23,7 @@ public interface OutputDestination<T extends OutputDestination<T>> extends Local
 
   public LogLevel getLogLevel();
 
-  //public InputLocation<T> create();
+  // public InputLocation<T> create();
 
   public void configure(String... config) throws OpsException;
 

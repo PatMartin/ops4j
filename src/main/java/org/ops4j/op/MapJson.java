@@ -36,7 +36,6 @@ public class MapJson extends BaseOp<MapJson>
   public MapJson initialize() throws OpsException
   {
     mapper = new JsonMapper(getMapping(), Ops4J.locator());
-    mapper.setLogLevel(getOpLogger().getLogLevel());
     return this;
   }
 
@@ -48,6 +47,7 @@ public class MapJson extends BaseOp<MapJson>
 
   public static void main(String args[]) throws OpsException
   {
+    MapJson map = new MapJson();
     OpCLI.cli(new MapJson(), args);
   }
 }

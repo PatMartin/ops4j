@@ -16,9 +16,9 @@ import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 
 @AutoService(NodeOp.class)
-@Command(name = "random:int", mixinStandardHelpOptions = false,
-    description = "Generate a first name." + "%n%nExample: random:text")
-public class RandomIntegerGen extends BaseNodeOp<RandomIntegerGen>
+@Command(name = "int", mixinStandardHelpOptions = false,
+    description = "Generate a first name." + "%n%nExample: map /score=int(-min=1 -max=100)")
+public class IntegerGenerator extends BaseNodeOp<IntegerGenerator>
 {
   @Option(names = { "-min" }, required = false,
       description = "The minimum int to be generated.")
@@ -28,14 +28,14 @@ public class RandomIntegerGen extends BaseNodeOp<RandomIntegerGen>
       description = "The maximum int to be generated.")
   private @Getter @Setter int max = 100;
 
-  public RandomIntegerGen()
+  public IntegerGenerator()
   {
-    name("random:int");
+    name("int");
   }
 
-  public RandomIntegerGen create()
+  public IntegerGenerator create()
   {
-    return new RandomIntegerGen();
+    return new IntegerGenerator();
   }
 
   public JsonNode execute(JsonNode input) throws OpsException
@@ -45,6 +45,6 @@ public class RandomIntegerGen extends BaseNodeOp<RandomIntegerGen>
 
   public static void main(String args[]) throws OpsException
   {
-    NodeOpCLI.cli(new RandomIntegerGen(), args);
+    NodeOpCLI.cli(new IntegerGenerator(), args);
   }
 }

@@ -6,6 +6,7 @@ import java.io.OutputStream;
 import org.ops4j.exception.OpsException;
 import org.ops4j.log.OpLogger;
 import org.ops4j.log.OpLogger.LogLevel;
+import org.ops4j.log.OpLogging;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -15,7 +16,7 @@ import picocli.CommandLine.Model.CommandSpec;
 
 @Command(name = "base-input-source", mixinStandardHelpOptions = false)
 public abstract class BaseDestination<T extends BaseDestination<T>>
-    implements OutputDestination<T>
+    implements OutputDestination<T>, OpLogging
 {
   private OpLogger                 opLogger = new OpLogger("ops4j.io.dst");
 
@@ -27,12 +28,6 @@ public abstract class BaseDestination<T extends BaseDestination<T>>
   public OpLogger getOpLogger()
   {
     return opLogger;
-  }
-
-  @Override
-  public void setOpLogger(OpLogger logger)
-  {
-    this.opLogger = logger;
   }
 
   @Override

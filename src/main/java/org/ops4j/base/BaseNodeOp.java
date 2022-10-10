@@ -6,6 +6,8 @@ import org.ops4j.exception.OpsException;
 import org.ops4j.inf.NodeOp;
 import org.ops4j.log.OpLogger;
 import org.ops4j.log.OpLogger.LogLevel;
+import org.ops4j.log.OpLoggerFactory;
+import org.ops4j.log.OpLogging;
 import org.ops4j.util.JacksonUtil;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -18,15 +20,16 @@ import picocli.CommandLine.Model.CommandSpec;
 import picocli.CommandLine.Option;
 
 @Command(name = "base-node-op", mixinStandardHelpOptions = false)
-public class BaseNodeOp<T extends BaseNodeOp<T>> implements NodeOp<T>
+public class BaseNodeOp<T extends BaseNodeOp<T>> implements NodeOp<T>, OpLogging
 {
-  private @Getter @Setter String    name      = "unamed";
+  private @Getter @Setter String   name     = "unamed";
 
-  @Option(names = { "-L",
-      "--log-level" }, description = "The log level of this operation.")
-  private @Getter LogLevel          logLevel  = LogLevel.INFO;
+  @Option(names = { "-L", "--log" },
+      description = "The log level of this operation.")
+  private @Getter LogLevel         logLevel = LogLevel.INFO;
 
-  private @Getter @Setter OpLogger opLogger = new OpLogger("jpex.nodeop");
+  protected @Getter @Setter OpLogger opLogger = OpLoggerFactory
+      .getLogger("ops.nodeop");
 
   @Override
   public JsonNode execute(JsonNode node) throws OpsException
@@ -69,13 +72,13 @@ public class BaseNodeOp<T extends BaseNodeOp<T>> implements NodeOp<T>
 
   public void configure(String args[]) throws OpsException
   {
-    //OpsLogger.syserr("CONFIG: ", config.length);s
+    // OpsLogger.syserr("CONFIG: ", config.length);s
     if (args != null && args.length > 0)
     {
       CommandSpec spec = CommandSpec.create();
       new CommandLine(this).parseArgs(args);
-      //OpsLogger.syserr("NodeOp Configuration ", getName(), ": ",
-      //    JacksonUtil.toString(this, "N/A"));
+      // OpsLogger.syserr("NodeOp Configuration ", getName(), ": ",
+      // JacksonUtil.toString(this, "N/A"));
     }
   }
 
@@ -87,10 +90,17 @@ public class BaseNodeOp<T extends BaseNodeOp<T>> implements NodeOp<T>
     debug("Op Configuration ", getName(), ": ",
         JacksonUtil.toString(this, "N/A"));
   }
-  
+
   public void setLogLevel(LogLevel logLevel)
   {
     this.logLevel = logLevel;
     opLogger.setLogLevel(logLevel);
+  }
+
+  @Override
+  public OpLogger opLogger()
+  {
+    // TODO Auto-generated method stub
+    return null;
   }
 }

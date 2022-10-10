@@ -1,4 +1,4 @@
-package org.ops4j.op;
+package org.ops4j.op.test;
 
 import org.ops4j.base.BaseOp;
 import org.ops4j.cli.OpCLI;
@@ -24,7 +24,7 @@ public class LogTest extends BaseOp<LogTest>
     warn("WARN");
     info("INFO");
     debug("DEBUG");
-    debug("TRACE");
+    trace("TRACE");
     return this;
   }
 

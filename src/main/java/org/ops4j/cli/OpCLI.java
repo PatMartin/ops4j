@@ -1,8 +1,10 @@
 package org.ops4j.cli;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Callable;
 
 import org.ops4j.OpData;
@@ -12,6 +14,9 @@ import org.ops4j.inf.JsonSource;
 import org.ops4j.inf.Op;
 import org.ops4j.inf.Op.PhaseType;
 import org.ops4j.io.InputSource;
+import org.ops4j.log.OpLogger;
+import org.ops4j.log.OpLogger.LogLevel;
+import org.ops4j.log.OpLoggerFactory;
 import org.ops4j.util.CountdownIterator;
 import org.ops4j.util.JsonNodeIterator;
 
@@ -38,21 +43,25 @@ public class OpCLI implements Callable<Integer>
   }
 
   @Option(names = { "-O", "--output" },
-      description = "The output format for " + "this operation.")
-  private @Getter @Setter OutputType outputType = OutputType.JSON;
+      description = "The output format for this operation.")
+  private @Getter @Setter OutputType            outputType = OutputType.JSON;
 
   @Option(names = { "-P", "--pretty" }, description = "Pretty print output.")
-  private @Getter @Setter boolean    pretty     = false;
+  private @Getter @Setter boolean               pretty     = false;
 
   @Option(names = { "-h", "--help" }, description = "Get help.")
-  private @Getter @Setter boolean    usage      = false;
+  private @Getter @Setter boolean               usage      = false;
 
   @Option(names = { "-H", "--HELP" }, description = "Get detailed help.")
-  private @Getter @Setter boolean    help       = false;
+  private @Getter @Setter boolean               help       = false;
 
   @Option(names = { "-D", "--data-source" }, required = false,
       description = "The datasource.")
-  private @Getter @Setter String     dataSource = null;
+  private @Getter @Setter String                dataSource = null;
+
+  @Option(names = { "-LL" }, required = false,
+      description = "Set subsystem loggers.")
+  private @Getter @Setter Map<String, LogLevel> logLevels  = new HashMap<>();
 
   public static int cli(Op<?> op, String[] args) throws OpsException
   {
@@ -64,8 +73,11 @@ public class OpCLI implements Callable<Integer>
     {
       OpCLI cli = new OpCLI();
       CommandLine cliCmd = new CommandLine(cli);
-      cliCmd.getCommandSpec().parser().collectErrors(true);
+      cliCmd.setCaseInsensitiveEnumValuesAllowed(true).getCommandSpec().parser()
+          .collectErrors(true);
       ParseResult result = cliCmd.parseArgs(args);
+
+      OpLoggerFactory.setLogLevels(cli.getLogLevels());
 
       if (cli.isUsage())
       {
