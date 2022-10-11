@@ -31,6 +31,7 @@ public class BaseOp<T extends BaseOp<T>> implements Op<T>, Fallback, OpLogging
   @JsonIgnore
   private @Getter @Setter Lifecycle  lifecycle   = new Lifecycle();
 
+  @JsonIgnore
   protected @Getter @Setter OpLogger opLogger;
 
   @Option(names = { "-N", "--name" },

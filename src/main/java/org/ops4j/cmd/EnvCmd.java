@@ -36,19 +36,19 @@ public class EnvCmd extends SubCmd implements Callable<Integer>
           + "or other ops4j aliases.")
   private @Getter @Setter String  nodeOpNamespace = "";
 
-  @Option(names = { "-op-ns", "-op-namespace" }, required = false,
+  @Option(names = { "-op-ns", "--op-namespace" }, required = false,
       description = "An optional namespace which will be prepended to node "
           + "operation aliases to prevent collisions with existing OS "
           + "utilities or other ops4j aliases.")
   private @Getter @Setter String  opNamespace     = "";
 
-  @Option(names = { "-is-ns", "-input-source-namespace" }, required = false,
+  @Option(names = { "-in-ns", "-input-source-namespace" }, required = false,
       description = "An optional namespace which will be prepended to input "
           + "source aliases to prevent collisions with existing OS "
           + "utilities or other ops4j aliases.")
   private @Getter @Setter String  isNamespace     = "";
 
-  @Option(names = { "-os-ns", "-output-dest-namespace" }, required = false,
+  @Option(names = { "-out-ns", "--output-dest-namespace" }, required = false,
       description = "An optional namespace which will be prepended to output "
           + "destination aliases to prevent collisions with existing OS "
           + "utilities or other ops4j aliases.")
@@ -86,9 +86,9 @@ public class EnvCmd extends SubCmd implements Callable<Integer>
         Ops4J.locator().getNodeOps());
     for (String name : nodeOps.keySet())
     {
-      System.out.print(
-          "alias " + getNodeOpNamespace() + name + "=\"" + getLauncher() + " "
-              + nodeOps.get(name).getClass().getName() + "\"" + lineSep);
+      System.out
+          .print("alias " + getNodeOpNamespace() + name + "=\"" + getLauncher()
+              + " " + nodeOps.get(name).getClass().getName() + "\"" + lineSep);
     }
 
     System.out.print("\n########################" + lineSep);
@@ -98,9 +98,9 @@ public class EnvCmd extends SubCmd implements Callable<Integer>
         Ops4J.locator().getSources());
     for (String name : sources.keySet())
     {
-      System.out.print(
-          "alias " + getIsNamespace() + name + "=\"" + getLauncher() + " "
-              + sources.get(name).getClass().getName() + "\"" + lineSep);
+      System.out
+          .print("alias " + getIsNamespace() + name + "=\"" + getLauncher()
+              + " " + sources.get(name).getClass().getName() + "\"" + lineSep);
     }
 
     System.out.print("\n############################" + lineSep);
@@ -110,9 +110,9 @@ public class EnvCmd extends SubCmd implements Callable<Integer>
         Ops4J.locator().getDestinations());
     for (String name : destinations.keySet())
     {
-      System.out.print(
-          "alias " + getOsNamespace() + name + "=\"" + getLauncher() + " "
-              + sources.get(name).getClass().getName() + "\"" + lineSep);
+      System.out
+          .print("alias " + getOsNamespace() + name + "=\"" + getLauncher()
+              + " " + sources.get(name).getClass().getName() + "\"" + lineSep);
     }
     return 0;
   }

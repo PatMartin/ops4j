@@ -4,6 +4,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.ops4j.log.OpLogger.LogLevel;
 import org.slf4j.Marker;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 public interface OpLogging
 {
   public OpLogger getOpLogger();
@@ -13,26 +15,31 @@ public interface OpLogging
     return getOpLogger();
   }
 
+  @JsonIgnore
   public default boolean isTraceEnabled()
   {
     return opLogger().isTraceEnabled();
   }
 
+  @JsonIgnore
   public default boolean isDebugEnabled()
   {
     return opLogger().isDebugEnabled();
   }
 
+  @JsonIgnore
   public default boolean isInfoEnabled()
   {
     return opLogger().isInfoEnabled();
   }
 
+  @JsonIgnore
   public default boolean isWarnEnabled()
   {
     return opLogger().isWarnEnabled();
   }
 
+  @JsonIgnore
   public default boolean isErrorEnabled()
   {
     return opLogger().isErrorEnabled();

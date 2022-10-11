@@ -14,10 +14,10 @@ import org.ops4j.inf.JsonSource;
 import org.ops4j.inf.Op;
 import org.ops4j.inf.Op.PhaseType;
 import org.ops4j.io.InputSource;
-import org.ops4j.log.OpLogger;
 import org.ops4j.log.OpLogger.LogLevel;
 import org.ops4j.log.OpLoggerFactory;
 import org.ops4j.util.CountdownIterator;
+import org.ops4j.util.JacksonUtil;
 import org.ops4j.util.JsonNodeIterator;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -39,29 +39,40 @@ public class OpCLI implements Callable<Integer>
   }
 
   enum OutputType {
-    NONE, JSON, YAML, XML
+    NONE, JSON, YAML, XML, CBOR
+  }
+
+  enum SerializationType {
+    JSON, YAML, XML, CBOR
   }
 
   @Option(names = { "-O", "--output" },
       description = "The output format for this operation.")
-  private @Getter @Setter OutputType            outputType = OutputType.JSON;
+  private @Getter
+  @Setter OutputType                            outputType        = OutputType.JSON;
+
+  @Option(names = { "-S", "--serialize" },
+      description = "When supplied, serialize the operation in the given "
+          + "output format.")
+  private @Getter @Setter SerializationType     serializationType = null;
 
   @Option(names = { "-P", "--pretty" }, description = "Pretty print output.")
-  private @Getter @Setter boolean               pretty     = false;
+  private @Getter @Setter boolean               pretty            = false;
 
   @Option(names = { "-h", "--help" }, description = "Get help.")
-  private @Getter @Setter boolean               usage      = false;
+  private @Getter @Setter boolean               usage             = false;
 
   @Option(names = { "-H", "--HELP" }, description = "Get detailed help.")
-  private @Getter @Setter boolean               help       = false;
+  private @Getter @Setter boolean               help              = false;
 
   @Option(names = { "-D", "--data-source" }, required = false,
       description = "The datasource.")
-  private @Getter @Setter String                dataSource = null;
+  private @Getter @Setter String                dataSource        = null;
 
   @Option(names = { "-LL" }, required = false,
       description = "Set subsystem loggers.")
-  private @Getter @Setter Map<String, LogLevel> logLevels  = new HashMap<>();
+  private @Getter
+  @Setter Map<String, LogLevel>                 logLevels         = new HashMap<>();
 
   public static int cli(Op<?> op, String[] args) throws OpsException
   {
@@ -115,6 +126,38 @@ public class OpCLI implements Callable<Integer>
       if (op.provides(PhaseType.INITIALIZE))
       {
         op.initialize();
+      }
+
+      if (cli.getSerializationType() == SerializationType.JSON)
+      {
+        if (cli.isPretty())
+        {
+          System.out.println(JacksonUtil.toPrettyString(op));
+        }
+        else
+        {
+          System.out.println(JacksonUtil.toString(op));
+        }
+        return 0;
+      }
+      if (cli.getSerializationType() == SerializationType.XML)
+      {
+        if (cli.isPretty())
+        {
+          System.out
+              .println(JacksonUtil.toString(JacksonUtil.prettyXmlMapper(), op));
+        }
+        else
+        {
+          System.out.println(JacksonUtil.toXmlString(op));
+        }
+        return 0;
+      }
+
+      if (cli.getSerializationType() == SerializationType.CBOR)
+      {
+        System.out.write(JacksonUtil.toCborString(op));
+        return 0;
       }
 
       if (op.provides(PhaseType.OPEN))
@@ -174,6 +217,28 @@ public class OpCLI implements Callable<Integer>
             {
               case NONE:
               {
+                break;
+              }
+              case XML:
+              {
+                if (cli.isPretty())
+                {
+                  System.out.println(out.toPrettyXml());
+                }
+                else
+                {
+                  System.out.println(out.toXml());
+                }
+                break;
+              }
+              case YAML:
+              {
+                System.out.println(out.toYaml());
+                break;
+              }
+              case CBOR:
+              {
+                System.out.write(out.toCbor());
                 break;
               }
               default:

@@ -1,5 +1,7 @@
 package org.ops4j.inf;
 
+import java.io.IOException;
+
 import org.ops4j.exception.OpsException;
 import org.ops4j.util.JacksonUtil;
 
@@ -30,6 +32,11 @@ public interface Portable<T extends Portable<T>>
     return JacksonUtil.toXmlString(toJson());
   }
 
+  public default String toPrettyXml() throws OpsException
+  {
+    return JacksonUtil.toString(JacksonUtil.prettyXmlMapper(), toJson());
+  }
+  
   public default T fromYaml(String yaml) throws OpsException
   {
     try
@@ -48,20 +55,20 @@ public interface Portable<T extends Portable<T>>
     return JacksonUtil.toYamlString(toJson());
   }
 
-  public default T fromCbor(String cbor) throws OpsException
+  public default T fromCbor(byte[] cbor) throws OpsException
   {
     try
     {
-      JsonNode json = JacksonUtil.yamlMapper().readTree(cbor);
+      JsonNode json = JacksonUtil.cborMapper().readTree(cbor);
       return fromJson(json);
     }
-    catch(JsonProcessingException ex)
+    catch(IOException ex)
     {
       throw new OpsException(ex);
     }
   }
 
-  public default String toCbor() throws OpsException
+  public default byte[] toCbor() throws OpsException
   {
     return JacksonUtil.toCborString(toJson());
   }

@@ -42,7 +42,6 @@ public class JsonMapper
   // TODO: support output arrays
   public JsonNode map(JsonNode source) throws OpsException
   {
-    logger.syserr("JsonMapper log-level: ", logger.getLogLevel());
     logger.trace("JsonMapper.map(", source, ")");
     ObjectNode dest = JacksonUtil.createObjectNode();
     for (String destPath : mappings.keySet())

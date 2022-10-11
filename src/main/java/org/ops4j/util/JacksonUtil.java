@@ -13,6 +13,7 @@ import org.ops4j.exception.OpsException;
 import org.ops4j.log.OpLogger;
 import org.ops4j.log.OpLoggerFactory;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -37,6 +38,7 @@ public class JacksonUtil
   public static ObjectMapper mapper;
   public static ObjectMapper prettyMapper;
   public static XmlMapper    xmlMapper;
+  public static XmlMapper    prettyXmlMapper;
   public static YAMLMapper   yamlMapper;
   public static CBORMapper   cborMapper;
 
@@ -47,6 +49,7 @@ public class JacksonUtil
     if (mapper == null)
     {
       mapper = new ObjectMapper();
+      mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
     }
     return mapper;
   }
@@ -57,6 +60,7 @@ public class JacksonUtil
     {
       prettyMapper = new ObjectMapper();
       prettyMapper.enable(SerializationFeature.INDENT_OUTPUT);
+      prettyMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
     }
     return prettyMapper;
   }
@@ -68,6 +72,16 @@ public class JacksonUtil
       xmlMapper = new XmlMapper();
     }
     return xmlMapper;
+  }
+
+  public final static XmlMapper prettyXmlMapper()
+  {
+    if (prettyXmlMapper == null)
+    {
+      prettyXmlMapper = new XmlMapper();
+      prettyXmlMapper.enable(SerializationFeature.INDENT_OUTPUT);
+    }
+    return prettyXmlMapper;
   }
 
   public final static YAMLMapper yamlMapper()
@@ -109,6 +123,19 @@ public class JacksonUtil
     catch(OpsException ex)
     {
       return fallback;
+    }
+  }
+
+  public static String toString(ObjectMapper mapper, Object obj)
+      throws OpsException
+  {
+    try
+    {
+      return mapper.writeValueAsString(obj);
+    }
+    catch(JsonProcessingException ex)
+    {
+      throw new OpsException(ex);
     }
   }
 
@@ -184,11 +211,11 @@ public class JacksonUtil
     }
   }
 
-  public static String toCborString(Object obj) throws OpsException
+  public static byte[] toCborString(Object obj) throws OpsException
   {
     try
     {
-      return cborMapper().writeValueAsString(obj);
+      return cborMapper().writeValueAsBytes(obj);
     }
     catch(JsonProcessingException ex)
     {
