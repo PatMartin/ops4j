@@ -11,6 +11,7 @@ import org.ops4j.cli.OpCLI;
 import org.ops4j.exception.OpsException;
 import org.ops4j.inf.Op;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.auto.service.AutoService;
 
 import lombok.Getter;
@@ -24,16 +25,19 @@ public class Benchmark extends BaseOp<Benchmark>
 {
   @Parameters(index = "0", arity = "0..1", description = "The number of "
       + "transactions between reports.  Default = 0 = No progress reports")
-  private @Getter @Setter Long transactionThreshold = 0L;
+  private @Getter @Setter Long   transactionThreshold = 0L;
 
-  private AtomicLong           count                = new AtomicLong(0);
-  private AtomicLong           winCount             = new AtomicLong(0);
-  private long                 startTime;
-  private AtomicLong           winStartTime;
-  private DecimalFormat        doubleFormat         = new DecimalFormat(
+  private AtomicLong             count                = new AtomicLong(0);
+  private AtomicLong             winCount             = new AtomicLong(0);
+  private long                   startTime;
+  private AtomicLong             winStartTime;
+  private DecimalFormat          doubleFormat         = new DecimalFormat(
       "#,###.00");
-  private DecimalFormat        intFormat            = new DecimalFormat(
+  private DecimalFormat          intFormat            = new DecimalFormat(
       "#,###");
+
+  @JsonIgnore
+  private @Getter @Setter String header               = "";
 
   public Benchmark()
   {
@@ -42,9 +46,7 @@ public class Benchmark extends BaseOp<Benchmark>
 
   public Benchmark open() throws OpsException
   {
-    info("***********************************************************");
-    info("** ", getName(), " @ ", new Date());
-    info("***********************************************************");
+    setHeader("** " + getName() + " @ " + new Date());
     startTime = System.currentTimeMillis();
     winStartTime = new AtomicLong(startTime);
     return this;
@@ -73,6 +75,13 @@ public class Benchmark extends BaseOp<Benchmark>
   {
     long endTime = System.currentTimeMillis();
 
+    if (getHeader() != null && getHeader().length() > 0)
+    {
+      info("***********************************************************");
+      info(getHeader());
+      info("***********************************************************");
+      setHeader(null);
+    }
     info(String.format("tps: %s, cur-tps: %s, count=%s",
         doubleFormat.format(1000.0 * count.get() / (endTime - startTime)),
         doubleFormat.format(1000.0 * getTransactionThreshold()
@@ -82,6 +91,13 @@ public class Benchmark extends BaseOp<Benchmark>
 
   private void finalReport()
   {
+    if (getHeader() != null && getHeader().length() > 0)
+    {
+      info("***********************************************************");
+      info(getHeader());
+      info("***********************************************************");
+      setHeader(null);
+    }
     long endTime = System.currentTimeMillis();
     long duration = endTime - startTime;
     info("***********************************************************");

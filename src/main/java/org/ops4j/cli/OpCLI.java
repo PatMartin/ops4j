@@ -14,8 +14,10 @@ import org.ops4j.inf.JsonSource;
 import org.ops4j.inf.Op;
 import org.ops4j.inf.Op.PhaseType;
 import org.ops4j.io.InputSource;
+import org.ops4j.log.OpLogger;
 import org.ops4j.log.OpLogger.LogLevel;
 import org.ops4j.log.OpLoggerFactory;
+import org.ops4j.log.OpLogging;
 import org.ops4j.util.CountdownIterator;
 import org.ops4j.util.JacksonUtil;
 import org.ops4j.util.JsonNodeIterator;
@@ -71,6 +73,7 @@ public class OpCLI implements Callable<Integer>
 
   @Option(names = { "-LL" }, required = false,
       description = "Set subsystem loggers.")
+
   private @Getter
   @Setter Map<String, LogLevel>                 logLevels         = new HashMap<>();
 
@@ -79,6 +82,7 @@ public class OpCLI implements Callable<Integer>
     CommandLine cmd = new CommandLine(op);
     int currentCount = 0;
     int count = 0;
+    OpLogger logger;
 
     try
     {
@@ -86,9 +90,11 @@ public class OpCLI implements Callable<Integer>
       CommandLine cliCmd = new CommandLine(cli);
       cliCmd.setCaseInsensitiveEnumValuesAllowed(true).getCommandSpec().parser()
           .collectErrors(true);
-      ParseResult result = cliCmd.parseArgs(args);
+      ParseResult parseResult = cliCmd.parseArgs(args);
 
       OpLoggerFactory.setLogLevels(cli.getLogLevels());
+      logger = OpLoggerFactory.getLogger("ops.cli");
+      logger.DEBUG("Running: op=", op.getName());
 
       if (cli.isUsage())
       {
@@ -119,13 +125,15 @@ public class OpCLI implements Callable<Integer>
         return 0;
       }
 
-      op.configure(result.unmatched());
+      op.configure(parseResult.unmatched());
       // Required, to synchronize backing logger log-level to op's -L log level.
       op.setLogLevel(op.getLogLevel());
 
       if (op.provides(PhaseType.INITIALIZE))
       {
+        logger.DEBUG("Initializing: ", op.getName());
         op.initialize();
+        logger.DEBUG("Initialized : ", op.getName());
       }
 
       if (cli.getSerializationType() == SerializationType.JSON)
@@ -162,7 +170,9 @@ public class OpCLI implements Callable<Integer>
 
       if (op.provides(PhaseType.OPEN))
       {
+        logger.DEBUG("Opening: ", op.getName());
         op.open();
+        logger.DEBUG("Opened : ", op.getName());
       }
 
       if (op.provides(PhaseType.EXECUTE))
@@ -171,14 +181,17 @@ public class OpCLI implements Callable<Integer>
         Iterator<JsonNode> jnIt = null;
         if (op instanceof JsonSource)
         {
+          logger.DEBUG("Datasource Detected: ", op.getName());
           jnIt = ((JsonSource) op).getIterator();
         }
         else if (cli.getDataSource() != null)
         {
+          logger.DEBUG("Resolving datasource: '", cli.getDataSource(), "'");
           InputSource<?> is = null;
           try
           {
             count = Integer.parseInt(cli.getDataSource());
+            logger.DEBUG("Artificial datasource of ", count, " empty records.");
             jnIt = new CountdownIterator(count);
           }
           catch(Exception ex)
@@ -186,6 +199,8 @@ public class OpCLI implements Callable<Integer>
             ex.printStackTrace();
             try
             {
+              logger.DEBUG("Resolving via Locator: '", cli.getDataSource(),
+                  "'");
               is = Ops4J.locator().resolveSource(cli.getDataSource());
               jnIt = JsonNodeIterator.fromInputStream(is.stream());
             }
@@ -198,6 +213,7 @@ public class OpCLI implements Callable<Integer>
         }
         else
         {
+          logger.DEBUG("Reading from standard input");
           jnIt = JsonNodeIterator.fromInputStream(System.in);
         }
 
@@ -211,48 +227,9 @@ public class OpCLI implements Callable<Integer>
           OpData data = new OpData(node);
           // System.err.println(op.getName() + ": " + data);
           List<OpData> results = op.execute(data);
-          for (OpData out : results)
+          for (OpData result : results)
           {
-            switch (cli.getOutputType())
-            {
-              case NONE:
-              {
-                break;
-              }
-              case XML:
-              {
-                if (cli.isPretty())
-                {
-                  System.out.println(out.toPrettyXml());
-                }
-                else
-                {
-                  System.out.println(out.toXml());
-                }
-                break;
-              }
-              case YAML:
-              {
-                System.out.println(out.toYaml());
-                break;
-              }
-              case CBOR:
-              {
-                System.out.write(out.toCbor());
-                break;
-              }
-              default:
-              {
-                if (cli.isPretty())
-                {
-                  System.out.println(out.toPrettyString());
-                }
-                else
-                {
-                  System.out.println(out.toString());
-                }
-              }
-            }
+            output(cli, result);
           }
         }
       }
@@ -264,13 +241,66 @@ public class OpCLI implements Callable<Integer>
 
     if (op.provides(PhaseType.CLOSE))
     {
+      logger.DEBUG("Closing ", op.getName());
       op.close();
+      logger.DEBUG("Closed ", op.getName());
     }
     if (op.provides(PhaseType.CLEANUP))
     {
+      logger.DEBUG("Cleanup ", op.getName());
       op.cleanup();
+      logger.DEBUG("Cleaned up ", op.getName());
     }
     return 0;
+  }
+
+  public static void output(OpCLI cli, OpData result)
+      throws OpsException, IOException
+  {
+    switch (cli.getOutputType())
+    {
+      case NONE:
+      {
+        break;
+      }
+      case XML:
+      {
+        if (cli.isPretty())
+        {
+          System.out.println(result.toPrettyXml());
+        }
+        else
+        {
+          System.out.println(result.toXml());
+        }
+        break;
+      }
+      case YAML:
+      {
+        System.out.println(result.toYaml());
+        break;
+      }
+      case CBOR:
+      {
+        System.out.write(result.toCbor());
+        break;
+      }
+      default:
+      {
+        if (result == null)
+        {
+          System.err.println("result is null");
+        }
+        else if (cli.isPretty())
+        {
+          System.out.println(result.toPrettyString());
+        }
+        else
+        {
+          System.out.println(result.toString());
+        }
+      }
+    }
   }
 
   @Override

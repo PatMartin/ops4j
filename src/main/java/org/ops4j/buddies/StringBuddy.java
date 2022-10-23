@@ -70,17 +70,16 @@ public class StringBuddy
   {
     return banner("=", width);
   }
-  
+
   public String banner(String bannerStr, int width)
   {
     List<String> lines = new ArrayList<String>(3);
     lines.add(from(bannerStr).repeat(width).get());
-    lines.add(from(str).center(width-4, " ")
-        .center(width, bannerStr).get());
-        lines.add(from(bannerStr).repeat(width).get());
+    lines.add(from(str).center(width - 4, " ").center(width, bannerStr).get());
+    lines.add(from(bannerStr).repeat(width).get());
     return StringUtils.join(lines, "\n");
   }
-  
+
   public String join(List<String> strings)
   {
     return StringUtils.join(strings, ",");
@@ -145,7 +144,7 @@ public class StringBuddy
   {
     return StringUtils.startsWith(str, sequence);
   }
-  
+
   public boolean endsWithIgnoreCase(String sequence)
   {
     return StringUtils.endsWithIgnoreCase(str, sequence);
@@ -473,7 +472,7 @@ public class StringBuddy
     str = StringUtils.truncate(str, width);
     return this;
   }
-
+  
   // Stuff which returns stuff other than StringBuddy
 
   public static void main(String args[])

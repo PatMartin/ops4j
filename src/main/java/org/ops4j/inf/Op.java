@@ -37,6 +37,8 @@ public interface Op<T extends Op<T>>
 
   public T cleanup() throws OpsException;
 
+  public T copy() throws OpsException;
+  
   public String getName();
 
   public void setName(String name);

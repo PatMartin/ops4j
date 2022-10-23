@@ -1,5 +1,6 @@
 package org.ops4j;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -55,8 +56,12 @@ public class OpData implements Portable<OpData>, Setters<OpData>, Getters<OpData
     }
   }
 
-  public static OpData from(String json)
-      throws JsonMappingException, JsonProcessingException
+  public static OpData from(byte[] json) throws IOException
+  {
+    return new OpData((ObjectNode) JacksonUtil.cborMapper().readTree(json));
+  }
+  
+  public static OpData from(String json) throws JsonMappingException, JsonProcessingException
   {
     return new OpData((ObjectNode) JacksonUtil.mapper().readTree(json));
   }

@@ -3,9 +3,9 @@ package org.ops4j.buddies;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map.Entry;
 
 import org.ops4j.exception.OpsException;
+import org.ops4j.log.OpLogger;
 import org.ops4j.util.JacksonUtil;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -56,49 +56,52 @@ public class JsonBuddy
   {
     ObjectNode flat = JacksonUtil.createObjectNode();
     flatten("", flat, json);
+    //pLogger.syserr("flatten()=", flat);
     setJson(flat);
     return this;
   }
 
-  public void flatten(String prefix, ObjectNode flat, JsonNode nested)
+  public JsonBuddy flatten(String prefix, ObjectNode flat, JsonNode nested)
   {
+    // OpLogger.syserr("flatten(prefix='", prefix, "', flat='", flat,
+    // "', nested='", nested, ")");
     if (nested != null)
     {
-      Iterator<String> fieldNameIt = nested.fieldNames();
-      while (fieldNameIt.hasNext())
+      switch (nested.getNodeType())
       {
-        String fieldName = fieldNameIt.next();
-        JsonNode fieldValue = nested.get(fieldName);
-        String fqName = (prefix.length() > 0) ? prefix + "." + fieldName
-            : fieldName;
-        System.err.println("Setting: " + fqName);
-        if (fieldValue.isContainerNode())
+
+        case OBJECT:
         {
-          if (fieldValue.isArray())
+
+          Iterator<String> fieldNameIt = nested.fieldNames();
+          while (fieldNameIt.hasNext())
           {
-            ArrayNode array = (ArrayNode) fieldValue;
-            for (int i = 0; i < array.size(); i++)
-            {
-              flatten(fqName + "." + i, flat, array.get(i));
-            }
+            String fieldName = fieldNameIt.next();
+            flatten(
+                (prefix.length() > 0) ? prefix + "." + fieldName : fieldName,
+                flat, nested.get(fieldName));
           }
-          else if (fieldValue.isObject())
-          {
-            Iterator<Entry<String, JsonNode>> childIt = fieldValue.fields();
-            while (childIt.hasNext())
-            {
-              Entry<String, JsonNode> child = childIt.next();
-              flatten(fqName + "." + child.getKey(), flat, child.getValue());
-            }
-          }
+          break;
         }
-        else
+        case ARRAY:
         {
-          System.err.println("Setting: " + fqName);
-          flat.set(fqName, fieldValue);
+          ArrayNode array = (ArrayNode) nested;
+          for (int i = 0; i < array.size(); i++)
+          {
+            flatten((prefix.length() > 0) ? prefix + "." + i : "" + i, flat,
+                array.get(i));
+          }
+          break;
+        }
+        default:
+        {
+          //pLogger.syserr("Setting: type=", nested.getNodeType(), ": ", prefix,
+          //    "=", nested);
+          flat.set(prefix, nested);
         }
       }
     }
+    return this;
   }
 
   public List<JsonNode> unwind(@NonNull String... paths) throws OpsException

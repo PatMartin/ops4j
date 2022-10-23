@@ -19,7 +19,7 @@ import picocli.CommandLine.Command;
 import picocli.CommandLine.Parameters;
 
 @AutoService(NodeOp.class)
-@Command(name = "pipeline", mixinStandardHelpOptions = false,
+@Command(name = "run", mixinStandardHelpOptions = false,
     description = "Returns current time as milliseconds " + "since 1/1/1970")
 public class Pipeline extends BaseNodeOp<Pipeline>
 {
@@ -37,7 +37,7 @@ public class Pipeline extends BaseNodeOp<Pipeline>
   public JsonNode execute(JsonNode input) throws OpsException
   {
     String cmd = StringUtils.join(getCommands(), "");
-    //syserr("input=", input, " - cmd='", cmd, "'");
+    // syserr("input=", input, " - cmd='", cmd, "'");
     String cmds[] = StringUtils.split(cmd, "=>");
     JsonNode srcNode;
     if (cmds != null && cmds.length > 0)
@@ -66,8 +66,8 @@ public class Pipeline extends BaseNodeOp<Pipeline>
     {
       if (cmds[0].startsWith("/"))
       {
-        //syserr("substring cmd: ", cmd.substring(cmd.indexOf("=>") + 2));
-        nodeOps = NodeOps.create(cmd.substring(cmd.indexOf("=>")+2));
+        // syserr("substring cmd: ", cmd.substring(cmd.indexOf("=>") + 2));
+        nodeOps = NodeOps.create(cmd.substring(cmd.indexOf("=>") + 2));
       }
       else
       {
@@ -75,11 +75,11 @@ public class Pipeline extends BaseNodeOp<Pipeline>
       }
     }
 
-    //syserr("nodeops: ", nodeOps.size());
+    // syserr("nodeops: ", nodeOps.size());
     JsonNode output = srcNode.deepCopy();
     for (NodeOp<?> op : nodeOps)
     {
-      //syserr("Executing: ", op.getName() + " on - ", output);
+      // syserr("Executing: ", op.getName() + " on - ", output);
       output = op.execute(output);
     }
     return output;

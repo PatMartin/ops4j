@@ -27,6 +27,7 @@ import com.fasterxml.jackson.databind.node.NullNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.TextNode;
 import com.fasterxml.jackson.dataformat.cbor.databind.CBORMapper;
+import com.fasterxml.jackson.dataformat.javaprop.JavaPropsMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 
@@ -35,14 +36,16 @@ import lombok.NonNull;
 public class JacksonUtil
 {
   // public static LogLevel logLevel = LogLevel.INFO;
-  public static ObjectMapper mapper;
-  public static ObjectMapper prettyMapper;
-  public static XmlMapper    xmlMapper;
-  public static XmlMapper    prettyXmlMapper;
-  public static YAMLMapper   yamlMapper;
-  public static CBORMapper   cborMapper;
+  public static ObjectMapper    mapper;
+  public static ObjectMapper    prettyMapper;
+  public static XmlMapper       xmlMapper;
+  public static XmlMapper       prettyXmlMapper;
+  public static YAMLMapper      yamlMapper;
+  public static CBORMapper      cborMapper;
+  public static JavaPropsMapper propsMapper;
 
-  public static OpLogger     logger = OpLoggerFactory.getLogger("ops.jackson");
+  public static OpLogger        logger      = OpLoggerFactory
+      .getLogger("ops.jackson");
 
   public final static ObjectMapper mapper()
   {
@@ -64,7 +67,17 @@ public class JacksonUtil
     }
     return prettyMapper;
   }
-
+  
+  public final static ObjectMapper propsMapper()
+  {
+    if (propsMapper == null)
+    {
+      propsMapper = new JavaPropsMapper();
+    }
+    return propsMapper;
+  }
+  
+  
   public final static XmlMapper xmlMapper()
   {
     if (xmlMapper == null)

@@ -16,6 +16,7 @@ import org.ops4j.log.OpLogging;
 import org.ops4j.util.JacksonUtil;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.typesafe.config.Config;
 
 import lombok.Getter;
@@ -40,7 +41,7 @@ public class BaseOp<T extends BaseOp<T>> implements Op<T>, Fallback, OpLogging
 
   @Option(names = { "-L", "--log" },
       description = "The log level of this operation.")
-  private @Getter LogLevel           logLevel    = LogLevel.INFO;
+  private @Setter @Getter LogLevel   logLevel    = LogLevel.INFO;
 
   @Option(names = { "-C", "--config" },
       description = "The configuration view for this operation.")
@@ -61,6 +62,7 @@ public class BaseOp<T extends BaseOp<T>> implements Op<T>, Fallback, OpLogging
   {
     setName(name);
     opLogger = new OpLogger(getName());
+    opLogger.setLogLevel(getLogLevel());
   }
 
   @SuppressWarnings("unchecked")
@@ -175,5 +177,26 @@ public class BaseOp<T extends BaseOp<T>> implements Op<T>, Fallback, OpLogging
           "No configuration defined for view '" + view + "'");
     }
     return config;
+  }
+
+  @SuppressWarnings("unchecked")
+  public T name(String name)
+  {
+    setName(name);
+    return (T) this;
+  }
+
+  public T copy() throws OpsException
+  {
+    String json = JacksonUtil.toString(this);
+    try
+    {
+      return (T) JacksonUtil.mapper().readValue(json, this.getClass());
+    }
+    catch(JsonProcessingException ex)
+    {
+      throw new OpsException(ex);
+    }
+    
   }
 }

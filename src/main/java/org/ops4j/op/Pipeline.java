@@ -3,6 +3,7 @@ package org.ops4j.op;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.ops4j.OpData;
 import org.ops4j.base.BaseOp;
 import org.ops4j.cli.OpCLI;
@@ -24,11 +25,12 @@ public class Pipeline extends BaseOp<Pipeline>
 {
   @Parameters(index = "0", arity = "0..*",
       description = "Run a pipeline of operations.")
-  private @Getter @Setter String  commands;
+  private @Getter @Setter List<String> commands;
+
   @Option(names = { "-i", "--immutable" },
       description = "Runs the pipeline as an immutable pipeline.")
-  private @Getter @Setter Boolean immutable = false;
-  private List<Op<?>>             ops;
+  private @Getter @Setter Boolean      immutable = false;
+  private @Getter @Setter List<Op<?>>  ops       = null;
 
   public Pipeline()
   {
@@ -37,7 +39,13 @@ public class Pipeline extends BaseOp<Pipeline>
 
   public Pipeline initialize() throws OpsException
   {
-    ops = Ops.create(getCommands());
+    if (ops == null)
+    {
+      ops = Ops.parseCommands(StringUtils.join(getCommands(), ' '));
+    }
+    // OpLogger.syserr("OPS: '",
+    // ops.stream().map(op -> op.getName()).collect(Collectors.toList()), ",");
+    // OpLogger.syserr("COMMANDS: '", StringUtils.join(getCommands()), ",");
     // debug("OPS: ", ops.size());
     for (Op<?> op : ops)
     {
@@ -61,10 +69,10 @@ public class Pipeline extends BaseOp<Pipeline>
     return this;
   }
 
-  public List<OpData> execute(OpData input) throws OpsException
+  public List<OpData> execute(final OpData input) throws OpsException
   {
-    List<OpData> curInput = input.copy().asList();
-    List<OpData> curOutput = input.asList();
+    List<OpData> curInput = input.asList();
+    List<OpData> curOutput = null;
     for (Op<?> op : ops)
     {
       curOutput = new ArrayList<OpData>();
@@ -99,6 +107,17 @@ public class Pipeline extends BaseOp<Pipeline>
       }
     }
     return this;
+  }
+
+  public Pipeline ops(List<Op<?>> ops)
+  {
+    setOps(ops);
+    return this;
+  }
+
+  public static Pipeline of(List<Op<?>> ops)
+  {
+    return new Pipeline().ops(ops);
   }
 
   public static void main(String args[]) throws OpsException

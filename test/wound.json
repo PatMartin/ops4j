@@ -1,0 +1,8 @@
+{
+  "name":"Bob",
+  "wife":"Jane",
+  "children": [
+   { "name":"Jim", "children":["Timmy", "Suzie" ] },
+   { "name":"Peg", "children":["Meg"] }
+  ]
+}

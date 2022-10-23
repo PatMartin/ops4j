@@ -16,12 +16,13 @@ import lombok.Setter;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Parameters;
 
-@AutoService(Op.class)
-@Command(name = "pause", description = "Pause execution for the specified number of milliseconds.")
+@AutoService(Op.class) @Command(name = "pause",
+    description = "Pause execution for the specified number of milliseconds.")
 public class Pause extends BaseOp<Pause>
 {
-  @Parameters(index = "0", arity = "1", description = "The number of milliseconds to pause.")
-  private @Getter @Setter Long pauseMs = 1000L;
+  @Parameters(index = "0", arity = "1",
+      description = "The number of milliseconds to pause.")
+  private @Getter @Setter Long pause = 1000L;
 
   public Pause()
   {
@@ -30,10 +31,21 @@ public class Pause extends BaseOp<Pause>
 
   public List<OpData> execute(OpData input)
   {
-    debug("pause ", getPauseMs(), " ms.");
+    debug("pause ", pause(), " ms.");
 
-    ThreadUtil.sleep(getPauseMs());
+    ThreadUtil.sleep(pause());
     return input.asList();
+  }
+
+  public Pause pause(long pause)
+  {
+    setPause(pause);
+    return this;
+  }
+
+  public long pause()
+  {
+    return getPause();
   }
 
   public static void main(String args[]) throws OpsException

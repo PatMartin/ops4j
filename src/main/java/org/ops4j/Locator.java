@@ -50,10 +50,11 @@ public class Locator
   {
     ServiceLoader<Op> loader = ServiceLoader.load(Op.class);
     Iterator<Op> it = loader.iterator();
+
     while (it.hasNext())
     {
       Op<?> op = it.next();
-      logger.trace("Discovered Operation: " + op.getName());
+      logger.info("Discovered Operation: " + op.getName());
       ops.put(op.getName(), op);
     }
   }
