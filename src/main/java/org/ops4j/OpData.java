@@ -4,11 +4,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 
 import org.ops4j.exception.ConfigurationException;
 import org.ops4j.exception.OpsException;
 import org.ops4j.inf.Getters;
 import org.ops4j.inf.Portable;
+import org.ops4j.inf.QueuesOf;
 import org.ops4j.inf.Setters;
 import org.ops4j.log.OpLogger;
 import org.ops4j.util.JacksonUtil;
@@ -22,7 +24,8 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.Getter;
 import lombok.Setter;
 
-public class OpData implements Portable<OpData>, Setters<OpData>, Getters<OpData>
+public class OpData implements Portable<OpData>, Setters<OpData>,
+    Getters<OpData>, QueuesOf<OpData>
 {
   private @Getter @Setter ObjectNode json;
 
@@ -56,12 +59,18 @@ public class OpData implements Portable<OpData>, Setters<OpData>, Getters<OpData
     }
   }
 
+  public static Queue<OpData> createQueue(QueueType type)
+  {
+    return new OpData().queueOf(type);
+  }
+
   public static OpData from(byte[] json) throws IOException
   {
     return new OpData((ObjectNode) JacksonUtil.cborMapper().readTree(json));
   }
-  
-  public static OpData from(String json) throws JsonMappingException, JsonProcessingException
+
+  public static OpData from(String json)
+      throws JsonMappingException, JsonProcessingException
   {
     return new OpData((ObjectNode) JacksonUtil.mapper().readTree(json));
   }

@@ -222,7 +222,7 @@ public class Locator
     }
     else
     {
-      throw new OpsException(expression + " is not a valid function.");
+      return null;
     }
   }
 

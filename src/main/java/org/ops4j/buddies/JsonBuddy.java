@@ -5,7 +5,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.ops4j.exception.OpsException;
-import org.ops4j.log.OpLogger;
 import org.ops4j.util.JacksonUtil;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -56,7 +55,7 @@ public class JsonBuddy
   {
     ObjectNode flat = JacksonUtil.createObjectNode();
     flatten("", flat, json);
-    //pLogger.syserr("flatten()=", flat);
+    // pLogger.syserr("flatten()=", flat);
     setJson(flat);
     return this;
   }
@@ -65,38 +64,37 @@ public class JsonBuddy
   {
     // OpLogger.syserr("flatten(prefix='", prefix, "', flat='", flat,
     // "', nested='", nested, ")");
+    
     if (nested != null)
     {
       switch (nested.getNodeType())
       {
-
         case OBJECT:
         {
-
+          prefix = (prefix.length() > 0) ? prefix + "." : "";
           Iterator<String> fieldNameIt = nested.fieldNames();
           while (fieldNameIt.hasNext())
           {
             String fieldName = fieldNameIt.next();
-            flatten(
-                (prefix.length() > 0) ? prefix + "." + fieldName : fieldName,
-                flat, nested.get(fieldName));
+            flatten(prefix + fieldName, flat, nested.get(fieldName));
           }
           break;
         }
         case ARRAY:
         {
+          prefix = (prefix.length() > 0) ? prefix + "." : "";
           ArrayNode array = (ArrayNode) nested;
           for (int i = 0; i < array.size(); i++)
           {
-            flatten((prefix.length() > 0) ? prefix + "." + i : "" + i, flat,
-                array.get(i));
+            flatten(prefix + i, flat, array.get(i));
           }
           break;
         }
         default:
         {
-          //pLogger.syserr("Setting: type=", nested.getNodeType(), ": ", prefix,
-          //    "=", nested);
+          // pLogger.syserr("Setting: type=", nested.getNodeType(), ": ",
+          // prefix,
+          // "=", nested);
           flat.set(prefix, nested);
         }
       }

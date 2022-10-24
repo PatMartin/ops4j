@@ -42,6 +42,8 @@ public class Benchmark extends BaseOp<Benchmark>
   public Benchmark()
   {
     super("benchmark");
+    lifecycle().willProvide(PhaseType.OPEN, PhaseType.EXECUTE,
+        PhaseType.CLEANUP);
   }
 
   public Benchmark open() throws OpsException
@@ -54,7 +56,7 @@ public class Benchmark extends BaseOp<Benchmark>
 
   public List<OpData> execute(OpData input)
   {
-    long cnt = count.incrementAndGet();
+    count.incrementAndGet();
     long winCnt = winCount.incrementAndGet();
     if (getTransactionThreshold() > 0 && winCnt >= getTransactionThreshold())
     {

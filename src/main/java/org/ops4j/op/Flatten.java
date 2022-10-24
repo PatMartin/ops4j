@@ -8,10 +8,7 @@ import org.ops4j.buddies.JsonBuddy;
 import org.ops4j.cli.OpCLI;
 import org.ops4j.exception.OpsException;
 import org.ops4j.inf.Op;
-import org.ops4j.log.OpLogger;
-import org.ops4j.util.JacksonUtil;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.auto.service.AutoService;
 
 import picocli.CommandLine.Command;
@@ -23,6 +20,7 @@ public class Flatten extends BaseOp<Flatten>
   public Flatten()
   {
     super("flatten");
+    lifecycle().willProvide(PhaseType.EXECUTE);
   }
 
   public List<OpData> execute(OpData input) throws OpsException

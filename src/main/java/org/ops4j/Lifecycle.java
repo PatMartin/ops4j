@@ -28,7 +28,7 @@ public class Lifecycle
     setPhases(phases);
     return this;
   }
-
+  
   public boolean provides(PhaseType type)
   {
     return phases.containsKey(type);
