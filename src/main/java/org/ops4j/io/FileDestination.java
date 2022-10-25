@@ -7,11 +7,14 @@ import java.io.OutputStream;
 
 import org.ops4j.exception.OpsException;
 
+import com.google.auto.service.AutoService;
+
 import lombok.Getter;
 import lombok.Setter;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Parameters;
 
+@AutoService(OutputDestination.class)
 @Command(name = "file", mixinStandardHelpOptions = false,
     description = "Streams a file into an output destination.")
 public class FileDestination extends BaseDestination<FileDestination>

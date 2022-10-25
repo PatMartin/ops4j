@@ -16,6 +16,7 @@ import org.ops4j.io.FileSource;
 import org.ops4j.io.InputSource;
 import org.ops4j.io.OutputDestination;
 import org.ops4j.log.OpLogger;
+import org.ops4j.log.OpLoggerFactory;
 import org.ops4j.util.JacksonUtil;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -24,19 +25,19 @@ import lombok.Getter;
 
 public class Locator
 {
-  private @Getter Map<String, Op<?>>                ops          = new HashMap<String, Op<?>>();
-  private @Getter Map<String, NodeOp<?>>            nodeOps      = new HashMap<String, NodeOp<?>>();
-  private @Getter Map<String, InputSource<?>>       sources      = new HashMap<String, InputSource<?>>();
-  private @Getter Map<String, OutputDestination<?>> destinations = new HashMap<String, OutputDestination<?>>();
-  private Pattern                                   fnPattern    = Pattern
+  private @Getter Map<String, Op<?>>                ops           = new HashMap<String, Op<?>>();
+  private @Getter Map<String, NodeOp<?>>            nodeOps       = new HashMap<String, NodeOp<?>>();
+  private @Getter Map<String, InputSource<?>>       sources       = new HashMap<String, InputSource<?>>();
+  private @Getter Map<String, OutputDestination<?>> destinations  = new HashMap<String, OutputDestination<?>>();
+  private Pattern                                   fnPattern     = Pattern
       .compile("^\\s*(\\S+)\\((.*)\\)\\s*", Pattern.CASE_INSENSITIVE);
-  private Pattern                                   noargsPattern    = Pattern
+  private Pattern                                   noargsPattern = Pattern
       .compile("^\\s*(\\S+)\\s*$", Pattern.CASE_INSENSITIVE);
-  private Map<String, NodeOp<?>>                    nodeOpCache  = new HashMap<String, NodeOp<?>>();
-  private Map<String, InputSource<?>>               sourceCache  = new HashMap<String, InputSource<?>>();
-  private Map<String, OutputDestination<?>>         destCache    = new HashMap<String, OutputDestination<?>>();
-  private OpLogger                                  logger       = new OpLogger(
-      "ops.locator");
+  private Map<String, NodeOp<?>>                    nodeOpCache   = new HashMap<String, NodeOp<?>>();
+  private Map<String, InputSource<?>>               sourceCache   = new HashMap<String, InputSource<?>>();
+  private Map<String, OutputDestination<?>>         destCache     = new HashMap<String, OutputDestination<?>>();
+  private OpLogger                                  logger        = OpLoggerFactory
+      .getLogger("ops.loc");
 
   public Locator() throws OpsException
   {
@@ -121,7 +122,7 @@ public class Locator
   // <module>:<node-op>([[name=value][, name=value]*])
   public NodeOp<?> resolveNodeOp(String expression) throws OpsException
   {
-    //System.out.println("Attempting to resolve: '" + expression + "'");
+    // System.out.println("Attempting to resolve: '" + expression + "'");
     Matcher matcher = fnPattern.matcher(expression);
     boolean matchFound = matcher.find();
     if (matchFound)
@@ -151,14 +152,13 @@ public class Locator
             + "', expression='" + expression + "'");
       }
     }
-    
+
     matcher = noargsPattern.matcher(expression);
     matchFound = matcher.find();
     if (matchFound)
     {
       String fnName = matcher.group(1);
-      logger.debug(
-          "Resolving node-op: FN: '" + fnName + "'");
+      logger.debug("Resolving node-op: FN: '" + fnName + "'");
 
       if (nodeOpCache.containsKey(expression))
       {
@@ -178,7 +178,7 @@ public class Locator
             + "', expression='" + expression + "'");
       }
     }
-    
+
     else
     {
       throw new OpsException(expression + " is not a valid function.");
@@ -187,6 +187,7 @@ public class Locator
 
   public InputSource<?> resolveSource(String expression) throws OpsException
   {
+    logger.INFO("resolveSource(", expression, ")");
     Matcher matcher = fnPattern.matcher(expression);
     boolean matchFound = matcher.find();
     if (matchFound)
@@ -201,6 +202,7 @@ public class Locator
       }
       else if (sources.containsKey(fnName))
       {
+        logger.DEBUG("Sources contain: ", fnName);
         InputSource<?> ctor = sources.get(fnName);
         InputSource<?> op = ctor.create();
         op.configure(fnArgs);
@@ -210,6 +212,7 @@ public class Locator
       // Try a file.
       else if (new File(expression).exists())
       {
+        logger.DEBUG("Reading file: '", expression, "'");
         FileSource fs = new FileSource();
         fs.setLocation(expression);
         return fs;

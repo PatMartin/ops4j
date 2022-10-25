@@ -1,5 +1,6 @@
 package org.ops4j.io;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -7,13 +8,15 @@ import java.io.InputStream;
 
 import org.ops4j.exception.OpsException;
 
+import com.google.auto.service.AutoService;
+
 import lombok.Getter;
 import lombok.Setter;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Parameters;
 
-@Command(name = "file", mixinStandardHelpOptions = false,
-    description = "Streams a file.")
+@AutoService(InputSource.class) @Command(name = "file",
+    mixinStandardHelpOptions = false, description = "Streams a file.")
 public class FileSource extends BaseSource<FileSource>
 {
   @Parameters(index = "0", arity = "1", paramLabel = "<input-location>",
@@ -36,7 +39,8 @@ public class FileSource extends BaseSource<FileSource>
   {
     try
     {
-      return new FileInputStream(new File(getLocation()));
+      return new BufferedInputStream(
+          new FileInputStream(new File(getLocation())), 131072);
     }
     catch(FileNotFoundException ex)
     {

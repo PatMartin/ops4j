@@ -196,7 +196,6 @@ public class OpCLI implements Callable<Integer>
           }
           catch(Exception ex)
           {
-            ex.printStackTrace();
             try
             {
               logger.DEBUG("Resolving via Locator: '", cli.getDataSource(),
