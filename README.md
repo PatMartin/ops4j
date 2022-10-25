@@ -1,5 +1,9 @@
 # ops4j
 
+Ops4J is proudly developed with [Jprofiler](https://www.ej-technologies.com/images/product_banners/jprofiler_large.png).
+
+
+
 >  PLEASE NOTE THAT THIS IS A EARLY WORK IN PROGRESS AND THAT I AM STILL WORKING ON BASIC APPLICATON ARCHITECTURE.   THE CODE WILL REMAIN RATHER FLUID FOR SOME TIME TO COME.
 
 Ops4j is a framework which is well suited for rapid prototyping, experimentation and innovation.  Developers write small units of code we refer to as `operations`.
