@@ -31,7 +31,7 @@ public class Plus extends BaseNodeOp<Plus>
 
   public Plus()
   {
-    name("plus");
+    super("plus");
   }
 
   public JsonNode execute(JsonNode input) throws OpsException

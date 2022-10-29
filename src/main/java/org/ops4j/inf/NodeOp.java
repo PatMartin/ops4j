@@ -1,6 +1,7 @@
 package org.ops4j.inf;
 
 import org.ops4j.exception.OpsException;
+import org.ops4j.log.OpLogger;
 import org.ops4j.log.OpLogger.LogLevel;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -28,5 +29,7 @@ public interface NodeOp<T extends NodeOp<T>>
   public void configure(String args[]) throws OpsException;
 
   public void setLogLevel(LogLevel logLevel);
+  
+  public OpLogger logger();
 
 }

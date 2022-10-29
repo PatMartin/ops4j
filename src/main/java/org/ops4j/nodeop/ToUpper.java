@@ -18,7 +18,7 @@ public class ToUpper extends BaseNodeOp<ToUpper>
 {
   public ToUpper()
   {
-    name("to:upper");
+    super("to:upper");
   }
 
   public JsonNode execute(JsonNode input) throws OpsException

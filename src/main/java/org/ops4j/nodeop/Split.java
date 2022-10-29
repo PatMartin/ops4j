@@ -31,7 +31,7 @@ public class Split extends BaseNodeOp<Split>
 
   public Split()
   {
-    name("split");
+    super("split");
   }
 
   public JsonNode execute(JsonNode input) throws OpsException

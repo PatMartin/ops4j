@@ -6,6 +6,7 @@ import java.io.InputStream;
 import org.ops4j.exception.OpsException;
 import org.ops4j.log.OpLogger;
 import org.ops4j.log.OpLogger.LogLevel;
+import org.ops4j.log.OpLoggerFactory;
 import org.ops4j.log.OpLogging;
 
 import lombok.Getter;
@@ -18,11 +19,16 @@ import picocli.CommandLine.Model.CommandSpec;
 public abstract class BaseSource<T extends BaseSource<T>>
     implements InputSource<T>, OpLogging
 {
-  private @Getter @Setter OpLogger opLogger = new OpLogger("ops4j.in");
+  private @Setter OpLogger         logger   = new OpLogger("ops4j.in");
 
   private @Getter @Setter LogLevel logLevel = LogLevel.WARN;
 
   private @Getter @Setter String   name     = null;
+
+  public BaseSource(String name)
+  {
+    setName(name);
+  }
 
   @Override
   public abstract InputStream stream() throws OpsException;
@@ -46,5 +52,15 @@ public abstract class BaseSource<T extends BaseSource<T>>
       CommandSpec spec = CommandSpec.create();
       new CommandLine(this).parseArgs(config);
     }
+  }
+
+  @Override
+  public OpLogger getLogger()
+  {
+    if (logger == null)
+    {
+      logger = OpLoggerFactory.getLogger("ops.in." + getName());
+    }
+    return logger;
   }
 }

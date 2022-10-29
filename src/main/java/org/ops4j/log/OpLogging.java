@@ -8,324 +8,324 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public interface OpLogging
 {
-  public OpLogger getOpLogger();
+  public OpLogger getLogger();
 
-  public default OpLogger opLogger()
+  public default OpLogger logger()
   {
-    return getOpLogger();
+    return getLogger();
   }
 
   @JsonIgnore
   public default boolean isTraceEnabled()
   {
-    return opLogger().isTraceEnabled();
+    return logger().isTraceEnabled();
   }
 
   @JsonIgnore
   public default boolean isDebugEnabled()
   {
-    return opLogger().isDebugEnabled();
+    return logger().isDebugEnabled();
   }
 
   @JsonIgnore
   public default boolean isInfoEnabled()
   {
-    return opLogger().isInfoEnabled();
+    return logger().isInfoEnabled();
   }
 
   @JsonIgnore
   public default boolean isWarnEnabled()
   {
-    return opLogger().isWarnEnabled();
+    return logger().isWarnEnabled();
   }
 
   @JsonIgnore
   public default boolean isErrorEnabled()
   {
-    return opLogger().isErrorEnabled();
+    return logger().isErrorEnabled();
   }
 
   public default void trace(String msg)
   {
-    opLogger().trace(msg);
+    logger().trace(msg);
   }
 
   public default void trace(String format, Object arg)
   {
-    opLogger().trace(format, arg);
+    logger().trace(format, arg);
   }
 
   public default void trace(String format, Object arg1, Object arg2)
   {
-    opLogger().trace(format, arg1, arg2);
+    logger().trace(format, arg1, arg2);
   }
 
   public default void trace(String format, Object... arguments)
   {
-    opLogger().trace(format, arguments);
+    logger().trace(format, arguments);
   }
 
   public default void trace(String msg, Throwable t)
   {
-    opLogger().trace(msg, t);
+    logger().trace(msg, t);
   }
 
   public default boolean isTraceEnabled(Marker marker)
   {
-    return opLogger().isTraceEnabled(marker);
+    return logger().isTraceEnabled(marker);
   }
 
   public default void trace(Marker marker, String msg)
   {
-    opLogger().trace(marker, msg);
+    logger().trace(marker, msg);
   }
 
   public default void trace(Marker marker, String format, Object arg)
   {
     if (isTraceEnabled())
     {
-      opLogger().trace(marker, format, arg);
+      logger().trace(marker, format, arg);
     }
   }
 
   public default void trace(Marker marker, String format, Object arg1,
       Object arg2)
   {
-    opLogger().trace(marker, format, arg1, arg2);
+    logger().trace(marker, format, arg1, arg2);
   }
 
   public default void trace(Marker marker, String format, Object... argArray)
   {
-    opLogger().trace(marker, format, argArray);
+    logger().trace(marker, format, argArray);
   }
 
   public default void trace(Marker marker, String msg, Throwable t)
   {
-    opLogger().trace(marker, msg, t);
+    logger().trace(marker, msg, t);
   }
 
   public default void debug(String msg)
   {
-    opLogger().debug(msg);
+    logger().debug(msg);
   }
 
   public default void debug(String format, Object arg)
   {
-    opLogger().debug(format, arg);
+    logger().debug(format, arg);
   }
 
   public default void debug(String format, Object arg1, Object arg2)
   {
-    opLogger().debug(format, arg1, arg2);
+    logger().debug(format, arg1, arg2);
   }
 
   public default void debug(String format, Object... arguments)
   {
-    opLogger().debug(format, arguments);
+    logger().debug(format, arguments);
   }
 
   public default void debug(String msg, Throwable t)
   {
-    opLogger().debug(msg, t);
+    logger().debug(msg, t);
   }
 
   public default boolean isDebugEnabled(Marker marker)
   {
-    return opLogger().isDebugEnabled(marker);
+    return logger().isDebugEnabled(marker);
   }
 
   public default void debug(Marker marker, String msg)
   {
-    opLogger().debug(marker, msg);
+    logger().debug(marker, msg);
   }
 
   public default void debug(Marker marker, String format, Object arg)
   {
-    opLogger().debug(marker, format, arg);
+    logger().debug(marker, format, arg);
   }
 
   public default void debug(Marker marker, String format, Object arg1,
       Object arg2)
   {
-    opLogger().debug(marker, format, arg1, arg2);
+    logger().debug(marker, format, arg1, arg2);
   }
 
   public default void debug(Marker marker, String format, Object... arguments)
   {
-    opLogger().debug(marker, format, arguments);
+    logger().debug(marker, format, arguments);
   }
 
   public default void debug(Marker marker, String msg, Throwable t)
   {
-    opLogger().debug(marker, msg, t);
+    logger().debug(marker, msg, t);
   }
 
   public default void info(String msg)
   {
-    opLogger().info(msg);
+    logger().info(msg);
   }
 
   public default void info(String format, Object arg)
   {
-    opLogger().info(format, arg);
+    logger().info(format, arg);
   }
 
   public default void info(String format, Object arg1, Object arg2)
   {
-    opLogger().info(format, arg1, arg2);
+    logger().info(format, arg1, arg2);
   }
 
   public default void info(String format, Object... arguments)
   {
-    opLogger().info(format, arguments);
+    logger().info(format, arguments);
   }
 
   public default void info(String msg, Throwable t)
   {
-    opLogger().info(msg, t);
+    logger().info(msg, t);
   }
 
   public default boolean isInfoEnabled(Marker marker)
   {
-    return opLogger().isInfoEnabled(marker);
+    return logger().isInfoEnabled(marker);
   }
 
   public default void info(Marker marker, String msg)
   {
-    opLogger().info(marker, msg);
+    logger().info(marker, msg);
   }
 
   public default void info(Marker marker, String format, Object arg)
   {
-    opLogger().info(marker, format, arg);
+    logger().info(marker, format, arg);
   }
 
   public default void info(Marker marker, String format, Object arg1,
       Object arg2)
   {
-    opLogger().info(marker, format, arg1, arg2);
+    logger().info(marker, format, arg1, arg2);
   }
 
   public default void info(Marker marker, String format, Object... arguments)
   {
-    opLogger().info(marker, format, arguments);
+    logger().info(marker, format, arguments);
   }
 
   public default void info(Marker marker, String msg, Throwable t)
   {
-    opLogger().info(marker, msg, t);
+    logger().info(marker, msg, t);
   }
 
   public default void warn(String msg)
   {
-    opLogger().warn(msg);
+    logger().warn(msg);
   }
 
   public default void warn(String format, Object arg)
   {
-    opLogger().warn(format, arg);
+    logger().warn(format, arg);
   }
 
   public default void warn(String format, Object... arguments)
   {
-    opLogger().warn(format, arguments);
+    logger().warn(format, arguments);
   }
 
   public default void warn(String format, Object arg1, Object arg2)
   {
-    opLogger().warn(format, arg1, arg2);
+    logger().warn(format, arg1, arg2);
   }
 
   public default void warn(String msg, Throwable t)
   {
-    opLogger().warn(msg, t);
+    logger().warn(msg, t);
   }
 
   public default boolean isWarnEnabled(Marker marker)
   {
-    return opLogger().isWarnEnabled(marker);
+    return logger().isWarnEnabled(marker);
   }
 
   public default void warn(Marker marker, String msg)
   {
-    opLogger().warn(marker, msg);
+    logger().warn(marker, msg);
   }
 
   public default void warn(Marker marker, String format, Object arg)
   {
-    opLogger().warn(marker, format, arg);
+    logger().warn(marker, format, arg);
   }
 
   public default void warn(Marker marker, String format, Object arg1,
       Object arg2)
   {
-    opLogger().warn(marker, format, arg1, arg2);
+    logger().warn(marker, format, arg1, arg2);
   }
 
   public default void warn(Marker marker, String format, Object... arguments)
   {
-    opLogger().warn(marker, format, arguments);
+    logger().warn(marker, format, arguments);
   }
 
   public default void warn(Marker marker, String msg, Throwable t)
   {
-    opLogger().warn(marker, msg, t);
+    logger().warn(marker, msg, t);
   }
 
   public default void error(String msg)
   {
-    opLogger().error(msg);
+    logger().error(msg);
   }
 
   public default void error(String format, Object arg)
   {
-    opLogger().error(format, arg);
+    logger().error(format, arg);
   }
 
   public default void error(String format, Object arg1, Object arg2)
   {
-    opLogger().error(format, arg1, arg2);
+    logger().error(format, arg1, arg2);
   }
 
   public default void error(String format, Object... arguments)
   {
-    opLogger().error(format, arguments);
+    logger().error(format, arguments);
   }
 
   public default void error(String msg, Throwable t)
   {
-    opLogger().error(msg, t);
+    logger().error(msg, t);
   }
 
   public default boolean isErrorEnabled(Marker marker)
   {
-    return opLogger().isErrorEnabled(marker);
+    return logger().isErrorEnabled(marker);
   }
 
   public default void error(Marker marker, String msg)
   {
-    opLogger().error(marker, msg);
+    logger().error(marker, msg);
   }
 
   public default void error(Marker marker, String format, Object arg)
   {
-    opLogger().error(marker, format, arg);
+    logger().error(marker, format, arg);
   }
 
   public default void error(Marker marker, String format, Object arg1,
       Object arg2)
   {
-    opLogger().error(marker, format, arg1, arg2);
+    logger().error(marker, format, arg1, arg2);
   }
 
   public default void error(Marker marker, String format, Object... arguments)
   {
-    opLogger().error(marker, format, arguments);
+    logger().error(marker, format, arguments);
   }
 
   public default void error(Marker marker, String msg, Throwable t)
   {
-    opLogger().error(marker, msg, t);
+    logger().error(marker, msg, t);
   }
 
   /**
@@ -333,27 +333,27 @@ public interface OpLogging
    */
   public default void TRACE(Object... msg)
   {
-    opLogger().TRACE(msg);
+    logger().TRACE(msg);
   }
 
   public default void DEBUG(Object... msg)
   {
-    opLogger().DEBUG(msg);
+    logger().DEBUG(msg);
   }
 
   public default void INFO(Object... msg)
   {
-    opLogger().INFO(msg);
+    logger().INFO(msg);
   }
 
   public default void WARN(Object... msg)
   {
-    opLogger().WARN(msg);
+    logger().WARN(msg);
   }
 
   public default void ERROR(Object... msg)
   {
-    opLogger().ERROR(msg);
+    logger().ERROR(msg);
   }
 
   public static void syserr(Object... msg)
@@ -368,11 +368,11 @@ public interface OpLogging
 
   public default LogLevel getLogLevel()
   {
-    return opLogger().getLogLevel();
+    return logger().getLogLevel();
   }
 
   public default void setLogLevel(LogLevel logLevel)
   {
-    opLogger().setLogLevel(logLevel);
+    logger().setLogLevel(logLevel);
   }
 }

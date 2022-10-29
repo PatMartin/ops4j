@@ -21,7 +21,7 @@ public class ToMonth extends BaseNodeOp<ToMonth>
 
   public ToMonth()
   {
-    name("to:month");
+    super("to:month");
   }
 
   public JsonNode execute(JsonNode input) throws OpsException

@@ -42,7 +42,7 @@ public class GenData extends BaseNodeOp<GenData>
 
   public GenData()
   {
-    name("gen:data");
+    super("gen:data");
 
     // Import common PRNG interface and factory class that instantiates the
     // PRNG.

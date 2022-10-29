@@ -18,7 +18,7 @@ public class ToDouble extends BaseNodeOp<ToDouble>
 {
   public ToDouble()
   {
-    name("to:double");
+    super("to:double");
   }
 
   public JsonNode execute(JsonNode input) throws OpsException

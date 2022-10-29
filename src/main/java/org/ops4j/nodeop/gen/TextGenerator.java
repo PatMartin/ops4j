@@ -29,7 +29,7 @@ public class TextGenerator extends BaseNodeOp<TextGenerator>
 
   public TextGenerator()
   {
-    name("gen:text");
+    super("gen:text");
   }
 
   public JsonNode execute(JsonNode input) throws OpsException

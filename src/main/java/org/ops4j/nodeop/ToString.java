@@ -18,7 +18,7 @@ public class ToString extends BaseNodeOp<ToString>
 {
   public ToString()
   {
-    name("to:string");
+    super("to:string");
   }
 
   public JsonNode execute(JsonNode input) throws OpsException

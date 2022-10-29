@@ -19,7 +19,7 @@ public class LastNameGenerator extends BaseNodeOp<LastNameGenerator>
 {
   public LastNameGenerator()
   {
-    name("gen:last");
+    super("gen:last");
   }
 
   public JsonNode execute(JsonNode input) throws OpsException

@@ -1,6 +1,6 @@
 # Ops4J
 
-Ops4J is proudly developed with [Jprofiler](https://www.ej-technologies.com/images/product_banners/jprofiler_large.png).
+Ops4J is proudly developed with the Ops4J is proudly developed with ![Java Profiler](../images/jprofiler_small.png) from the fine folks at ej-technologies.
 
 Ops4J is a general purpose framework which brings Unix style programming to the JVM and JVM programs to the bash shell.
 
@@ -9,8 +9,6 @@ Ops4J is a JSON pipeline composed of smaller units called operations.  Operation
 ## CLI vs JVM API
 
  For example, suppose we would like to flatten a stream of JSON documents located in a file named `input.json` and benchmark how long the process takes to execute.  Also suppose that we have two operations named `flatten` and `benchmark` suited to their respective task.
-
-
 
 From the CLI:
 

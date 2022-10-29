@@ -31,7 +31,7 @@ public class IntArrayGenerator extends BaseNodeOp<IntArrayGenerator>
 
   public IntArrayGenerator()
   {
-    name("gen:array:int");
+    super("gen:array:int");
   }
 
   public JsonNode execute(JsonNode input) throws OpsException

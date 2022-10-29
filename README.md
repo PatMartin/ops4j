@@ -1,7 +1,6 @@
 # ops4j
 
-Ops4J is proudly developed with ![the Jprofiler Java Profiler](https://www.ej-technologies.com/products/jprofiler/overview.html).
-
+Ops4J is proudly developed with the ![Java Profiler](src/main/resources/site/images/jprofiler_small.png) from the fine folks at ej-technologies.
 
 
 >  PLEASE NOTE THAT THIS IS A EARLY WORK IN PROGRESS AND THAT I AM STILL WORKING ON BASIC APPLICATON ARCHITECTURE.   THE CODE WILL REMAIN RATHER FLUID FOR SOME TIME TO COME.

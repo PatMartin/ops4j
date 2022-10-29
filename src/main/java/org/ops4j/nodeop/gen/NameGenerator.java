@@ -19,7 +19,7 @@ public class NameGenerator extends BaseNodeOp<NameGenerator>
 {
   public NameGenerator()
   {
-    name("gen:name");
+    super("gen:name");
   }
 
   public JsonNode execute(JsonNode input) throws OpsException

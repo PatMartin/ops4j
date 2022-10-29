@@ -17,7 +17,6 @@ import org.ops4j.io.InputSource;
 import org.ops4j.log.OpLogger;
 import org.ops4j.log.OpLogger.LogLevel;
 import org.ops4j.log.OpLoggerFactory;
-import org.ops4j.log.OpLogging;
 import org.ops4j.util.CountdownIterator;
 import org.ops4j.util.JacksonUtil;
 import org.ops4j.util.JsonNodeIterator;
@@ -220,7 +219,9 @@ public class OpCLI implements Callable<Integer>
         {
           currentCount++;
 
-          JsonNode node = jnIt.next();
+          JsonNode node = (op instanceof JsonSource)
+              ? JacksonUtil.createObjectNode()
+              : jnIt.next();
           // System.err.println(op.getName() + ": " +
           // JacksonUtil.toString(node));
           OpData data = new OpData(node);

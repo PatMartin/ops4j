@@ -40,7 +40,7 @@ public class RandomTextGenerator extends BaseNodeOp<RandomTextGenerator>
 
   public RandomTextGenerator()
   {
-    name("random:text");
+    super("random:text");
   }
 
   public RandomTextGenerator create()

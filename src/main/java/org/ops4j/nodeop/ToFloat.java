@@ -18,7 +18,7 @@ public class ToFloat extends BaseNodeOp<ToFloat>
 {
   public ToFloat()
   {
-    name("to:float");
+    super("to:float");
   }
 
   public JsonNode execute(JsonNode input) throws OpsException

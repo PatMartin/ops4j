@@ -6,6 +6,8 @@ import java.io.FileOutputStream;
 import java.io.OutputStream;
 
 import org.ops4j.exception.OpsException;
+import org.ops4j.log.OpLogger;
+import org.ops4j.log.OpLoggerFactory;
 
 import com.google.auto.service.AutoService;
 
@@ -23,10 +25,11 @@ public class FileDestination extends BaseDestination<FileDestination>
       description = "The location of the output destination.")
   private @Getter @Setter String location = null;
 
+  private @Setter OpLogger       logger;
+
   public FileDestination()
   {
-    super();
-    setName("file");
+    super("file");
   }
 
   public FileDestination create()
@@ -50,5 +53,15 @@ public class FileDestination extends BaseDestination<FileDestination>
   public static void main(String args[]) throws OpsException
   {
     OutputDestinationCLI.cli(new FileDestination(), args);
+  }
+
+  @Override
+  public OpLogger getLogger()
+  {
+    if (logger == null)
+    {
+      logger = OpLoggerFactory.getLogger("ops.out.file");
+    }
+    return logger;
   }
 }

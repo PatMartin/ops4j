@@ -6,6 +6,7 @@ import java.io.OutputStream;
 import org.ops4j.exception.OpsException;
 import org.ops4j.log.OpLogger;
 import org.ops4j.log.OpLogger.LogLevel;
+import org.ops4j.log.OpLoggerFactory;
 import org.ops4j.log.OpLogging;
 
 import lombok.Getter;
@@ -18,16 +19,25 @@ import picocli.CommandLine.Model.CommandSpec;
 public abstract class BaseDestination<T extends BaseDestination<T>>
     implements OutputDestination<T>, OpLogging
 {
-  private OpLogger                 opLogger = new OpLogger("ops4j.io.dst");
+  private @Setter OpLogger         logger;
 
   private @Getter @Setter LogLevel logLevel = LogLevel.WARN;
 
   private @Getter @Setter String   name     = null;
 
-  @Override
-  public OpLogger getOpLogger()
+  public BaseDestination(String name)
   {
-    return opLogger;
+    setName(name);
+  }
+
+  @Override
+  public OpLogger getLogger()
+  {
+    if (logger == null)
+    {
+      logger = OpLoggerFactory.getLogger("ops.out." + getName());
+    }
+    return logger;
   }
 
   @Override
@@ -46,7 +56,7 @@ public abstract class BaseDestination<T extends BaseDestination<T>>
   @Override
   public void configure(String... config) throws OpsException
   {
-  //OpsLogger.syserr("CONFIG: ", config.length);
+    // OpsLogger.syserr("CONFIG: ", config.length);
     if (config.length > 0 && config[0].trim().length() > 0)
     {
       CommandSpec spec = CommandSpec.create();
@@ -58,6 +68,5 @@ public abstract class BaseDestination<T extends BaseDestination<T>>
   public void setLogLevel(LogLevel logLevel)
   {
     // TODO Auto-generated method stub
-
   }
 }

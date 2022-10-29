@@ -33,7 +33,7 @@ public class BaseOp<T extends BaseOp<T>> implements Op<T>, Fallback, OpLogging
   private @Getter @Setter Lifecycle  lifecycle   = new Lifecycle();
 
   @JsonIgnore
-  protected @Getter @Setter OpLogger opLogger;
+  protected @Getter @Setter OpLogger logger;
 
   @Option(names = { "-N", "--name" },
       description = "The name of this operation.")
@@ -54,15 +54,15 @@ public class BaseOp<T extends BaseOp<T>> implements Op<T>, Fallback, OpLogging
   public BaseOp()
   {
     setName(this.getClass().getName());
-    opLogger = new OpLogger(getName());
-    opLogger.setLogLevel(getLogLevel());
+    logger = new OpLogger(getName());
+    logger.setLogLevel(getLogLevel());
   }
 
   public BaseOp(String name)
   {
     setName(name);
-    opLogger = new OpLogger(getName());
-    opLogger.setLogLevel(getLogLevel());
+    logger = new OpLogger(getName());
+    logger.setLogLevel(getLogLevel());
   }
 
   @SuppressWarnings("unchecked")
@@ -151,7 +151,7 @@ public class BaseOp<T extends BaseOp<T>> implements Op<T>, Fallback, OpLogging
   public void setLogLevel(LogLevel logLevel)
   {
     this.logLevel = logLevel;
-    opLogger.setLogLevel(logLevel);
+    logger.setLogLevel(logLevel);
   }
 
   public Config config() throws ConfigurationException
@@ -197,6 +197,11 @@ public class BaseOp<T extends BaseOp<T>> implements Op<T>, Fallback, OpLogging
     {
       throw new OpsException(ex);
     }
-    
+  }
+
+  @SuppressWarnings("unchecked") public T defaultView(String defaultView)
+  {
+    setDefaultView(defaultView);
+    return (T) this;
   }
 }

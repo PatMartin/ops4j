@@ -21,7 +21,7 @@ public class PersonGenerator extends BaseNodeOp<PersonGenerator>
 {
   public PersonGenerator()
   {
-    name("gen:person");
+    super("gen:person");
   }
 
   public JsonNode execute(JsonNode input) throws OpsException

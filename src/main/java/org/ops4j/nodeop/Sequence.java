@@ -28,7 +28,7 @@ public class Sequence extends BaseNodeOp<Sequence>
 
   public Sequence()
   {
-    name("seq");
+    super("seq");
   }
 
   public JsonNode execute(JsonNode input) throws OpsException

@@ -30,7 +30,7 @@ public class IntegerGenerator extends BaseNodeOp<IntegerGenerator>
 
   public IntegerGenerator()
   {
-    name("int");
+    super("int");
   }
 
   public IntegerGenerator create()

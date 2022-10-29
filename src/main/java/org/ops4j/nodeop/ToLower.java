@@ -18,7 +18,7 @@ public class ToLower extends BaseNodeOp<ToLower>
 {
   public ToLower()
   {
-    name("to:lower");
+    super("to:lower");
   }
 
   public JsonNode execute(JsonNode input) throws OpsException

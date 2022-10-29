@@ -31,7 +31,7 @@ public class Pipeline extends BaseNodeOp<Pipeline>
 
   public Pipeline()
   {
-    name("pipeline");
+    super("pipeline");
   }
 
   public JsonNode execute(JsonNode input) throws OpsException

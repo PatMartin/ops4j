@@ -1,12 +1,15 @@
 package org.ops4j.nodeop;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import org.ops4j.base.BaseNodeOp;
 import org.ops4j.cli.NodeOpCLI;
 import org.ops4j.exception.OpsException;
 import org.ops4j.inf.NodeOp;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.LongNode;
+import com.fasterxml.jackson.databind.node.TextNode;
 import com.google.auto.service.AutoService;
 
 import lombok.Getter;
@@ -24,15 +27,18 @@ public class Now extends BaseNodeOp<Now>
           + "applied to the value returned by the now node operation.")
   private @Getter @Setter Long offset = 0L;
 
+  private SimpleDateFormat     fmt    = new SimpleDateFormat(
+      "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+
   public Now()
   {
-    name("gen:now");
+    super("now");
   }
 
   public JsonNode execute(JsonNode input) throws OpsException
   {
-    JsonNode node = new LongNode(System.currentTimeMillis() + offset);
-    debug("NODE: ", node);
+    JsonNode node = new TextNode(fmt.format(new Date(System.currentTimeMillis() + offset)));
+    DEBUG("NODE: ", node);
     return node;
   }
 

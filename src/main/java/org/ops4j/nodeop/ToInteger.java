@@ -25,7 +25,7 @@ public class ToInteger extends BaseNodeOp<ToInteger>
 
   public ToInteger()
   {
-    name("to:int");
+    super("to:int");
   }
 
   public JsonNode execute(JsonNode input) throws OpsException

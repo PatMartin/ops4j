@@ -19,7 +19,7 @@ public class DateGenerator extends BaseNodeOp<DateGenerator>
 {
   public DateGenerator()
   {
-    name("gen:date");
+    super("gen:date");
   }
 
   public JsonNode execute(JsonNode input) throws OpsException

@@ -29,7 +29,7 @@ public class Text extends BaseNodeOp<Text>
 
   public Text()
   {
-    name("text");
+    super("text");
   }
 
   public JsonNode execute(JsonNode input) throws OpsException

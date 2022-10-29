@@ -10,14 +10,11 @@
 		<maven.compiler.target>1.8</maven.compiler.target>
 	</properties>
 	<dependencies>
-		<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-core -->
-		<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind -->
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
 			<version>2.13.0</version>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.dataformat/jackson-dataformat-xml -->
 		<dependency>
 			<groupId>com.fasterxml.jackson.dataformat</groupId>
 			<artifactId>jackson-dataformat-xml</artifactId>
@@ -46,20 +43,7 @@
 			<artifactId>picocli</artifactId>
 			<version>4.6.2</version>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-simple -->
-		<!--dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-simple</artifactId>
-			<version>2.0.0</version>
-			<scope>test</scope>
-		</dependency-->
 
-		<!-- https://mvnrepository.com/artifact/com.squareup.okio/okio -->
-		<dependency>
-			<groupId>com.squareup.okio</groupId>
-			<artifactId>okio</artifactId>
-			<version>2.10.0</version>
-		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.apache.commons/commons-lang3 -->
 		<dependency>
 			<groupId>org.apache.commons</groupId>
@@ -113,12 +97,7 @@
 			<version>1.18.24</version>
 			<scope>provided</scope>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/org.mongodb/mongo-java-driver -->
-		<dependency>
-			<groupId>org.mongodb</groupId>
-			<artifactId>mongo-java-driver</artifactId>
-			<version>3.12.11</version>
-		</dependency>
+
 		<!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-api -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
@@ -139,30 +118,6 @@
 			<version>2.7.0</version>
 		</dependency>
 
-		<!-- https://mvnrepository.com/artifact/io.undertow/undertow-core -->
-		<dependency>
-			<groupId>io.undertow</groupId>
-			<artifactId>undertow-core</artifactId>
-			<version>2.3.0.Beta1</version>
-		</dependency>
-		<dependency>
-			<groupId>io.undertow</groupId>
-			<artifactId>undertow-servlet</artifactId>
-			<version>2.3.0.Beta1</version>
-		</dependency>
-
-		<dependency>
-			<groupId>io.undertow</groupId>
-			<artifactId>undertow-websockets-jsr</artifactId>
-			<version>2.3.0.Beta1</version>
-		</dependency>
-
-		<!-- https://mvnrepository.com/artifact/io.javalin/javalin -->
-		<dependency>
-			<groupId>io.javalin</groupId>
-			<artifactId>javalin</artifactId>
-			<version>5.0.0</version>
-		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.codehaus.groovy/groovy-all -->
 		<dependency>
 			<groupId>org.codehaus.groovy</groupId>
@@ -176,12 +131,7 @@
 			<artifactId>disruptor</artifactId>
 			<version>4.0.0.RC1</version>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/org.antlr/antlr4-runtime -->
-		<dependency>
-			<groupId>org.antlr</groupId>
-			<artifactId>antlr4-runtime</artifactId>
-			<version>4.11.1</version>
-		</dependency>
+
 		<!-- https://mvnrepository.com/artifact/com.codahale/usl4j -->
 		<dependency>
 			<groupId>com.codahale</groupId>

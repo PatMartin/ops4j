@@ -22,14 +22,18 @@ import picocli.CommandLine.Option;
 @Command(name = "base-node-op", mixinStandardHelpOptions = false)
 public class BaseNodeOp<T extends BaseNodeOp<T>> implements NodeOp<T>, OpLogging
 {
-  private @Getter @Setter String   name     = "unamed";
+  private @Getter @Setter String     name     = "unamed";
 
   @Option(names = { "-L", "--log" },
       description = "The log level of this operation.")
-  private @Getter LogLevel         logLevel = LogLevel.INFO;
+  private @Getter LogLevel           logLevel = LogLevel.INFO;
 
-  protected @Getter @Setter OpLogger opLogger = OpLoggerFactory
-      .getLogger("ops.nodeop");
+  protected @Getter @Setter OpLogger logger   = null;
+
+  public BaseNodeOp(String name)
+  {
+    setName(name);
+  }
 
   @Override
   public JsonNode execute(JsonNode node) throws OpsException
@@ -94,13 +98,16 @@ public class BaseNodeOp<T extends BaseNodeOp<T>> implements NodeOp<T>, OpLogging
   public void setLogLevel(LogLevel logLevel)
   {
     this.logLevel = logLevel;
-    opLogger.setLogLevel(logLevel);
+    logger().setLogLevel(logLevel);
   }
 
   @Override
-  public OpLogger opLogger()
+  public OpLogger logger()
   {
-    // TODO Auto-generated method stub
-    return null;
+    if (logger == null)
+    {
+      logger = OpLoggerFactory.getLogger("ops.nodeop." + getName());
+    }
+    return logger;
   }
 }

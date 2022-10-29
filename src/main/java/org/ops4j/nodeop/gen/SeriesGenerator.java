@@ -100,7 +100,7 @@ public class SeriesGenerator extends BaseNodeOp<SeriesGenerator>
 
   public SeriesGenerator()
   {
-    name("series");
+    super("series");
   }
 
   public SeriesGenerator create()

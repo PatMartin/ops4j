@@ -72,7 +72,7 @@ public class Stream extends BaseOp<Stream> implements JsonSource
 
   public List<OpData> execute(OpData input) throws OpsException
   {
-    return input.asList();
+    return new OpData(it.next()).asList();
   }
   
   public static void main(String args[]) throws OpsException

@@ -30,7 +30,7 @@ public class JsonPath extends BaseNodeOp<JsonPath>
 
   public JsonPath()
   {
-    name("json:path");
+    super("json:path");
   }
 
   public JsonNode execute(JsonNode input) throws OpsException

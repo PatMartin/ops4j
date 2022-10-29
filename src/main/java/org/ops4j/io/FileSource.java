@@ -7,6 +7,7 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 
 import org.ops4j.exception.OpsException;
+import org.ops4j.log.OpLogger;
 
 import com.google.auto.service.AutoService;
 
@@ -25,8 +26,7 @@ public class FileSource extends BaseSource<FileSource>
 
   public FileSource()
   {
-    super();
-    setName("file");
+    super("file");
   }
 
   public FileSource create()
