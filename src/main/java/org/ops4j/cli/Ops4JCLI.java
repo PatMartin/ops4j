@@ -5,6 +5,8 @@ import java.util.concurrent.Callable;
 import org.ops4j.Ops4J;
 import org.ops4j.cmd.EnvCmd;
 import org.ops4j.cmd.GetCmd;
+import org.ops4j.cmd.RunCmd;
+import org.ops4j.cmd.SaveCmd;
 import org.ops4j.cmd.SetCmd;
 import org.ops4j.cmd.TocCmd;
 
@@ -34,7 +36,9 @@ public class Ops4JCLI implements Callable<Integer>
   {
     CommandLine cli = new CommandLine(new Ops4J())
         .addSubcommand("toc", new TocCmd()).addSubcommand("get", new GetCmd())
-        .addSubcommand("set", new SetCmd()).addSubcommand("env", new EnvCmd());
+        .addSubcommand("set", new SetCmd()).addSubcommand("env", new EnvCmd())
+        .addSubcommand("run", new RunCmd())
+        .addSubcommand("save", new SaveCmd());
     cli.execute(args);
   }
 }

@@ -23,7 +23,7 @@ public class ToUpper extends BaseNodeOp<ToUpper>
 
   public JsonNode execute(JsonNode input) throws OpsException
   {
-    return new TextNode(input.asText().toUpperCase());
+    return new TextNode(getTarget(input).asText().toUpperCase());
   }
 
   public static void main(String args[]) throws OpsException

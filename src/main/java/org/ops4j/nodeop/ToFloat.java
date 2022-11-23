@@ -13,7 +13,7 @@ import picocli.CommandLine.Command;
 
 @AutoService(NodeOp.class)
 @Command(name = "to:float", mixinStandardHelpOptions = false,
-    description = "Converts a text node to an double.")
+    description = "Converts a node to an float.")
 public class ToFloat extends BaseNodeOp<ToFloat>
 {
   public ToFloat()
@@ -23,7 +23,7 @@ public class ToFloat extends BaseNodeOp<ToFloat>
 
   public JsonNode execute(JsonNode input) throws OpsException
   {
-    return new FloatNode(Float.parseFloat(input.asText()));
+    return new FloatNode(Float.parseFloat(getTarget(input).asText()));
   }
 
   public static void main(String args[]) throws OpsException

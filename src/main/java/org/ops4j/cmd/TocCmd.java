@@ -20,6 +20,7 @@ public class TocCmd extends SubCmd implements Callable<Integer>
 {
   public TocCmd()
   {
+    super("toc");
   }
 
   @Override

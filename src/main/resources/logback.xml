@@ -7,6 +7,7 @@
 	<logger name="io.undertow" level="ERROR" />
 	<logger name="org.jboss" level="ERROR" />
 	<logger name="ops.jackson" level="TRACE" />
+	<logger name="com.jayway.jsonpath" level="ERROR"/>
 	<appender name="STDOUT"
 		class="ch.qos.logback.core.ConsoleAppender">
 		<!-- encoders are assigned the type ch.qos.logback.classic.encoder.PatternLayoutEncoder 

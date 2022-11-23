@@ -6,6 +6,8 @@ import org.ops4j.exception.OpsException;
 import org.ops4j.inf.NodeOp;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.DoubleNode;
+import com.fasterxml.jackson.databind.node.FloatNode;
 import com.fasterxml.jackson.databind.node.IntNode;
 import com.google.auto.service.AutoService;
 
@@ -19,10 +21,6 @@ import picocli.CommandLine.Parameters;
     description = "Converts a text node to an integer.")
 public class ToInteger extends BaseNodeOp<ToInteger>
 {
-  @Parameters(index = "0", arity = "0..1",
-      description = "The location of the value to convert.")
-  private @Getter @Setter String location = null;
-
   public ToInteger()
   {
     super("to:int");
@@ -30,15 +28,7 @@ public class ToInteger extends BaseNodeOp<ToInteger>
 
   public JsonNode execute(JsonNode input) throws OpsException
   {
-    if (location == null)
-    {
-      return new IntNode(Integer.parseInt(input.asText()));
-    }
-    else
-    {
-      JsonNode src = input.at(getLocation());
-      return new IntNode(Integer.parseInt(src.textValue()));
-    }
+    return new IntNode(Integer.parseInt(getTarget(input).asText()));
   }
 
   public static void main(String args[]) throws OpsException

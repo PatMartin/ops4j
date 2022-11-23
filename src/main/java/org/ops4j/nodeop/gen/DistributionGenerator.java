@@ -24,10 +24,10 @@ import picocli.CommandLine.ArgGroup;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 
-@AutoService(NodeOp.class) @Command(name = "series",
-    mixinStandardHelpOptions = false, description = "Generate a first name."
-        + "%n%nExample:%n%nmap series(-precision 2)")
-public class SeriesGenerator extends BaseNodeOp<SeriesGenerator>
+@AutoService(NodeOp.class) @Command(name = "dist",
+    mixinStandardHelpOptions = false, description = "Generate a distribution."
+        + "%n%nExample:%n%nmap dist(-precision 2)")
+public class DistributionGenerator extends BaseNodeOp<DistributionGenerator>
 {
   @Option(names = { "-p", "-precision" },
       description = "The precision of the distribution")
@@ -98,14 +98,14 @@ public class SeriesGenerator extends BaseNodeOp<SeriesGenerator>
     double  mu;
   }
 
-  public SeriesGenerator()
+  public DistributionGenerator()
   {
-    super("series");
+    super("dist");
   }
 
-  public SeriesGenerator create()
+  public DistributionGenerator create()
   {
-    return new SeriesGenerator();
+    return new DistributionGenerator();
   }
 
   public JsonNode execute(JsonNode input) throws OpsException
@@ -150,6 +150,6 @@ public class SeriesGenerator extends BaseNodeOp<SeriesGenerator>
 
   public static void main(String args[]) throws OpsException
   {
-    NodeOpCLI.cli(new SeriesGenerator(), args);
+    NodeOpCLI.cli(new DistributionGenerator(), args);
   }
 }

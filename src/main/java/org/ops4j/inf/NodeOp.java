@@ -22,6 +22,16 @@ public interface NodeOp<T extends NodeOp<T>>
     return this;
   }
 
+  public String getPath();
+
+  public void setPath(String path);
+
+  default NodeOp<T> path(String path)
+  {
+    setPath(path);
+    return this;
+  }
+  
   public LogLevel getLogLevel();
 
   public NodeOp<T> create();
@@ -32,4 +42,5 @@ public interface NodeOp<T extends NodeOp<T>>
   
   public OpLogger logger();
 
+  public JsonNode getTarget(JsonNode doc);
 }

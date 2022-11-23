@@ -26,15 +26,17 @@ public class ToMonth extends BaseNodeOp<ToMonth>
 
   public JsonNode execute(JsonNode input) throws OpsException
   {
-    if (input.isNumber())
+    JsonNode target = getTarget(input);
+
+    if (target != null && target.isNumber())
     {
-      return new TextNode(MONTH[input.asInt() % 12]);
+      return new TextNode(MONTH[target.asInt() % 12]);
     }
     throw new OpsException("Could not convert non-numeric to month.");
   }
 
   public static void main(String args[]) throws OpsException
   {
-    NodeOpCLI.cli(new ToLower(), args);
+    NodeOpCLI.cli(new ToMonth(), args);
   }
 }

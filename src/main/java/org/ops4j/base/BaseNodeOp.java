@@ -22,7 +22,13 @@ import picocli.CommandLine.Option;
 @Command(name = "base-node-op", mixinStandardHelpOptions = false)
 public class BaseNodeOp<T extends BaseNodeOp<T>> implements NodeOp<T>, OpLogging
 {
+  @Option(names = { "-n", "-name" }, required = false,
+      description = "The name of the node operation.")
   private @Getter @Setter String     name     = "unamed";
+
+  @Option(names = { "-p", "-path" }, required = false,
+      description = "The path to the target node.")
+  private @Setter String             path     = "/";
 
   @Option(names = { "-L", "--log" },
       description = "The log level of this operation.")
@@ -32,6 +38,7 @@ public class BaseNodeOp<T extends BaseNodeOp<T>> implements NodeOp<T>, OpLogging
 
   public BaseNodeOp(String name)
   {
+    logger = OpLoggerFactory.getLogger("ops.nodeop." + name);
     setName(name);
   }
 
@@ -49,7 +56,24 @@ public class BaseNodeOp<T extends BaseNodeOp<T>> implements NodeOp<T>, OpLogging
       return false;
     }
     String t = url.trim();
-    return t.startsWith(getName() + "(") && t.endsWith(")");
+    if (t.equalsIgnoreCase(getName()))
+    {
+      return true;
+    }
+    if (t.startsWith(getName()))
+    {
+      String remaining = t.substring(getName().length());
+      if (remaining.startsWith("(") && remaining.endsWith(")"))
+      {
+        return true;
+      }
+      // TODO: Make this smarter
+      else if (remaining.startsWith(":/"))
+      {
+        return true;
+      }
+    }
+    return false;
   }
 
   @SuppressWarnings("unchecked")
@@ -91,7 +115,7 @@ public class BaseNodeOp<T extends BaseNodeOp<T>> implements NodeOp<T>, OpLogging
     // Do nothing for now.
     CommandSpec spec = CommandSpec.create();
     new CommandLine(this).parseArgs(args.toArray(new String[0]));
-    debug("Op Configuration ", getName(), ": ",
+    logger.DEBUG("Op Configuration ", getName(), ": ",
         JacksonUtil.toString(this, "N/A"));
   }
 
@@ -109,5 +133,28 @@ public class BaseNodeOp<T extends BaseNodeOp<T>> implements NodeOp<T>, OpLogging
       logger = OpLoggerFactory.getLogger("ops.nodeop." + getName());
     }
     return logger;
+  }
+
+  @Override
+  public String getPath()
+  {
+    if (path == null)
+    {
+      setPath("/");
+    }
+    return path;
+  }
+
+  public JsonNode getTarget(JsonNode doc)
+  {
+    if (getPath() == null)
+    {
+      return doc;
+    }
+    else if (getPath().equals("/"))
+    {
+      return doc;
+    }
+    return doc.at(getPath());
   }
 }

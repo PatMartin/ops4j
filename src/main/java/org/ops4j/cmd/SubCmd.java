@@ -1,5 +1,11 @@
 package org.ops4j.cmd;
 
+import org.ops4j.log.OpLogger;
+import org.ops4j.log.OpLoggerFactory;
+import org.ops4j.log.OpLogger.LogLevel;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.Getter;
 import lombok.Setter;
 import picocli.CommandLine;
@@ -11,8 +17,16 @@ public class SubCmd
   @Option(names = { "-h", "--help" }, description = "Get help.")
   private @Getter @Setter boolean help = false;
 
-  public SubCmd()
+  protected @Getter @Setter OpLogger logger;
+  
+  @Option(names = { "-L", "--log" },
+      description = "The log level of this operation.")
+  private @Setter @Getter LogLevel   logLevel    = LogLevel.INFO;
+  
+  public SubCmd(String name)
   {
+    logger = OpLoggerFactory.getLogger("ops.cli." + name);
+    logger.setLogLevel(getLogLevel());
   }
 
   public void help(Object obj)
@@ -37,7 +51,7 @@ public class SubCmd
 
   public static void main(String args[])
   {
-    CommandLine cli = new CommandLine(new SubCmd());
+    CommandLine cli = new CommandLine(new SubCmd("test"));
     cli.execute(args);
   }
 }

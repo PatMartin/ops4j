@@ -7,6 +7,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 import org.ops4j.exception.OpsException;
@@ -44,7 +46,7 @@ public class JacksonUtil
   public static CBORMapper      cborMapper;
   public static JavaPropsMapper propsMapper;
 
-  public static OpLogger        logger      = OpLoggerFactory
+  public static OpLogger        logger = OpLoggerFactory
       .getLogger("ops.jackson");
 
   public final static ObjectMapper mapper()
@@ -53,6 +55,7 @@ public class JacksonUtil
     {
       mapper = new ObjectMapper();
       mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+      //mapper.enableDefaultTyping();
     }
     return mapper;
   }
@@ -67,7 +70,7 @@ public class JacksonUtil
     }
     return prettyMapper;
   }
-  
+
   public final static ObjectMapper propsMapper()
   {
     if (propsMapper == null)
@@ -76,8 +79,7 @@ public class JacksonUtil
     }
     return propsMapper;
   }
-  
-  
+
   public final static XmlMapper xmlMapper()
   {
     if (xmlMapper == null)
@@ -567,5 +569,46 @@ public class JacksonUtil
             + " for putObject - " + name);
       }
     }
+  }
+
+  public static String interpolate(String text, JsonNode context)
+  {
+    // OpLogger.syserr("INTERPOLATING: ", text, " vs ", context);
+    if (text == null || text.trim().length() <= 0)
+    {
+      return text;
+    }
+
+    Pattern varPattern = Pattern.compile("\\$\\{[^\\}]+\\}");
+    Matcher varMatcher = varPattern.matcher(text);
+    List<String> variables = new ArrayList<>();
+
+    while (varMatcher.find())
+    {
+      variables
+          .add(text.substring(varMatcher.start() + 2, varMatcher.end() - 1));
+    }
+
+    String itext = new String(text);
+
+    for (String variable : variables)
+    {
+      // OpLogger.syserr("VARIABLE: ", variable);
+      JsonNode node = context.at(variable);
+      if (node != null)
+      {
+        itext = itext.replace("${" + variable + "}", node.toString());
+      }
+    }
+    return itext;
+  }
+
+  public static JsonNode at(JsonNode node, String path)
+  {
+    if (path == null || node == null || path.equals("/"))
+    {
+      return node;
+    }
+    return node.at(path);
   }
 }

@@ -23,7 +23,7 @@ public class ToLower extends BaseNodeOp<ToLower>
 
   public JsonNode execute(JsonNode input) throws OpsException
   {
-    return new TextNode(input.asText().toLowerCase());
+    return new TextNode(getTarget(input).asText().toLowerCase());
   }
 
   public static void main(String args[]) throws OpsException

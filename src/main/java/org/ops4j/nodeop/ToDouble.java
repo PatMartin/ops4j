@@ -7,13 +7,14 @@ import org.ops4j.inf.NodeOp;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.DoubleNode;
+import com.fasterxml.jackson.databind.node.TextNode;
 import com.google.auto.service.AutoService;
 
 import picocli.CommandLine.Command;
 
 @AutoService(NodeOp.class)
 @Command(name = "to:double", mixinStandardHelpOptions = false,
-    description = "Converts a text node to an double.")
+    description = "Converts a node to an double.")
 public class ToDouble extends BaseNodeOp<ToDouble>
 {
   public ToDouble()
@@ -23,7 +24,11 @@ public class ToDouble extends BaseNodeOp<ToDouble>
 
   public JsonNode execute(JsonNode input) throws OpsException
   {
-    return new DoubleNode(Double.parseDouble(input.asText()));
+    if (getPath() == null)
+    {
+      return new DoubleNode(Double.parseDouble(input.asText()));
+    }
+    return new DoubleNode(Double.parseDouble(input.at(getPath()).asText()));
   }
 
   public static void main(String args[]) throws OpsException

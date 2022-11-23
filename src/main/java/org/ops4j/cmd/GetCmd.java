@@ -22,6 +22,7 @@ public class GetCmd extends SubCmd implements Callable<Integer>
 
   public GetCmd()
   {
+    super("get");
   }
 
   @Parameters(index = "0", arity = "1..+", description = "Get detailed help.")

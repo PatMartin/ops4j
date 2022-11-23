@@ -7,6 +7,10 @@ import org.ops4j.OpData;
 import org.ops4j.exception.OpsException;
 import org.ops4j.log.OpLogger.LogLevel;
 
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+
+@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY,
+    property = "@class")
 public interface Op<T extends Op<T>>
 {
   public enum PhaseType {
@@ -38,7 +42,7 @@ public interface Op<T extends Op<T>>
   public T cleanup() throws OpsException;
 
   public T copy() throws OpsException;
-  
+
   public String getName();
 
   public void setName(String name);

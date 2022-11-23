@@ -56,6 +56,7 @@ public class EnvCmd extends SubCmd implements Callable<Integer>
 
   public EnvCmd()
   {
+    super("env");
   }
 
   @Override

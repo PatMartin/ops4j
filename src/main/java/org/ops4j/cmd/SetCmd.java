@@ -17,6 +17,7 @@ public class SetCmd extends SubCmd implements Callable<Integer>
 
   public SetCmd()
   {
+    super("set");
   }
 
   @Parameters(index = "0", arity = "0..*", paramLabel = "<name>=<value>",

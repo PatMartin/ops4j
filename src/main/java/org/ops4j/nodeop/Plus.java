@@ -36,42 +36,44 @@ public class Plus extends BaseNodeOp<Plus>
 
   public JsonNode execute(JsonNode input) throws OpsException
   {
+    JsonNode target = getTarget(input);
+    
     // syserr("plus(", getOperand(), ") on ", input);
-    if (input == null)
+    if (target == null)
     {
       return input;
     }
-    switch (input.getNodeType())
+    switch (target.getNodeType())
     {
       case NUMBER:
       {
-        if (input.isInt())
+        if (target.isInt())
         {
-          return new IntNode(input.asInt() + Integer.parseInt(getOperand()));
+          return new IntNode(target.asInt() + Integer.parseInt(getOperand()));
         }
-        else if (input.isLong())
+        else if (target.isLong())
         {
-          return new LongNode(input.asLong() + Long.parseLong(getOperand()));
+          return new LongNode(target.asLong() + Long.parseLong(getOperand()));
         }
-        else if (input.isDouble() || input.isFloat())
+        else if (target.isDouble() || target.isFloat())
         {
           return new DoubleNode(
-              input.asDouble() + Double.parseDouble(getOperand()));
+              target.asDouble() + Double.parseDouble(getOperand()));
         }
-        else if (input.isBigInteger())
+        else if (target.isBigInteger())
         {
           return new BigIntegerNode(
-              input.bigIntegerValue().add(new BigInteger(getOperand())));
+              target.bigIntegerValue().add(new BigInteger(getOperand())));
         }
-        else if (input.isBigDecimal())
+        else if (target.isBigDecimal())
         {
           return new DecimalNode(
-              input.decimalValue().add(new BigDecimal(getOperand())));
+              target.decimalValue().add(new BigDecimal(getOperand())));
         }
       }
       default:
       {
-        return input;
+        return target;
       }
     }
   }

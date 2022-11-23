@@ -11,6 +11,7 @@ import org.ops4j.exception.OpsException;
 import org.ops4j.inf.Op;
 import org.ops4j.util.Ops;
 
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.google.auto.service.AutoService;
 
 import lombok.Getter;
@@ -30,7 +31,10 @@ public class Pipeline extends BaseOp<Pipeline>
   @Option(names = { "-i", "--immutable" },
       description = "Runs the pipeline as an immutable pipeline.")
   private @Getter @Setter Boolean      immutable = false;
-  private @Getter @Setter List<Op<?>>  ops       = null;
+  
+  @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY,
+      property = "@class")
+  private @Getter @Setter List<Op<?>>  ops       = new ArrayList<>();
 
   public Pipeline()
   {
@@ -51,6 +55,7 @@ public class Pipeline extends BaseOp<Pipeline>
     {
       if (op.provides(PhaseType.INITIALIZE))
       {
+        DEBUG("initializing ", op.getName());
         op.initialize();
       }
     }
@@ -63,6 +68,7 @@ public class Pipeline extends BaseOp<Pipeline>
     {
       if (op.provides(PhaseType.OPEN))
       {
+        DEBUG("opening ", op.getName());
         op.open();
       }
     }
@@ -91,6 +97,7 @@ public class Pipeline extends BaseOp<Pipeline>
     {
       if (op.provides(PhaseType.CLOSE))
       {
+        DEBUG("close ", op.getName());
         op.close();
       }
     }
@@ -103,6 +110,7 @@ public class Pipeline extends BaseOp<Pipeline>
     {
       if (op.provides(PhaseType.CLEANUP))
       {
+        DEBUG("cleanup ", op.getName());
         op.cleanup();
       }
     }
@@ -112,6 +120,12 @@ public class Pipeline extends BaseOp<Pipeline>
   public Pipeline ops(List<Op<?>> ops)
   {
     setOps(ops);
+    return this;
+  }
+
+  public Pipeline add(Op<?> op)
+  {
+    getOps().add(op);
     return this;
   }
 

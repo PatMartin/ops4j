@@ -76,6 +76,73 @@ public class OpCLI implements Callable<Integer>
   private @Getter
   @Setter Map<String, LogLevel>                 logLevels         = new HashMap<>();
 
+  public static int cli(Op<?> op) throws OpsException
+  {
+    CommandLine cmd = new CommandLine(op);
+    int currentCount = 0;
+    int count = 0;
+    OpLogger logger;
+
+    try
+    {
+      if (op.provides(PhaseType.INITIALIZE))
+      {
+        op.initialize();
+      }
+
+      if (op.provides(PhaseType.OPEN))
+      {
+        op.open();
+      }
+
+      if (op.provides(PhaseType.EXECUTE))
+      {
+        // Open up a stream
+        Iterator<JsonNode> jnIt = null;
+        if (op instanceof JsonSource)
+        {
+          jnIt = ((JsonSource) op).getIterator();
+        }
+        else
+        {
+          jnIt = JsonNodeIterator.fromInputStream(System.in);
+        }
+
+        while (jnIt.hasNext())
+        {
+          currentCount++;
+
+          JsonNode node = (op instanceof JsonSource)
+              ? JacksonUtil.createObjectNode()
+              : jnIt.next();
+          // System.err.println(op.getName() + ": " +
+          // JacksonUtil.toString(node));
+          OpData data = new OpData(node);
+          // System.err.println(op.getName() + ": " + data);
+          List<OpData> results = op.execute(data);
+          for (OpData result : results)
+          {
+            System.out.println(result);
+          }
+        }
+      }
+    }
+    catch(IOException ex)
+    {
+      throw new OpsException(ex);
+    }
+
+    if (op.provides(PhaseType.CLOSE))
+    {
+      op.close();
+    }
+    if (op.provides(PhaseType.CLEANUP))
+    {
+      op.cleanup();
+    }
+    return 0;
+  }
+  
   public static int cli(Op<?> op, String[] args) throws OpsException
   {
     CommandLine cmd = new CommandLine(op);

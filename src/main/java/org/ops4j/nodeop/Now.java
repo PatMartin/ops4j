@@ -37,9 +37,8 @@ public class Now extends BaseNodeOp<Now>
 
   public JsonNode execute(JsonNode input) throws OpsException
   {
-    JsonNode node = new TextNode(fmt.format(new Date(System.currentTimeMillis() + offset)));
-    DEBUG("NODE: ", node);
-    return node;
+    return new TextNode(
+        fmt.format(new Date(System.currentTimeMillis() + offset)));
   }
 
   public static void main(String args[]) throws OpsException

@@ -5,7 +5,6 @@ import org.ops4j.base.BaseNodeOp;
 import org.ops4j.cli.NodeOpCLI;
 import org.ops4j.exception.OpsException;
 import org.ops4j.inf.NodeOp;
-import org.ops4j.log.OpLogger;
 import org.ops4j.util.JacksonUtil;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -16,7 +15,6 @@ import lombok.Getter;
 import lombok.Setter;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
-import picocli.CommandLine.Parameters;
 
 @AutoService(NodeOp.class)
 @Command(name = "split", mixinStandardHelpOptions = false,
@@ -26,9 +24,6 @@ public class Split extends BaseNodeOp<Split>
   @Option(names = { "-s", "--separator" }, description = "")
   private @Getter @Setter String separator = ",";
 
-  @Parameters(index = "0", arity = "1", description = "")
-  private @Getter @Setter String path      = "/";
-
   public Split()
   {
     super("split");
@@ -37,7 +32,7 @@ public class Split extends BaseNodeOp<Split>
   public JsonNode execute(JsonNode input) throws OpsException
   {
     JsonNode srcNode = input.at(getPath());
-    OpLogger.syserr("INPUT: '", srcNode.asText(), "'");
+    logger.DEBUG("INPUT: '", srcNode.asText(), "'");
     if (srcNode != null && srcNode.isTextual())
     {
       String parts[] = StringUtils.split(srcNode.asText(), getSeparator());

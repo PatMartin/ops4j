@@ -12,6 +12,7 @@ import org.ops4j.inf.Fallback;
 import org.ops4j.inf.Op;
 import org.ops4j.log.OpLogger;
 import org.ops4j.log.OpLogger.LogLevel;
+import org.ops4j.log.OpLoggerFactory;
 import org.ops4j.log.OpLogging;
 import org.ops4j.util.JacksonUtil;
 
@@ -54,14 +55,14 @@ public class BaseOp<T extends BaseOp<T>> implements Op<T>, Fallback, OpLogging
   public BaseOp()
   {
     setName(this.getClass().getName());
-    logger = new OpLogger(getName());
+    logger = OpLoggerFactory.getLogger(getName());
     logger.setLogLevel(getLogLevel());
   }
 
   public BaseOp(String name)
   {
     setName(name);
-    logger = new OpLogger(getName());
+    logger = OpLoggerFactory.getLogger(getName());
     logger.setLogLevel(getLogLevel());
   }
 
@@ -154,7 +155,7 @@ public class BaseOp<T extends BaseOp<T>> implements Op<T>, Fallback, OpLogging
     logger.setLogLevel(logLevel);
   }
 
-  public Config config() throws ConfigurationException
+  public Config config() throws OpsException
   {
     if (config != null)
     {
@@ -166,8 +167,10 @@ public class BaseOp<T extends BaseOp<T>> implements Op<T>, Fallback, OpLogging
     }
     else if (getDefaultView() != null)
     {
-      System.err.println("Using default view: " + getDefaultView() + "="
-          + Ops4J.config().getString(getDefaultView()));
+      TRACE("Using default view: ", getDefaultView(), " in config ",
+          Ops4J.config().toString());
+      DEBUG("Using default view: ", getDefaultView(), "=",
+          Ops4J.config().getString(getDefaultView()));
       config = Ops4J.config()
           .getConfig(Ops4J.config().getString(getDefaultView()));
     }
@@ -176,6 +179,7 @@ public class BaseOp<T extends BaseOp<T>> implements Op<T>, Fallback, OpLogging
       throw new ConfigurationException(
           "No configuration defined for view '" + view + "'");
     }
+    DEBUG("CONFIG: '", config, "'");
     return config;
   }
 
@@ -199,7 +203,8 @@ public class BaseOp<T extends BaseOp<T>> implements Op<T>, Fallback, OpLogging
     }
   }
 
-  @SuppressWarnings("unchecked") public T defaultView(String defaultView)
+  @SuppressWarnings("unchecked")
+  public T defaultView(String defaultView)
   {
     setDefaultView(defaultView);
     return (T) this;

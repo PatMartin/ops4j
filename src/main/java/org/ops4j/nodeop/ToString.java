@@ -13,7 +13,7 @@ import picocli.CommandLine.Command;
 
 @AutoService(NodeOp.class)
 @Command(name = "to:string", mixinStandardHelpOptions = false,
-    description = "Converts a text node to an integer.")
+    description = "Converts a node to a string node.")
 public class ToString extends BaseNodeOp<ToString>
 {
   public ToString()
@@ -23,7 +23,7 @@ public class ToString extends BaseNodeOp<ToString>
 
   public JsonNode execute(JsonNode input) throws OpsException
   {
-    return new TextNode(input.asText());
+    return new TextNode(getTarget(input).asText());
   }
 
   public static void main(String args[]) throws OpsException
