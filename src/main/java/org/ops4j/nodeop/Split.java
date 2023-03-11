@@ -31,7 +31,7 @@ public class Split extends BaseNodeOp<Split>
 
   public JsonNode execute(JsonNode input) throws OpsException
   {
-    JsonNode srcNode = input.at(getPath());
+    JsonNode srcNode = getTarget(input);
     logger.DEBUG("INPUT: '", srcNode.asText(), "'");
     if (srcNode != null && srcNode.isTextual())
     {

@@ -2,7 +2,10 @@ package org.ops4j.base;
 
 import java.util.List;
 
+import org.ops4j.Ops4J;
+import org.ops4j.exception.ConfigurationException;
 import org.ops4j.exception.OpsException;
+import org.ops4j.inf.Fallback;
 import org.ops4j.inf.NodeOp;
 import org.ops4j.log.OpLogger;
 import org.ops4j.log.OpLogger.LogLevel;
@@ -11,6 +14,7 @@ import org.ops4j.log.OpLogging;
 import org.ops4j.util.JacksonUtil;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.typesafe.config.Config;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -18,23 +22,33 @@ import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Model.CommandSpec;
 import picocli.CommandLine.Option;
+import picocli.CommandLine.Parameters;
 
 @Command(name = "base-node-op", mixinStandardHelpOptions = false)
-public class BaseNodeOp<T extends BaseNodeOp<T>> implements NodeOp<T>, OpLogging
+public class BaseNodeOp<T extends BaseNodeOp<T>>
+    implements NodeOp<T>, Fallback, OpLogging
 {
-  @Option(names = { "-n", "-name" }, required = false,
+  @Option(names = { "-n", "--name" }, required = false,
       description = "The name of the node operation.")
-  private @Getter @Setter String     name     = "unamed";
+  private @Getter @Setter String       name        = "unamed";
 
-  @Option(names = { "-p", "-path" }, required = false,
-      description = "The path to the target node.")
-  private @Setter String             path     = "/";
+  @Parameters(index = "0", arity = "0..*",
+      description = "The arguments to the node operation.")
+  private @Getter @Setter List<String> args        = null;
 
   @Option(names = { "-L", "--log" },
       description = "The log level of this operation.")
-  private @Getter LogLevel           logLevel = LogLevel.INFO;
+  private @Getter LogLevel             logLevel    = LogLevel.INFO;
 
-  protected @Getter @Setter OpLogger logger   = null;
+  @Option(names = { "-C", "--config" },
+      description = "The configuration view for this operation.")
+  private @Getter @Setter String       view        = null;
+
+  private @Getter @Setter String       defaultView = null;
+
+  private @Getter @Setter Config       config      = null;
+
+  protected @Getter @Setter OpLogger   logger      = null;
 
   public BaseNodeOp(String name)
   {
@@ -135,26 +149,44 @@ public class BaseNodeOp<T extends BaseNodeOp<T>> implements NodeOp<T>, OpLogging
     return logger;
   }
 
-  @Override
-  public String getPath()
-  {
-    if (path == null)
-    {
-      setPath("/");
-    }
-    return path;
-  }
-
   public JsonNode getTarget(JsonNode doc)
   {
-    if (getPath() == null)
+    if (getArgs() == null || getArgs().size() == 0 || getArgs().get(0) == null)
     {
       return doc;
     }
-    else if (getPath().equals("/"))
+    else if (getArgs().get(0).equals("/"))
     {
       return doc;
     }
-    return doc.at(getPath());
+    return doc.at(getArgs().get(0));
+  }
+
+  public Config config() throws OpsException
+  {
+    if (config != null)
+    {
+      return config;
+    }
+    if (getView() != null)
+    {
+      config = Ops4J.config().getConfig(getView());
+    }
+    else if (getDefaultView() != null)
+    {
+      TRACE("Using default view: ", getDefaultView(), " in config ",
+          Ops4J.config().toString());
+      DEBUG("Using default view: ", getDefaultView(), "=",
+          Ops4J.config().getString(getDefaultView()));
+      config = Ops4J.config()
+          .getConfig(Ops4J.config().getString(getDefaultView()));
+    }
+    if (config == null)
+    {
+      throw new ConfigurationException(
+          "No configuration defined for view '" + view + "'");
+    }
+    DEBUG("CONFIG: '", config, "'");
+    return config;
   }
 }

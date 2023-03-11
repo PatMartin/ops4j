@@ -1,22 +1,18 @@
 package org.ops4j;
 
 import java.util.Map;
-import java.util.concurrent.Callable;
 
 import org.ops4j.exception.OpsException;
 import org.ops4j.inf.OpModule;
 import org.ops4j.inf.OpRepo;
 import org.ops4j.log.OpLogger;
 import org.ops4j.log.OpLoggerFactory;
+import org.ops4j.util.ConfigUtil;
 
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 
-import picocli.CommandLine.Command;
-
-@Command(name = "ops", mixinStandardHelpOptions = false,
-    description = "This is " + "the main CLI for Ops4J.")
-public class Ops4J implements Callable<Integer>
+public class Ops4J
 {
   private static Locator  locator = null;
   private static OpLogger logger  = null;
@@ -27,9 +23,8 @@ public class Ops4J implements Callable<Integer>
   {
   }
 
-  public Integer call()
-  {
-    return 0;
+  public static enum AlgorithmType {
+    AES, RC4, DES, Blowfish
   }
 
   public static OpLogger logger()
@@ -64,7 +59,7 @@ public class Ops4J implements Callable<Integer>
       {
         logger().DEBUG("CLASS-TYPE: ", classType);
         repo = (OpRepo) Class.forName(classType).newInstance();
-        repo.configure(repoConfig.getString("args").split(" "));
+        ConfigUtil.configure(repo, repoConfig.getString("args").split(" "));
       }
       catch(InstantiationException | IllegalAccessException
           | ClassNotFoundException ex)

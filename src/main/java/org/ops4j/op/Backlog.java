@@ -9,7 +9,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.commons.lang3.StringUtils;
 import org.ops4j.OpData;
 import org.ops4j.base.BaseOp;
 import org.ops4j.cli.OpCLI;
@@ -32,40 +31,40 @@ import picocli.CommandLine.Parameters;
 public class Backlog extends BaseOp<Backlog>
     implements QueuesOf<Future<List<OpData>>>
 {
-  @Parameters(index = "0", arity = "0..*",
-      description = "The commands for the backlog processing.")
-  private @Getter @Setter List<String> commands;
+  @Parameters(index = "0", arity = "1",
+      description = "The commands to be executed.")
+  private @Getter @Setter String      commands;
 
   @Option(names = { "-iqt", "--input-queue-type" },
       description = "The input queue type.")
   @Getter @Setter
-  QueuesOf.QueueType                   inputQueueType  = QueuesOf.QueueType.BLOCKING_ARRAY;
+  QueuesOf.QueueType                  inputQueueType  = QueuesOf.QueueType.BLOCKING_ARRAY;
 
   @Option(names = { "-oqt", "--output-queue-type" },
       description = "The output queue type.")
   @Getter @Setter
-  QueuesOf.QueueType                   outputQueueType = QueuesOf.QueueType.CONCURRENT_LINKED;
+  QueuesOf.QueueType                  outputQueueType = QueuesOf.QueueType.CONCURRENT_LINKED;
 
-  Queue<OpData>                        inputQueue      = OpData
+  Queue<OpData>                       inputQueue      = OpData
       .createQueue(inputQueueType);
 
-  Queue<Future<List<OpData>>>          outputQueue     = queueOf(
+  Queue<Future<List<OpData>>>         outputQueue     = queueOf(
       outputQueueType);
-  Pipeline                             pipeline;
-  
+  Pipeline                            pipeline;
+
   @Option(names = { "-min", "--min-threads" },
       description = "The minimum number of threads.")
   @Getter @Setter
-  int                                  minThreads      = 1;
+  int                                 minThreads      = 1;
 
   @Option(names = { "-max", "--max-threads" },
       description = "The maximum number of threads.")
   @Getter @Setter
-  int                                  maxThreads      = 1;
+  int                                 maxThreads      = 1;
 
-  ExecutorService                      executor;
+  ExecutorService                     executor;
 
-  private @Getter @Setter List<Op<?>>  ops             = null;
+  private @Getter @Setter List<Op<?>> ops             = null;
 
   public Backlog()
   {
@@ -76,7 +75,7 @@ public class Backlog extends BaseOp<Backlog>
   {
     if (ops == null)
     {
-      ops = Ops.parseCommands(StringUtils.join(getCommands(), ' '));
+      ops = Ops.parseCommands(getCommands());
     }
     pipeline = new Pipeline().ops(ops).initialize();
     executor = Executors.newFixedThreadPool(minThreads());

@@ -8,6 +8,7 @@ import org.ops4j.base.BaseOp;
 import org.ops4j.cli.OpCLI;
 import org.ops4j.exception.OpsException;
 import org.ops4j.inf.Op;
+import org.ops4j.util.JacksonUtil;
 
 import com.google.auto.service.AutoService;
 
@@ -33,7 +34,7 @@ public class Print extends BaseOp<Print>
   {
     for (String message : getMessages())
     {
-      System.out.println(message);
+      System.err.println(JacksonUtil.interpolate(message, input.getJson()));
     }
     return input.asList();
   }

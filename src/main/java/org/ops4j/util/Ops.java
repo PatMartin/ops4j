@@ -18,26 +18,15 @@ import picocli.CommandLine;
 
 public class Ops
 {
-  private static OpLogger logger;
-
-  // pipeline "noop | benchmark -L DEBUG" -L INFO
-  public static OpLogger getLogger()
-  {
-    if (logger == null)
-    {
-      logger = OpLoggerFactory.getLogger("ops.create");
-    }
-    return logger;
-  }
+  private static OpLogger logger = OpLoggerFactory.getLogger("ops.create");
 
   enum PartType {
     CMD, STRING
   }
 
-  public static List<Op<?>> parseCommands(@NonNull String command)
-      throws OpsException
+  public static List<Op<?>> parseCommands(@NonNull String command) throws OpsException
   {
-
+    logger.DEBUG("PARSING COMMAND: '", command, "'");
     class PartInfo
     {
       private @Getter @Setter PartType type;
@@ -73,33 +62,33 @@ public class Ops
 
     for (String part : parts)
     {
-      getLogger().DEBUG("PASS 1: part=", part);
+      logger.DEBUG("PASS 1: part=", part);
       pass2.add(new PartInfo(part.trim(), "TOKEN" + tokenNum++));
     }
 
     for (PartInfo part : pass2)
     {
-      getLogger().DEBUG("PASS 2: part=", part.value);
+      logger.DEBUG("PASS 2: part=", part.value);
       if (part.value.startsWith("'") || part.value.startsWith("\""))
       {
-        getLogger().DEBUG("PASS 3: part=", part.value, " => ", part.token);
+        logger.DEBUG("PASS 3: part=", part.value, " => ", part.token);
         pass3.add(part.token);
       }
       else
       {
-        getLogger().DEBUG("PASS 3: part=", part.value);
+        logger.DEBUG("PASS 3: part=", part.value);
         pass3.add(part.value);
       }
     }
 
     // Fourth pass: split on '|'
-    getLogger().DEBUG("PASS-3 RESULT: ", StringUtils.join(pass3, " "));
+    logger.DEBUG("PASS-3 RESULT: ", StringUtils.join(pass3, " "));
 
     pass4 = StringUtils.split(StringUtils.join(pass3, " "), '|');
 
     for (String part : pass4)
     {
-      getLogger().DEBUG("PASS 4: part=", part);
+      logger.DEBUG("PASS 4: part=", part);
     }
 
     // Interpolate:
@@ -112,7 +101,7 @@ public class Ops
           part = part.replace(pi.token, pi.value);
         }
       }
-      getLogger().DEBUG("PASS 5: part=", part.trim());
+      logger.DEBUG("PASS 5: part=", part.trim());
       pass5.add(part.trim());
     }
 
@@ -142,7 +131,7 @@ public class Ops
         Op<?> ctor = opmap.get(name);
         Op<?> op = ctor.create();
         // CommandSpec spec = CommandSpec.create();
-        getLogger().DEBUG("Ops.parseCommands(", op.getName(), "([",
+        logger.DEBUG("Ops.parseCommands(", op.getName(), "([",
             StringUtils.join(args, ","),
             "]))=" + JacksonUtil.toString(op, "N/A"));
         new CommandLine(op).parseArgs(args);

@@ -50,6 +50,4 @@ public interface Repo<T>
   public T load(String name) throws OpsException;
 
   public void store(String name, T value) throws OpsException;
-  
-  public void configure(String args[]) throws OpsException;
 }

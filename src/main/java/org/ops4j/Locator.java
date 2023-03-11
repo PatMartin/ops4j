@@ -14,6 +14,7 @@ import org.ops4j.inf.NodeOp;
 import org.ops4j.inf.Op;
 import org.ops4j.inf.OpModule;
 import org.ops4j.inf.OpRepo;
+import org.ops4j.io.FileDestination;
 import org.ops4j.io.FileSource;
 import org.ops4j.io.InputSource;
 import org.ops4j.io.OutputDestination;
@@ -32,7 +33,7 @@ public class Locator
   private @Getter Map<String, InputSource<?>>       sources       = new HashMap<>();
   private @Getter Map<String, OutputDestination<?>> destinations  = new HashMap<>();
 
-  private @Getter Map<String, OpModule<?>>             modules       = new HashMap<>();
+  private @Getter Map<String, OpModule<?>>          modules       = new HashMap<>();
   private @Getter Map<String, OpRepo>               repos         = new HashMap<>();
 
   // node-op(args)
@@ -125,8 +126,7 @@ public class Locator
     logger.info("*************************");
     logger.info("**** Modules:");
     logger.info("*************************");
-    ServiceLoader<OpModule> loader = ServiceLoader
-        .load(OpModule.class);
+    ServiceLoader<OpModule> loader = ServiceLoader.load(OpModule.class);
     Iterator<OpModule> it = loader.iterator();
     while (it.hasNext())
     {
@@ -135,23 +135,22 @@ public class Locator
       modules.put(dest.getName(), dest);
     }
   }
-  
+
   private void loadRepos()
   {
     logger.info("*************************");
     logger.info("**** Repos:");
     logger.info("*************************");
-    ServiceLoader<OpRepo> loader = ServiceLoader
-        .load(OpRepo.class);
+    ServiceLoader<OpRepo> loader = ServiceLoader.load(OpRepo.class);
     Iterator<OpRepo> it = loader.iterator();
     while (it.hasNext())
     {
       OpRepo dest = it.next();
-      logger.info("Discovered OpRepo: " + dest.getName());
-      repos.put(dest.getName(), dest);
+      logger.info("Discovered OpRepo: " + dest.getType());
+      repos.put(dest.getType(), dest);
     }
   }
-  
+
   public boolean isNodeOp(String expression)
   {
     try
@@ -196,7 +195,7 @@ public class Locator
         NodeOp<?> op = ctor.create();
         if (path != null)
         {
-          op.setPath(path);
+          op.insertArg(path);
         }
         String args[] = StringUtils.split(fnArgs, " ");
         op.configure(args);
@@ -236,7 +235,7 @@ public class Locator
         NodeOp<?> op = ctor.create();
         if (path != null)
         {
-          op.setPath(path);
+          op.insertArg(path);
         }
         nodeOpCache.put(expression, op);
         return op;
@@ -345,12 +344,14 @@ public class Locator
     }
     else
     {
-      throw new OpsException(expression + " is not a valid function.");
+      FileDestination dest = new FileDestination();
+      dest.setLocation(expression);
+      return dest;
+      // throw new OpsException(expression + " is not a valid function.");
     }
   }
 
-  public OutputDestination<?> resolveRepo(String expression)
-      throws OpsException
+  public OutputDestination<?> resolveRepo(String expression) throws OpsException
   {
     Matcher matcher = fnPattern.matcher(expression);
     boolean matchFound = matcher.find();
@@ -383,6 +384,7 @@ public class Locator
       throw new OpsException(expression + " is not a valid function.");
     }
   }
+
   public JsonNode evaluate(String expression, JsonNode context,
       JsonNode fallback)
   {

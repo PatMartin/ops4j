@@ -55,7 +55,7 @@ public class JacksonUtil
     {
       mapper = new ObjectMapper();
       mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-      //mapper.enableDefaultTyping();
+      // mapper.enableDefaultTyping();
     }
     return mapper;
   }
@@ -610,5 +610,35 @@ public class JacksonUtil
       return node;
     }
     return node.at(path);
+  }
+
+  public static JsonNode removeNulls(JsonNode node)
+  {
+    if (node == null)
+    {
+      return null;
+    }
+    switch (node.getNodeType())
+    {
+      case OBJECT:
+      {
+        ObjectNode onode = (ObjectNode) node;
+        Iterator<String> fnIt = onode.fieldNames();
+        while (fnIt.hasNext())
+        {
+          String name = fnIt.next();
+          if (onode.get(name) == null || onode.get(name).isMissingNode()
+              || onode.get(name).isNull())
+          {
+            onode.remove(name);
+          }
+          else
+          {
+            removeNulls(onode.get(name));
+          }
+        }
+      }
+    }
+    return node;
   }
 }

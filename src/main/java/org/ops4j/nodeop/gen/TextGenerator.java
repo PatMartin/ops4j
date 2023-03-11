@@ -16,8 +16,8 @@ import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 
 @AutoService(NodeOp.class)
-@Command(name = "gen:first", mixinStandardHelpOptions = false,
-    description = "Generate a first name." + "%n%nExample: gen:text")
+@Command(name = "gen:text", mixinStandardHelpOptions = false,
+    description = "Generate text." + "%n%nExample: gen:text")
 public class TextGenerator extends BaseNodeOp<TextGenerator>
 {
   @Option(names = { "-p", "-pattern" }, required = false,

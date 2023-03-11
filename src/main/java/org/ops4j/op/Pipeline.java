@@ -31,7 +31,7 @@ public class Pipeline extends BaseOp<Pipeline>
   @Option(names = { "-i", "--immutable" },
       description = "Runs the pipeline as an immutable pipeline.")
   private @Getter @Setter Boolean      immutable = false;
-  
+
   @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY,
       property = "@class")
   private @Getter @Setter List<Op<?>>  ops       = new ArrayList<>();
@@ -43,10 +43,8 @@ public class Pipeline extends BaseOp<Pipeline>
 
   public Pipeline initialize() throws OpsException
   {
-    if (ops == null)
-    {
-      ops = Ops.parseCommands(StringUtils.join(getCommands(), ' '));
-    }
+    ops = Ops.parseCommands(StringUtils.join(getCommands(), ' '));
+
     // OpLogger.syserr("OPS: '",
     // ops.stream().map(op -> op.getName()).collect(Collectors.toList()), ",");
     // OpLogger.syserr("COMMANDS: '", StringUtils.join(getCommands()), ",");
@@ -78,7 +76,7 @@ public class Pipeline extends BaseOp<Pipeline>
   public List<OpData> execute(final OpData input) throws OpsException
   {
     List<OpData> curInput = input.asList();
-    List<OpData> curOutput = null;
+    List<OpData> curOutput = input.asList();
     for (Op<?> op : ops)
     {
       curOutput = new ArrayList<OpData>();

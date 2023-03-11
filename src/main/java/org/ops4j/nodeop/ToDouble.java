@@ -7,7 +7,6 @@ import org.ops4j.inf.NodeOp;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.DoubleNode;
-import com.fasterxml.jackson.databind.node.TextNode;
 import com.google.auto.service.AutoService;
 
 import picocli.CommandLine.Command;
@@ -24,11 +23,12 @@ public class ToDouble extends BaseNodeOp<ToDouble>
 
   public JsonNode execute(JsonNode input) throws OpsException
   {
-    if (getPath() == null)
+    if (getArgs() == null || getArgs().size() == 0 || getArgs().get(0) == null)
     {
       return new DoubleNode(Double.parseDouble(input.asText()));
     }
-    return new DoubleNode(Double.parseDouble(input.at(getPath()).asText()));
+    return new DoubleNode(
+        Double.parseDouble(input.at(getArgs().get(0)).asText()));
   }
 
   public static void main(String args[]) throws OpsException

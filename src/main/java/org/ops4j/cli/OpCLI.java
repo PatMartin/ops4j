@@ -292,7 +292,7 @@ public class OpCLI implements Callable<Integer>
           // System.err.println(op.getName() + ": " +
           // JacksonUtil.toString(node));
           OpData data = new OpData(node);
-          // System.err.println(op.getName() + ": " + data);
+          //System.err.println(op.getName() + ": " + data);
           List<OpData> results = op.execute(data);
           for (OpData result : results)
           {

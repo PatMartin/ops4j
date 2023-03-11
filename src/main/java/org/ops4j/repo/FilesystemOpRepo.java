@@ -8,7 +8,7 @@ import java.util.List;
 import org.ops4j.base.BaseOp;
 import org.ops4j.exception.OpsException;
 import org.ops4j.inf.Op;
-import org.ops4j.inf.Repo;
+import org.ops4j.inf.OpRepo;
 import org.ops4j.op.NoOp;
 import org.ops4j.op.Pipeline;
 import org.ops4j.util.Debugger;
@@ -21,7 +21,7 @@ import lombok.Setter;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 
-@AutoService(Repo.class)
+@AutoService(OpRepo.class)
 @Command(name = "fs-repo", mixinStandardHelpOptions = false)
 public class FilesystemOpRepo extends BaseOpRepo<FilesystemOpRepo>
 {
