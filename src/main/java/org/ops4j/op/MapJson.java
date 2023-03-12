@@ -27,7 +27,8 @@ public class MapJson extends BaseOp<MapJson>
       description = "A mapping of the form <dest>=<source> indicating the "
           + "source to destination mapping.%n%nExamples:%n%n" +
           "# map top level field 'src' to 'dest'"
-          + "%n/dest=/src%n# set time to current time%n/time=now:")
+          + "%n/dest=/src%n# set time to current time%n/time=now:%n"
+          + "/yesterday='now(-offset=-86400000)'")
   private @Getter @Setter Map<String, String> mapping;
 
   private JsonMapper                          mapper;
