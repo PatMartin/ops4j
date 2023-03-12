@@ -22,7 +22,7 @@ import picocli.CommandLine.Option;
     description = "Returns current time as milliseconds " + "since 1/1/1970")
 public class Now extends BaseNodeOp<Now>
 {
-  @Option(names = { "-o", "--offset" }, required = false,
+  @Option(names = { "-o", "-offset" }, required = false,
       description = "An optional offset to be "
           + "applied to the value returned by the now node operation.")
   private @Getter @Setter Long offset = 0L;
