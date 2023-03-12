@@ -43,7 +43,7 @@ public class Locator
   // node-op
   // node-op:/path
   private Pattern                                   noargsPattern = Pattern
-      .compile("^\\s*(\\S+)\\s*$", Pattern.CASE_INSENSITIVE);
+      .compile("^\\s*(\\S+):\\s*$", Pattern.CASE_INSENSITIVE);
   private Pattern                                   withPath      = Pattern
       .compile("^(\\S+):(/\\S*)$");
   private Map<String, NodeOp<?>>                    nodeOpCache   = new HashMap<String, NodeOp<?>>();
