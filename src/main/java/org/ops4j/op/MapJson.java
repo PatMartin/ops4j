@@ -23,7 +23,11 @@ import picocli.CommandLine.Parameters;
     + "documents to alternate forms.")
 public class MapJson extends BaseOp<MapJson>
 {
-  @Parameters(index = "0", arity = "0..*", description = "<dest>=<source>")
+  @Parameters(index = "0", arity = "0..*",
+      description = "A mapping of the form <dest>=<source> indicating the "
+          + "source to destination mapping.%n%nExamples:%n%n" +
+          "# map top level field 'src' to 'dest'"
+          + "%n/dest=/src%n# set time to current time%n/time=now:")
   private @Getter @Setter Map<String, String> mapping;
 
   private JsonMapper                          mapper;
