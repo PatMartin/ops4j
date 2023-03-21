@@ -41,10 +41,10 @@ public class LogPhases extends BaseOp<LogPhases>
     return input.asList();
   }
 
-  public LogPhases close() throws OpsException
+  public List<OpData> close() throws OpsException
   {
     info("CLOSE");
-    return this;
+    return OpData.emptyList();
   }
 
   public LogPhases cleanup() throws OpsException

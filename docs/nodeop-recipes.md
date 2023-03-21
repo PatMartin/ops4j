@@ -28,5 +28,3 @@ Which returns...
   "matched" : [ "Kandice", "Kristal" ]
 }
 ```
-
-

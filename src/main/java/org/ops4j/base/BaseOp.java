@@ -104,15 +104,9 @@ public class BaseOp<T extends BaseOp<T>> implements Op<T>, Fallback, OpLogging
   }
 
   @Override
-  public List<OpData> flush() throws OpsException
+  public List<OpData> close() throws OpsException
   {
     return new ArrayList<OpData>();
-  }
-
-  @SuppressWarnings("unchecked") @Override
-  public T close() throws OpsException
-  {
-    return (T) this;
   }
 
   @SuppressWarnings("unchecked") @Override
@@ -149,6 +143,7 @@ public class BaseOp<T extends BaseOp<T>> implements Op<T>, Fallback, OpLogging
         JacksonUtil.toString(this, "N/A"));
   }
 
+  @Override
   public void setLogLevel(LogLevel logLevel)
   {
     this.logLevel = logLevel;

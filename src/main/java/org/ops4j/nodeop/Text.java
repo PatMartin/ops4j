@@ -4,6 +4,7 @@ import org.ops4j.base.BaseNodeOp;
 import org.ops4j.cli.NodeOpCLI;
 import org.ops4j.exception.OpsException;
 import org.ops4j.inf.NodeOp;
+import org.ops4j.log.OpLogger;
 import org.ops4j.util.JacksonUtil;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -27,7 +28,7 @@ public class Text extends BaseNodeOp<Text>
   @Option(names = { "-i", "-interpolate" }, required = false,
       description = "When set, interpolate the text value.  "
           + "(Default=${DEFAULT-VALUE})")
-  private @Getter @Setter boolean interpolate = true;
+  private @Getter @Setter boolean interpolate = false;
 
   public Text()
   {
@@ -36,10 +37,16 @@ public class Text extends BaseNodeOp<Text>
 
   public JsonNode execute(JsonNode input) throws OpsException
   {
+    //OpLogger.sysout("***************** TECTTINGIIG");
+    
     if (isInterpolate())
     {
+      //OpLogger.sysout("INTERPOLATING: '", getText(), "' vs '",
+      //    JacksonUtil.toPrettyString(input), "'");
       return new TextNode(JacksonUtil.interpolate(getText(), input));
     }
+    OpLogger.sysout("TEXTING: ", getText());
+    //DEBUG("TEXTING: '", getText());
     return new TextNode(getText());
   }
 

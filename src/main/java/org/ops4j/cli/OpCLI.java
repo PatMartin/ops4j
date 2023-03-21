@@ -134,7 +134,11 @@ public class OpCLI implements Callable<Integer>
 
     if (op.provides(PhaseType.CLOSE))
     {
-      op.close();
+      List<OpData> results = op.close();
+      for (OpData result : results)
+      {
+        System.out.println(result);
+      }
     }
     if (op.provides(PhaseType.CLEANUP))
     {
@@ -142,17 +146,17 @@ public class OpCLI implements Callable<Integer>
     }
     return 0;
   }
-  
+
   public static int cli(Op<?> op, String[] args) throws OpsException
   {
     CommandLine cmd = new CommandLine(op);
     int currentCount = 0;
     int count = 0;
     OpLogger logger;
-
+    OpCLI cli = new OpCLI();
+    
     try
     {
-      OpCLI cli = new OpCLI();
       CommandLine cliCmd = new CommandLine(cli);
       cliCmd.setCaseInsensitiveEnumValuesAllowed(true).getCommandSpec().parser()
           .collectErrors(true);
@@ -292,7 +296,7 @@ public class OpCLI implements Callable<Integer>
           // System.err.println(op.getName() + ": " +
           // JacksonUtil.toString(node));
           OpData data = new OpData(node);
-          //System.err.println(op.getName() + ": " + data);
+          // System.err.println(op.getName() + ": " + data);
           List<OpData> results = op.execute(data);
           for (OpData result : results)
           {
@@ -300,18 +304,23 @@ public class OpCLI implements Callable<Integer>
           }
         }
       }
+      
+      if (op.provides(PhaseType.CLOSE))
+      {
+        logger.DEBUG("Closing ", op.getName());
+        List<OpData> results = op.close();
+        for (OpData result : results)
+        {
+          output(cli, result);
+        }
+        logger.DEBUG("Closed ", op.getName());
+      }
     }
     catch(IOException ex)
     {
       throw new OpsException(ex);
     }
 
-    if (op.provides(PhaseType.CLOSE))
-    {
-      logger.DEBUG("Closing ", op.getName());
-      op.close();
-      logger.DEBUG("Closed ", op.getName());
-    }
     if (op.provides(PhaseType.CLEANUP))
     {
       logger.DEBUG("Cleanup ", op.getName());

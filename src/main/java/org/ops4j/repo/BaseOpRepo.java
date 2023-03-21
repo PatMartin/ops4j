@@ -30,6 +30,12 @@ public abstract class BaseOpRepo<T extends BaseOpRepo<T>>
     logger = OpLoggerFactory.getLogger("ops.repo");
   }
   
+  public BaseOpRepo(String name)
+  {
+    this();
+    setName(name);
+  }
+  
   public String getType()
   {
     return this.getClass().getCanonicalName();

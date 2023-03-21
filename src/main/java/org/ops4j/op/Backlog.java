@@ -113,9 +113,10 @@ public class Backlog extends BaseOp<Backlog>
     return output;
   }
 
-  public Backlog close() throws OpsException
+  @Override
+  public List<OpData> close() throws OpsException
   {
-    pipeline.close();
+    List<OpData> output = pipeline.close();
     executor.shutdown();
     try
     {
@@ -125,7 +126,7 @@ public class Backlog extends BaseOp<Backlog>
     {
       WARN("Interrupted Exception: ", ex.getMessage());
     }
-    return this;
+    return output;
   }
 
   public Backlog cleanup() throws OpsException

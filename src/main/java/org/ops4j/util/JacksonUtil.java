@@ -641,4 +641,20 @@ public class JacksonUtil
     }
     return node;
   }
+
+  public static List<String> keys(JsonNode obj)
+  {
+    List<String> keys = new ArrayList<>();
+
+    if (obj != null && !obj.isEmpty() && !obj.isNull() && obj.isObject())
+    {
+      Iterator<String> fieldNameIt = obj.fieldNames();
+      while (fieldNameIt.hasNext())
+      {
+        keys.add(fieldNameIt.next());
+      }
+    }
+
+    return keys;
+  }
 }

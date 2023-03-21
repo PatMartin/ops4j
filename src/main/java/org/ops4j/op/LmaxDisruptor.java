@@ -397,8 +397,9 @@ public class LmaxDisruptor extends BaseOp<LmaxDisruptor>
     // return OpData.emptyList();
   }
 
-  public LmaxDisruptor close() throws OpsException
+  public List<OpData> close() throws OpsException
   {
+    // TODO: How to handle this?
     for (Op<?> op : ops)
     {
       op.close();
@@ -412,7 +413,7 @@ public class LmaxDisruptor extends BaseOp<LmaxDisruptor>
     {
       throw new OpsException(ex);
     }
-    return this;
+    return OpData.emptyList();
   }
 
   public LmaxDisruptor cleanup() throws OpsException

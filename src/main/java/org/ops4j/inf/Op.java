@@ -35,9 +35,7 @@ public interface Op<T extends Op<T>>
 
   public List<OpData> execute(OpData input) throws OpsException;
 
-  public List<OpData> flush() throws OpsException;
-
-  public T close() throws OpsException;
+  public List<OpData> close() throws OpsException;
 
   public T cleanup() throws OpsException;
 

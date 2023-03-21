@@ -32,7 +32,7 @@ public class FilesystemOpRepo extends BaseOpRepo<FilesystemOpRepo>
 
   public FilesystemOpRepo()
   {
-    super();
+    super("fs-repo");
   }
 
   @Override
@@ -60,7 +60,8 @@ public class FilesystemOpRepo extends BaseOpRepo<FilesystemOpRepo>
     File f = new File(getPath() + File.separator + name + ".op");
     try
     {
-      // This is the reason that we have to support create() in the Op interface.
+      // This is the reason that we have to support create() in the Op
+      // interface.
       return JacksonUtil.mapper().readValue(f, BaseOp.class);
     }
     catch(IOException ex)

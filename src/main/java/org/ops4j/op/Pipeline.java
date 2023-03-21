@@ -89,17 +89,25 @@ public class Pipeline extends BaseOp<Pipeline>
     return curOutput;
   }
 
-  public Pipeline close() throws OpsException
+  public List<OpData> close() throws OpsException
   {
+    List<OpData> remaining = new ArrayList<OpData>();
+
     for (Op<?> op : ops)
     {
-      if (op.provides(PhaseType.CLOSE))
+      List<OpData> cur = new ArrayList<OpData>();
+      if (remaining.size() > 0)
       {
-        DEBUG("close ", op.getName());
-        op.close();
+        for (OpData data : remaining)
+        {
+          cur.addAll(op.execute(data));
+        }
       }
+
+      remaining = cur;
+      remaining.addAll(op.close());
     }
-    return this;
+    return remaining;
   }
 
   public Pipeline cleanup() throws OpsException

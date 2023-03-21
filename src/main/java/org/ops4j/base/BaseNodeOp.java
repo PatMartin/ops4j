@@ -53,6 +53,7 @@ public class BaseNodeOp<T extends BaseNodeOp<T>>
   public BaseNodeOp(String name)
   {
     logger = OpLoggerFactory.getLogger("ops.nodeop." + name);
+    logger.setLogLevel(getLogLevel());
     setName(name);
   }
 
