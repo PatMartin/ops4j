@@ -57,7 +57,7 @@ public class ArrayAdd extends BaseNodeOp<ArrayAdd>
       {
         logger.trace("NodeOp(srcPath='", path, "', src='", input.toString(),
             "')");
-        array.add(Ops4J.locator().evaluate(path, input));
+        array.add(Ops4J.locator().execute(path, input));
       }
       else if (path.startsWith("/"))
       {

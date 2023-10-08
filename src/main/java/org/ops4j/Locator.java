@@ -20,9 +20,9 @@ import org.ops4j.io.InputSource;
 import org.ops4j.io.OutputDestination;
 import org.ops4j.log.OpLogger;
 import org.ops4j.log.OpLoggerFactory;
-import org.ops4j.util.JacksonUtil;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.TextNode;
 
 import lombok.Getter;
 
@@ -70,22 +70,22 @@ public class Locator
     while (it.hasNext())
     {
       Op<?> op = it.next();
-      logger.info("Discovered Operation: " + op.getName());
+      logger.DEBUG("Discovered Operation: " + op.getName());
       ops.put(op.getName(), op);
     }
   }
 
   private void loadNodeOps()
   {
-    logger.info("*********************");
-    logger.info("**** Loading NodeOps:");
-    logger.info("*********************");
+    logger.DEBUG("*********************");
+    logger.DEBUG("**** Loading NodeOps:");
+    logger.DEBUG("*********************");
     ServiceLoader<NodeOp> loader = ServiceLoader.load(NodeOp.class);
     Iterator<NodeOp> it = loader.iterator();
     while (it.hasNext())
     {
       NodeOp<?> nodeOp = it.next();
-      logger.info("Discovered Node Operation: " + nodeOp.getName());
+      logger.DEBUG("Discovered Node Operation: ", nodeOp.getName());
       nodeOps.put(nodeOp.getName(), nodeOp);
     }
   }
@@ -164,39 +164,146 @@ public class Locator
     }
   }
 
-  // <module>:<node-op>([[name=value][, name=value]*])
+  public JsonNode execute(String expression, JsonNode input) throws OpsException
+  {
+    NodeOp<?> op;
+    try
+    {
+      return resolveNodeOp(expression).execute(input);
+    }
+    catch(OpsException ex)
+    {
+      return new TextNode(expression);
+    }
+  }
+
   public NodeOp<?> resolveNodeOp(String expression) throws OpsException
   {
-    // System.out.println("Attempting to resolve: '" + expression + "'");
+    if (expression == null)
+    {
+      throw new OpsException("Null node operation expression.");
+    }
+    String exp = expression.trim();
+    if (exp.length() == 0)
+    {
+      throw new OpsException(
+          "Empty or whitespace only node operation expression.");
+    }
+
+    if (nodeOpCache.containsKey(exp))
+    {
+      logger.DEBUG("RESOLVED FROM CACHE: '", exp, "'");
+      return nodeOpCache.get(exp);
+    }
+
+    // Functional expression:
+    String fn = null, path = null, argStr = null;
+    // If we have a functional expression:
+    if (exp.endsWith(")"))
+    {
+      Pattern funcPattern = Pattern.compile("^(.*)\\((.*)\\)$");
+      Matcher matcher = funcPattern.matcher(exp);
+
+      // If we have a syntactically valid functional expression:
+      if (matcher.find())
+      {
+        fn = matcher.group(1);
+        argStr = matcher.group(2);
+        int i = exp.indexOf(":/");
+        if (i > 0)
+        {
+          fn = exp.substring(0, i);
+          path = exp.substring(i + 1);
+        }
+        // Slip on through to the other side...
+      }
+      else
+      {
+        throw new OpsException(
+            "Invalid functional node-op expression: '" + expression + "'");
+      }
+    }
+    else
+    {
+      int i = exp.indexOf(":/");
+      if (i > 0)
+      {
+        fn = exp.substring(0, i);
+        path = exp.substring(i + 1);
+        // slip on through...
+      }
+      else if (exp.endsWith(":"))
+      {
+        fn = exp.substring(0, exp.length() - 1);
+        // slip on through
+      }
+      else
+      {
+        throw new OpsException(
+            "Invalid node-op expression: '" + expression + "'");
+      }
+    }
+
+    logger.DEBUG("fn='", fn, "', path='", path, "', argStr='", argStr, "'");
+
+    if (nodeOps.containsKey(fn))
+    {
+      logger.DEBUG("RESOLVED: '", fn, "'");
+      NodeOp<?> ctor = nodeOps.get(fn);
+      NodeOp<?> op = ctor.create();
+
+      // String args[] = StringUtils.split(argStr, " ");
+      if (path == null)
+      {
+        op.configure(argStr);
+      }
+      else if (argStr == null || argStr.length() == 0)
+      {
+        op.configure(path);
+      }
+      else
+      {
+        op.configure(path + " " + argStr);
+      }
+      nodeOpCache.put(exp, op);
+      return op;
+    }
+    else
+    {
+      throw new OpsException("Unresolved operation: fn='" + fn
+          + "', expression='" + expression + "'");
+    }
+  }
+
+  // <module>:<node-op>([[name=value][, name=value]*])
+  public NodeOp<?> resolveNodeOpOld(String expression) throws OpsException
+  {
+    logger.DEBUG("Attempting to resolve: '" + expression + "'");
+
+    // fn(args)
     Matcher matcher = fnPattern.matcher(expression);
     boolean matchFound = matcher.find();
     if (matchFound)
     {
       String fnName = matcher.group(1);
       String path = null;
-      Matcher pathMatcher = withPath.matcher(matcher.group(1));
-      if (pathMatcher.matches())
-      {
-        path = pathMatcher.group(2);
-        fnName = pathMatcher.group(1);
-      }
+
       String fnArgs = matcher.group(2);
-      logger.DEBUG("Resolving node-op: '", fnName, "', PATH=", path,
-          ", ARGS: '", fnArgs, "'");
+      logger.INFO("Resolving node-op: '", fnName, "', PATH=", path, ", ARGS: '",
+          fnArgs, "'");
 
       if (nodeOpCache.containsKey(expression))
       {
+        logger.INFO("RESOLVED FROM CACHE: '", expression, "'");
         return nodeOpCache.get(expression);
       }
       else if (nodeOps.containsKey(fnName))
       {
+        logger.INFO("RESOLVED: '", fnName, "'");
         // System.out.println("FOUND: " + fnName);
         NodeOp<?> ctor = nodeOps.get(fnName);
         NodeOp<?> op = ctor.create();
-        if (path != null)
-        {
-          op.insertArg(path);
-        }
+
         String args[] = StringUtils.split(fnArgs, " ");
         op.configure(args);
         nodeOpCache.put(expression, op);
@@ -214,15 +321,35 @@ public class Locator
     if (matchFound)
     {
       String fnName = matcher.group(1);
-      logger.debug("Resolving node-op: FN: '" + fnName + "'");
+      logger.INFO("Resolving node-op: FN: '" + fnName + "'");
 
-      String path = null;
-      Matcher pathMatcher = withPath.matcher(fnName);
-      if (pathMatcher.matches())
+      if (nodeOpCache.containsKey(expression))
       {
-        path = pathMatcher.group(2);
-        fnName = pathMatcher.group(1);
+        return nodeOpCache.get(expression);
       }
+      else if (nodeOps.containsKey(fnName))
+      {
+        // System.out.println("FOUND: " + fnName);
+        NodeOp<?> ctor = nodeOps.get(fnName);
+        NodeOp<?> op = ctor.create();
+        nodeOpCache.put(expression, op);
+        return op;
+      }
+      else
+      {
+        throw new OpsException("Unresolved operation: fn='" + fnName
+            + "', expression='" + expression + "'");
+      }
+    }
+
+    matcher = withPath.matcher(expression);
+    matchFound = matcher.find();
+    if (matchFound)
+    {
+      String fnName = matcher.group(1);
+      String path = matcher.group(2);
+
+      logger.INFO("Resolving node-op: FN: '" + fnName + "'");
 
       if (nodeOpCache.containsKey(expression))
       {
@@ -246,7 +373,6 @@ public class Locator
             + "', expression='" + expression + "'");
       }
     }
-
     else
     {
       throw new OpsException(expression + " is not a valid function.");
@@ -400,18 +526,14 @@ public class Locator
     }
   }
 
-  public JsonNode evaluate(String expression, JsonNode input)
-      throws OpsException
-  {
-    return resolveNodeOp(expression).execute(input);
-  }
-
   public static void main(String args[]) throws OpsException
   {
     Locator locator = new Locator();
-    OpLogger.syserr("OUT: ", locator.evaluate("gen:now(--offset=86400)",
-        JacksonUtil.createObjectNode()));
-    OpLogger.syserr("OUT: ",
-        locator.evaluate("gen:now()", JacksonUtil.createObjectNode()));
+    locator.resolveNodeOp("now:");
+
+    // OpLogger.syserr("OUT: ", locator.evaluate("gen:now(--offset=86400)",
+    // JacksonUtil.createObjectNode()));
+    // OpLogger.syserr("OUT: ",
+    // locator.evaluate("gen:now()", JacksonUtil.createObjectNode()));
   }
 }

@@ -78,6 +78,7 @@ public class OpCLI implements Callable<Integer>
 
   public static int cli(Op<?> op) throws OpsException
   {
+    System.err.println("CLI");
     CommandLine cmd = new CommandLine(op);
     int currentCount = 0;
     int count = 0;
@@ -85,16 +86,19 @@ public class OpCLI implements Callable<Integer>
 
     try
     {
+      System.err.println("INIT-PHASE-CHECK");
       if (op.provides(PhaseType.INITIALIZE))
       {
         op.initialize();
       }
 
+      System.err.println("OPEN-PHASE-CHECK");
       if (op.provides(PhaseType.OPEN))
       {
         op.open();
       }
 
+      System.err.println("EXEC-PHASE-CHECK");
       if (op.provides(PhaseType.EXECUTE))
       {
         // Open up a stream
@@ -108,6 +112,7 @@ public class OpCLI implements Callable<Integer>
           jnIt = JsonNodeIterator.fromInputStream(System.in);
         }
 
+        System.err.println("DOES IT HAVE A NEXT? " + jnIt.hasNext());
         while (jnIt.hasNext())
         {
           currentCount++;
@@ -115,10 +120,10 @@ public class OpCLI implements Callable<Integer>
           JsonNode node = (op instanceof JsonSource)
               ? JacksonUtil.createObjectNode()
               : jnIt.next();
-          // System.err.println(op.getName() + ": " +
-          // JacksonUtil.toString(node));
+           System.err.println(op.getName() + ": " +
+           JacksonUtil.toString(node));
           OpData data = new OpData(node);
-          // System.err.println(op.getName() + ": " + data);
+           System.err.println(op.getName() + ": " + data);
           List<OpData> results = op.execute(data);
           for (OpData result : results)
           {
@@ -297,6 +302,7 @@ public class OpCLI implements Callable<Integer>
           // JacksonUtil.toString(node));
           OpData data = new OpData(node);
           // System.err.println(op.getName() + ": " + data);
+
           List<OpData> results = op.execute(data);
           for (OpData result : results)
           {

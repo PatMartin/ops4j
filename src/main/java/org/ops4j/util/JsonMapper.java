@@ -71,7 +71,7 @@ public class JsonMapper
     {
       logger.trace("NodeOp(srcPath='", srcPath, "', src='", src.toString(),
           "')");
-      srcNode = locator.evaluate(srcPath, src);
+      srcNode = locator.execute(srcPath, src);
     }
     else if (srcPath.startsWith("/"))
     {

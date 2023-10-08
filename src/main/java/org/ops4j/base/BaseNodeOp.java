@@ -2,6 +2,7 @@ package org.ops4j.base;
 
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.ops4j.Ops4J;
 import org.ops4j.exception.ConfigurationException;
 import org.ops4j.exception.OpsException;
@@ -11,6 +12,7 @@ import org.ops4j.log.OpLogger;
 import org.ops4j.log.OpLogger.LogLevel;
 import org.ops4j.log.OpLoggerFactory;
 import org.ops4j.log.OpLogging;
+import org.ops4j.util.ArgumentTokenizer;
 import org.ops4j.util.JacksonUtil;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -52,9 +54,12 @@ public class BaseNodeOp<T extends BaseNodeOp<T>>
 
   public BaseNodeOp(String name)
   {
-    logger = OpLoggerFactory.getLogger("ops.nodeop." + name);
-    logger.setLogLevel(getLogLevel());
     setName(name);
+    logger = OpLoggerFactory.getLogger("ops.nodeop." + name);
+    // logger.setLogLevel(getLogLevel());
+    // OpLogger.syserr("SETTING LOG LEVEL OF: '", name, "' to '", getLogLevel(),
+    // "'");
+    // logger.setLogLevel(getLogLevel());
   }
 
   @Override
@@ -113,15 +118,28 @@ public class BaseNodeOp<T extends BaseNodeOp<T>>
     return null;
   }
 
+  public void configure(String args) throws OpsException
+  {
+    logger.DEBUG(getName(), ".configure(", args, ")");
+
+    if (args != null && args.length() > 0)
+    {
+      configure(ArgumentTokenizer.tokenize(args));
+    }
+  }
+
   public void configure(String args[]) throws OpsException
   {
-    // OpsLogger.syserr("CONFIG: ", config.length);s
+    DEBUG(getName(), ".configure([", StringUtils.join(args, ","), " ])");
     if (args != null && args.length > 0)
     {
       CommandSpec spec = CommandSpec.create();
       new CommandLine(this).parseArgs(args);
-      // OpsLogger.syserr("NodeOp Configuration ", getName(), ": ",
-      // JacksonUtil.toString(this, "N/A"));
+
+      // Refresh
+      setLogLevel(getLogLevel());
+      DEBUG("NodeOp config: ", getName(), ": ",
+          JacksonUtil.toString(this, "N/A"));
     }
   }
 
@@ -130,7 +148,10 @@ public class BaseNodeOp<T extends BaseNodeOp<T>>
     // Do nothing for now.
     CommandSpec spec = CommandSpec.create();
     new CommandLine(this).parseArgs(args.toArray(new String[0]));
-    logger.DEBUG("Op Configuration ", getName(), ": ",
+
+    // Refresh
+    setLogLevel(getLogLevel());
+    DEBUG("NodeOp config: ", getName(), ": ",
         JacksonUtil.toString(this, "N/A"));
   }
 
@@ -146,20 +167,27 @@ public class BaseNodeOp<T extends BaseNodeOp<T>>
     if (logger == null)
     {
       logger = OpLoggerFactory.getLogger("ops.nodeop." + getName());
+      logger.setLogLevel(getLogLevel());
     }
     return logger;
   }
 
   public JsonNode getTarget(JsonNode doc)
   {
+    DEBUG("getArgs()=", getArgs());
+    
     if (getArgs() == null || getArgs().size() == 0 || getArgs().get(0) == null)
     {
+      DEBUG("getTarget(no-args)=", doc);
       return doc;
     }
     else if (getArgs().get(0).equals("/"))
     {
+      DEBUG("getTarget(/)=", doc);
       return doc;
     }
+    DEBUG("getTarget(doc.at(", getArgs().get(0), ")=",
+        doc.at(getArgs().get(0)));
     return doc.at(getArgs().get(0));
   }
 

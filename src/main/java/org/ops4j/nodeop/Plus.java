@@ -38,7 +38,6 @@ public class Plus extends BaseNodeOp<Plus>
   {
     JsonNode target = getTarget(input);
     
-    // syserr("plus(", getOperand(), ") on ", input);
     if (target == null)
     {
       return input;

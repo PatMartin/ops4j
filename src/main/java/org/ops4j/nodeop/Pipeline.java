@@ -20,7 +20,7 @@ import picocli.CommandLine.Parameters;
 
 @AutoService(NodeOp.class)
 @Command(name = "run", mixinStandardHelpOptions = false,
-    description = "Returns current time as milliseconds " + "since 1/1/1970")
+    description = "Run a series of node operations in a pipeline.")
 public class Pipeline extends BaseNodeOp<Pipeline>
 {
   @Parameters(index = "0", arity = "1..*",
@@ -31,7 +31,7 @@ public class Pipeline extends BaseNodeOp<Pipeline>
 
   public Pipeline()
   {
-    super("pipeline");
+    super("run");
   }
 
   public JsonNode execute(JsonNode input) throws OpsException

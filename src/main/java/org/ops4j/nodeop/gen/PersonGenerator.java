@@ -9,7 +9,11 @@ import org.ops4j.util.JacksonUtil;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.github.javafaker.Address;
+import com.github.javafaker.Demographic;
 import com.github.javafaker.Faker;
+import com.github.javafaker.Name;
+import com.github.javafaker.PhoneNumber;
 import com.google.auto.service.AutoService;
 
 import picocli.CommandLine.Command;
@@ -28,15 +32,23 @@ public class PersonGenerator extends BaseNodeOp<PersonGenerator>
   {
     Faker faker = FakerUtil.faker();
     ObjectNode person = JacksonUtil.createObjectNode();
+    Address address = faker.address();
+    Demographic demo = faker.demographic();
+    Name name = faker.name();
+    PhoneNumber phone = faker.phoneNumber();
 
-    person.put("first", faker.name().firstName());
-    person.put("last", faker.name().lastName());
-    person.put("cell-phone", faker.phoneNumber().cellPhone());
-    person.put("work-phone", faker.phoneNumber().phoneNumber());
-    person.put("work-extension", faker.phoneNumber().extension());
-    person.put("marital-status", faker.demographic().maritalStatus());
-    person.put("race", faker.demographic().race());
-    person.put("sex", faker.demographic().sex());
+    person.put("first", name.firstName());
+    person.put("last", name.lastName());
+    person.put("cell-phone", phone.cellPhone());
+    person.put("work-phone", phone.phoneNumber());
+    person.put("marital-status", demo.maritalStatus());
+    person.put("race", demo.race());
+    person.put("sex", demo.sex());
+    person.put("city", address.city());
+    person.put("state", address.stateAbbr());
+
+    person.put("address", address.streetAddress());
+    person.put("zip", address.zipCode());
 
     return person;
   }

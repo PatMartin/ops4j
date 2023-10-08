@@ -122,7 +122,7 @@
 		<dependency>
 			<groupId>com.lmax</groupId>
 			<artifactId>disruptor</artifactId>
-			<version>4.0.0.RC1</version>
+			<version>3.4.4</version>
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/com.codahale/usl4j -->

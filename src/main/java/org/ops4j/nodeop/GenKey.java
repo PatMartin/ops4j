@@ -45,6 +45,9 @@ public class GenKey extends BaseNodeOp<GenKey>
   {
     try
     {
+      DEBUG("key-size=", fallback(getKeySize(), config().getInt("keySize")),
+          ", algorithm='",
+          fallback(getAlgorithm(), config().getString("algorithm")), "'");
       SecretKey key = SecurityUtil.generateKey(
           fallback(getKeySize(), config().getInt("keySize")),
           fallback(getAlgorithm(), config().getString("algorithm")));

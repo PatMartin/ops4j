@@ -590,7 +590,7 @@ public class OpLogger implements Logger
   {
     System.err.println(StringUtils.join(msg));
   }
-
+  
   public static void sysout(Object... msg)
   {
     System.out.println(StringUtils.join(msg));

@@ -1,6 +1,7 @@
 package org.ops4j.util;
 
 import java.util.AbstractMap.SimpleEntry;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -329,7 +330,7 @@ public class JacksonUtil
 
     if (!target.isArray())
     {
-      OpLogger.syserr("PATH: ", path, ", DOC: ", doc, ", TARGET: ", target);
+      logger.DEBUG("PATH: ", path, ", DOC: ", doc, ", TARGET: ", target);
       throw new OpsException("target '" + path + "' is not an array but is a "
           + target.getNodeType() + " instead with value=" + target);
     }
@@ -347,7 +348,7 @@ public class JacksonUtil
           ")");
       logger.TRACE("BEFORE: ", elt);
       JsonNode after = put(path, elt, array.get(i));
-      logger.TRACE("AFTER: ", elt);
+      logger.TRACE("AFTER: ", after);
       logger.TRACE(logger.getName(), "=", logger.getLogLevel());
       unwound.add(elt);
     }
@@ -519,6 +520,28 @@ public class JacksonUtil
     {
       return BooleanNode.valueOf((Boolean) obj);
     }
+    else if (obj instanceof List)
+    {
+      return BooleanNode.valueOf((Boolean) obj);
+    }
+    else if (obj instanceof java.math.BigDecimal)
+    {
+      return new DoubleNode(((BigDecimal) obj).doubleValue());
+    }
+    else if (obj instanceof List)
+    {
+      List<Object> list = (List<Object>) obj;
+      ArrayNode array = JacksonUtil.createArrayNode();
+      for (Object o : list)
+      {
+        array.add(toJsonNode(o));
+      }
+      return array;
+    }
+    else if (obj instanceof Map)
+    {
+      return mapper().valueToTree((Map)obj);
+    }
     else
     {
       return new TextNode("UNDEFINED: " + obj.getClass().getName() + "=" + obj);
@@ -573,7 +596,7 @@ public class JacksonUtil
 
   public static String interpolate(String text, JsonNode context)
   {
-    // OpLogger.syserr("INTERPOLATING: ", text, " vs ", context);
+    logger.DEBUG("INTERPOLATING: ", text, " vs ", context);
     if (text == null || text.trim().length() <= 0)
     {
       return text;
@@ -585,6 +608,8 @@ public class JacksonUtil
 
     while (varMatcher.find())
     {
+      logger.DEBUG("ADDING VARIABLE: '",
+          text.substring(varMatcher.start() + 2, varMatcher.end() - 1), "'");
       variables
           .add(text.substring(varMatcher.start() + 2, varMatcher.end() - 1));
     }
@@ -593,11 +618,11 @@ public class JacksonUtil
 
     for (String variable : variables)
     {
-      // OpLogger.syserr("VARIABLE: ", variable);
+      logger.DEBUG("VARIABLE: ", variable);
       JsonNode node = context.at(variable);
       if (node != null)
       {
-        itext = itext.replace("${" + variable + "}", node.toString());
+        itext = itext.replace("${" + variable + "}", node.asText());
       }
     }
     return itext;
@@ -656,5 +681,27 @@ public class JacksonUtil
     }
 
     return keys;
+  }
+
+  public static ObjectNode getStatistics(JsonNode node)
+  {
+    return getStatistics(1, 1, node, JacksonUtil.createObjectNode());
+  }
+
+  public static ObjectNode getStatistics(int depth, int maxDepth, JsonNode node,
+      ObjectNode stats)
+  {
+    if (depth > maxDepth)
+    {
+      return null;
+    }
+    if (node == null)
+    {
+      stats.put("type", "NULL");
+      return stats;
+    }
+    stats.put("type", node.getNodeType().toString());
+
+    return stats;
   }
 }

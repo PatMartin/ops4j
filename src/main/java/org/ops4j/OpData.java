@@ -81,6 +81,12 @@ public class OpData implements Portable<OpData>, Setters<OpData>,
     return new OpData(JacksonUtil.toObjectNode(map));
   }
 
+  public static OpData from(JsonNode json)
+      throws JsonMappingException, JsonProcessingException
+  {
+    return new OpData(json);
+  }
+
   public List<OpData> asList()
   {
     List<OpData> list = new ArrayList<OpData>(1);

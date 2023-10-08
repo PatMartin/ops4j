@@ -9,6 +9,7 @@ import org.ops4j.base.BaseOp;
 import org.ops4j.cli.OpCLI;
 import org.ops4j.exception.OpsException;
 import org.ops4j.inf.Op;
+import org.ops4j.log.OpLogger;
 import org.ops4j.util.Ops;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
@@ -26,7 +27,7 @@ public class Pipeline extends BaseOp<Pipeline>
 {
   @Parameters(index = "0", arity = "0..*",
       description = "Run a pipeline of operations.")
-  private @Getter @Setter List<String> commands;
+  private @Getter @Setter List<String> commands  = new ArrayList<>();
 
   @Option(names = { "-i", "--immutable" },
       description = "Runs the pipeline as an immutable pipeline.")
@@ -34,7 +35,7 @@ public class Pipeline extends BaseOp<Pipeline>
 
   @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY,
       property = "@class")
-  private @Getter @Setter List<Op<?>>  ops       = new ArrayList<>();
+  private @Getter @Setter List<Op<?>>  ops;
 
   public Pipeline()
   {
@@ -43,7 +44,11 @@ public class Pipeline extends BaseOp<Pipeline>
 
   public Pipeline initialize() throws OpsException
   {
-    ops = Ops.parseCommands(StringUtils.join(getCommands(), ' '));
+    if (ops == null || ops.size() == 0)
+    {
+      OpLogger.syserr("COMMANDS: '", StringUtils.join(getCommands()));
+      ops = Ops.parseCommands(StringUtils.join(getCommands(), ' '));
+    }
 
     // OpLogger.syserr("OPS: '",
     // ops.stream().map(op -> op.getName()).collect(Collectors.toList()), ",");

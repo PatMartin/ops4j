@@ -8,8 +8,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.ops4j.Ops4J;
 import org.ops4j.exception.OpsException;
 import org.ops4j.inf.Op;
+import org.ops4j.inf.OpRepo;
 import org.ops4j.log.OpLogger;
 import org.ops4j.log.OpLoggerFactory;
+import org.ops4j.op.Pipeline;
 
 import lombok.Getter;
 import lombok.NonNull;
@@ -24,7 +26,27 @@ public class Ops
     CMD, STRING
   }
 
-  public static List<Op<?>> parseCommands(@NonNull String command) throws OpsException
+  public static List<Op<?>> parseCommands(@NonNull List<String> commands)
+      throws OpsException
+  {
+    List<Op<?>> ops = new ArrayList<>();
+    for (String cmd : commands)
+    {
+      logger.DEBUG("CMD: ", cmd);
+      List<Op<?>> cmdOps = parseCommands(cmd);
+      if (cmdOps.size() > 1)
+      {
+        ops.add(Pipeline.of(cmdOps));
+      }
+      else
+      {
+        ops.add(cmdOps.get(0));
+      }
+    }
+    return ops;
+  }
+
+  public static List<Op<?>> parseCommands(String command) throws OpsException
   {
     logger.DEBUG("PARSING COMMAND: '", command, "'");
     class PartInfo
@@ -126,7 +148,14 @@ public class Ops
         args = opArgs.toArray(new String[0]);
       }
 
-      if (opmap.containsKey(name))
+      logger.DEBUG("NAME:", name);
+      if (name.startsWith("@"))
+      {
+        String fn = name.substring(1);
+        Op<?> op = Ops4J.repo().load(fn);
+        ops.add(op);
+      }
+      else if (opmap.containsKey(name))
       {
         Op<?> ctor = opmap.get(name);
         Op<?> op = ctor.create();
@@ -137,6 +166,10 @@ public class Ops
         new CommandLine(op).parseArgs(args);
 
         ops.add(op);
+      }
+      else
+      {
+        logger.WARN("Invalid Command: '", name, "'");
       }
     }
     return ops;
