@@ -96,16 +96,17 @@ public class Ops4J
     return config;
   }
 
-  public static ObjectNode getInfo() throws OpsException
+  public static ArrayNode getInfo() throws OpsException
   {
-    ObjectNode info = JacksonUtil.createObjectNode();
+    ArrayNode info = JacksonUtil.createArrayNode();
 
-    info.set("modules", getModulesInfo());
-    info.set("operations", getOpsInfo());
-    info.set("node-operations", getOpsInfo());
-    info.set("operation-repositories", getReposInfo());
-    info.set("input-sources", getInputSourcesInfo());
-    info.set("output-destinations", getOutputDestinatonsInfo());
+    JacksonUtil.addArray(info, "module", getModulesInfo());
+    JacksonUtil.addArray(info, "op", getOpsInfo());
+    JacksonUtil.addArray(info, "nodeop", getNodeOpsInfo());
+    JacksonUtil.addArray(info, "repo", getReposInfo());
+    JacksonUtil.addArray(info, "source", getInputSourcesInfo());
+    JacksonUtil.addArray(info, "destination", getOutputDestinatonsInfo());
+
     return info;
   }
 

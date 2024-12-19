@@ -192,7 +192,7 @@ public class Locator
 
     if (nodeOpCache.containsKey(exp))
     {
-      logger.DEBUG("RESOLVED FROM CACHE: '", exp, "'");
+      logger.TRACE("RESOLVED FROM CACHE: '", exp, "'");
       return nodeOpCache.get(exp);
     }
 
@@ -393,11 +393,13 @@ public class Locator
     {
       fnName = fnMatcher.group(1);
       fnArgs = fnMatcher.group(2);
+      logger.DEBUG("MATCH: fnName='", fnName, "', fnArgs='", fnArgs, "'");
       MATCH = true;
     }
     else if (noArgsMatcher.matches())
     {
       fnName = noArgsMatcher.group(1);
+      logger.DEBUG("MATCH: fnName='", fnName, "'");
       fnArgs = "";
       MATCH = true;
     }
@@ -419,24 +421,17 @@ public class Locator
         sourceCache.put(expression, op);
         return op;
       }
-      // Try a file.
-      else if (new File(expression).exists())
-      {
-        logger.DEBUG("Reading file: '", expression, "'");
-        FileSource fs = new FileSource();
-        fs.setLocation(expression);
-        return fs;
-      }
-      else
-      {
-        throw new OpsException("Unresolved operation: fn='" + fnName
-            + "', expression='" + expression + "'");
-      }
     }
-    else
+    // Try a file.
+    else if (new File(expression).exists())
     {
-      return null;
+      logger.DEBUG("Reading file: '", expression, "'");
+      FileSource fs = new FileSource();
+      fs.setLocation(expression);
+      return fs;
     }
+    throw new OpsException("Unresolved operation: fn='" + fnName
+        + "', expression='" + expression + "'");
   }
 
   public OutputDestination<?> resolveDestination(String expression)

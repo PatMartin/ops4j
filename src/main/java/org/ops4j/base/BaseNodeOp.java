@@ -175,7 +175,7 @@ public class BaseNodeOp<T extends BaseNodeOp<T>>
   public JsonNode getTarget(JsonNode doc)
   {
     DEBUG("getArgs()=", getArgs());
-    
+
     if (getArgs() == null || getArgs().size() == 0 || getArgs().get(0) == null)
     {
       DEBUG("getTarget(no-args)=", doc);
@@ -186,9 +186,13 @@ public class BaseNodeOp<T extends BaseNodeOp<T>>
       DEBUG("getTarget(/)=", doc);
       return doc;
     }
-    DEBUG("getTarget(doc.at(", getArgs().get(0), ")=",
-        doc.at(getArgs().get(0)));
-    return doc.at(getArgs().get(0));
+    else if (getArgs().get(0).charAt(0) == '/')
+    {
+      DEBUG("getTarget(doc.at(", getArgs().get(0), ")=",
+          doc.at(getArgs().get(0)));
+      return doc.at(getArgs().get(0));
+    }
+    return doc;
   }
 
   public Config config() throws OpsException

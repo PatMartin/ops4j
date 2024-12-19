@@ -158,13 +158,14 @@ public class BaseOp<T extends BaseOp<T>> implements Op<T>, Fallback, OpLogging
     }
     if (getView() != null)
     {
+      TRACE("Using view: ", getView(), " in config ", Ops4J.config());
       config = Ops4J.config().getConfig(getView());
+      TRACE("VIEW=", config);
     }
     else if (getDefaultView() != null)
     {
-      TRACE("Using default view: ", getDefaultView(), " in config ",
-          Ops4J.config().toString());
-      DEBUG("Using default view: ", getDefaultView(), "=",
+      TRACE("BASE-CONFIG= ", Ops4J.config());
+      DEBUG("VIEW: ", getDefaultView(), "=",
           Ops4J.config().getString(getDefaultView()));
       config = Ops4J.config()
           .getConfig(Ops4J.config().getString(getDefaultView()));
