@@ -82,7 +82,7 @@ public class DistributionGenerator extends BaseNodeOp<DistributionGenerator>
 
   static class TSeries
   {
-    @Option(names = "-tseries", required = true)
+    @Option(names = "-tdist", required = true)
     boolean tseries;
     @Option(names = "-freedom", required = true)
     double  freedom;

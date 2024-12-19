@@ -13,13 +13,13 @@ import com.google.auto.service.AutoService;
 import picocli.CommandLine.Command;
 
 @AutoService(NodeOp.class)
-@Command(name = "gen:cell", mixinStandardHelpOptions = false,
-    description = "Generate a cell phone number." + "%n%nExample: gen:cell")
+@Command(name = "gen-cell", mixinStandardHelpOptions = false,
+    description = "Generate a cell phone number." + "%n%nExample: gen-cell")
 public class CellPhoneGenerator extends BaseNodeOp<CellPhoneGenerator>
 {
   public CellPhoneGenerator()
   {
-    super("gen:cell");
+    super("gen-cell");
   }
 
   public JsonNode execute(JsonNode input) throws OpsException

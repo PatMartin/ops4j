@@ -6,6 +6,7 @@ import org.ops4j.cmd.EnvCmd;
 import org.ops4j.cmd.GetCmd;
 import org.ops4j.cmd.InfoCmd;
 import org.ops4j.cmd.ListCmd;
+import org.ops4j.cmd.RemoveCmd;
 import org.ops4j.cmd.RunCmd;
 import org.ops4j.cmd.SaveCmd;
 import org.ops4j.cmd.SetCmd;
@@ -17,10 +18,10 @@ import picocli.CommandLine.Option;
 
 @Command(name = "ops", mixinStandardHelpOptions = true,
     subcommands = { EnvCmd.class, GetCmd.class, InfoCmd.class, ListCmd.class,
-        RunCmd.class, SaveCmd.class, SetCmd.class, TocCmd.class },
+        RemoveCmd.class, RunCmd.class, SaveCmd.class, SetCmd.class,
+        TocCmd.class },
     description = "This is the top level CLI for Ops4J.  This CLI "
-        + "provides sub-commands for managing operations and their "
-        + "associated operations.")
+        + "provides tooling for managing operations.")
 public class Ops4JCLI implements Callable<Integer>
 {
   @Option(names = { "-h", "--help" }, usageHelp = true,

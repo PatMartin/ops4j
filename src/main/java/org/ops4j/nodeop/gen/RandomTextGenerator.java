@@ -19,8 +19,8 @@ import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 
 @AutoService(NodeOp.class)
-@Command(name = "random:text", mixinStandardHelpOptions = false,
-    description = "Generate a first name." + "%n%nExample: random:text")
+@Command(name = "random-text", mixinStandardHelpOptions = false,
+    description = "Generate a first name." + "%n%nExample: random-text")
 public class RandomTextGenerator extends BaseNodeOp<RandomTextGenerator>
 {
   @Option(names = { "-min", "-min-length" }, required = false,
@@ -40,7 +40,7 @@ public class RandomTextGenerator extends BaseNodeOp<RandomTextGenerator>
 
   public RandomTextGenerator()
   {
-    super("random:text");
+    super("random-text");
   }
 
   public RandomTextGenerator create()

@@ -64,7 +64,7 @@ public class OpCLI implements Callable<Integer>
   private @Getter @Setter boolean               usage             = false;
 
   @Option(names = { "-H", "--HELP" }, description = "Get detailed help.")
-  private @Getter @Setter boolean               help              = false;
+  private @Getter @Setter boolean[]             help;
 
   @Option(names = { "-D", "--data-source" }, required = false,
       description = "The datasource.")
@@ -78,7 +78,6 @@ public class OpCLI implements Callable<Integer>
 
   public static int cli(Op<?> op) throws OpsException
   {
-    System.err.println("CLI");
     CommandLine cmd = new CommandLine(op);
     int currentCount = 0;
     int count = 0;
@@ -86,19 +85,22 @@ public class OpCLI implements Callable<Integer>
 
     try
     {
-      System.err.println("INIT-PHASE-CHECK");
       if (op.provides(PhaseType.INITIALIZE))
       {
         op.initialize();
       }
-
-      System.err.println("OPEN-PHASE-CHECK");
+      else
+      {
+        System.err.println("SKIPPING INITIALIZATION");
+      }
       if (op.provides(PhaseType.OPEN))
       {
         op.open();
       }
-
-      System.err.println("EXEC-PHASE-CHECK");
+      else
+      {
+        System.err.println("SKIPPING OPEN");
+      }
       if (op.provides(PhaseType.EXECUTE))
       {
         // Open up a stream
@@ -112,7 +114,6 @@ public class OpCLI implements Callable<Integer>
           jnIt = JsonNodeIterator.fromInputStream(System.in);
         }
 
-        System.err.println("DOES IT HAVE A NEXT? " + jnIt.hasNext());
         while (jnIt.hasNext())
         {
           currentCount++;
@@ -120,16 +121,19 @@ public class OpCLI implements Callable<Integer>
           JsonNode node = (op instanceof JsonSource)
               ? JacksonUtil.createObjectNode()
               : jnIt.next();
-           System.err.println(op.getName() + ": " +
-           JacksonUtil.toString(node));
+          System.err.println(op.getName() + ": " + JacksonUtil.toString(node));
           OpData data = new OpData(node);
-           System.err.println(op.getName() + ": " + data);
+          System.err.println(op.getName() + ": " + data);
           List<OpData> results = op.execute(data);
           for (OpData result : results)
           {
             System.out.println(result);
           }
         }
+      }
+      else
+      {
+        System.err.println("SKIPPING EXECUTE");
       }
     }
     catch(IOException ex)
@@ -145,9 +149,17 @@ public class OpCLI implements Callable<Integer>
         System.out.println(result);
       }
     }
+    else
+    {
+      System.err.println("SKIPPING CLOSE");
+    }
     if (op.provides(PhaseType.CLEANUP))
     {
       op.cleanup();
+    }
+    else
+    {
+      System.err.println("SKIPPING CLOSE");
     }
     return 0;
   }
@@ -159,7 +171,7 @@ public class OpCLI implements Callable<Integer>
     int count = 0;
     OpLogger logger;
     OpCLI cli = new OpCLI();
-    
+
     try
     {
       CommandLine cliCmd = new CommandLine(cli);
@@ -180,9 +192,11 @@ public class OpCLI implements Callable<Integer>
         System.out.println(cliHelp.synopsis(1));
         return 0;
       }
-      else if (cli.isHelp())
+      else if (cli.getHelp() != null && cli.getHelp().length > 0
+          && cli.getHelp()[0])
       {
         Help opHelp = new Help(cmd.getCommandSpec());
+
         System.out.println(opHelp.fullSynopsis());
         System.out.println(opHelp.description());
         if (opHelp.parameterList().trim().length() > 0)
@@ -193,9 +207,13 @@ public class OpCLI implements Callable<Integer>
         {
           System.out.println(opHelp.optionList());
         }
-        Help cliHelp = new Help(cliCmd.getCommandSpec());
-        System.out.println(cliHelp.synopsis(1));
-        System.out.println(cliHelp.optionList());
+        if (cli.getHelp() != null && cli.getHelp().length > 1
+            && cli.getHelp()[1])
+        {
+          Help cliHelp = new Help(cliCmd.getCommandSpec());
+          System.out.println(cliHelp.synopsis(1));
+          System.out.println(cliHelp.optionList());
+        }
         System.out.println("Class: " + op.getClass().getName());
         return 0;
       }
@@ -254,7 +272,7 @@ public class OpCLI implements Callable<Integer>
       {
         // Open up a stream
         Iterator<JsonNode> jnIt = null;
-        if (op instanceof JsonSource)
+        if (op instanceof JsonSource && ((JsonSource) op).isJsonSource())
         {
           logger.DEBUG("Datasource Detected: ", op.getName());
           jnIt = ((JsonSource) op).getIterator();
@@ -285,6 +303,12 @@ public class OpCLI implements Callable<Integer>
             }
           }
         }
+        /**
+         * else if (System.console() != null) { System.getRu
+         * logger.DEBUG("AnsiConsole.isInstalled=", AnsiConsole.isInstalled());
+         * logger.DEBUG("Console exists, using {}"); jnIt = JsonNodeIterator
+         * .fromInputStream(new ByteArrayInputStream("{}".getBytes())); }
+         **/
         else
         {
           logger.DEBUG("Reading from standard input");
@@ -310,7 +334,7 @@ public class OpCLI implements Callable<Integer>
           }
         }
       }
-      
+
       if (op.provides(PhaseType.CLOSE))
       {
         logger.DEBUG("Closing ", op.getName());

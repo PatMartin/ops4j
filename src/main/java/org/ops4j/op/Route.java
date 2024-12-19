@@ -11,6 +11,7 @@ import org.ops4j.inf.Router;
 import org.ops4j.router.RoundRobinRouter;
 import org.ops4j.router.SplitRouter;
 import org.ops4j.router.WeightedRouter;
+import org.ops4j.util.DebugUtil;
 
 import com.google.auto.service.AutoService;
 
@@ -33,7 +34,7 @@ public class Route extends BaseOp<Route>
           + "Valid values: ${COMPLETION-CANDIDATES}.%n"
           + "  RR    = Round Robin%n" + "  WT    = Weight based routing.%n"
           + "  SPLIT = Split routing.  Routes to all in sequence.")
-  private @Getter @Setter RouteType    type = RouteType.RR;
+  private @Getter @Setter RouteType    type = RouteType.WT;
 
   @Parameters(index = "0", arity = "1..+",
       description = "The routes/operations.")
@@ -49,7 +50,8 @@ public class Route extends BaseOp<Route>
   @Override
   public Route initialize() throws OpsException
   {
-// Parse the route.
+    DEBUG("ROUTES", getRoutes());
+    // Parse the route.
     switch (getType())
     {
       case WT:

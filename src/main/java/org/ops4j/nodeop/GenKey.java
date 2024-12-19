@@ -22,7 +22,7 @@ import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 
 @AutoService(NodeOp.class)
-@Command(name = "gen:key", mixinStandardHelpOptions = false,
+@Command(name = "gen-key", mixinStandardHelpOptions = false,
     description = "Create a text node with optional interpolation.")
 public class GenKey extends BaseNodeOp<GenKey>
 {
@@ -37,7 +37,7 @@ public class GenKey extends BaseNodeOp<GenKey>
 
   public GenKey()
   {
-    super("gen:key");
+    super("gen-key");
     setDefaultView("DEFAULT.ENCRYPTION");
   }
 

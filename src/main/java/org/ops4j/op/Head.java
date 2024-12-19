@@ -15,7 +15,7 @@ import lombok.Setter;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Parameters;
 
-@AutoService(Op.class) @Command(name = "head",
+@AutoService(Op.class) @Command(name = "jhead",
     description = "Output first specified number of records.")
 public class Head extends BaseOp<Head>
 {
@@ -27,7 +27,7 @@ public class Head extends BaseOp<Head>
 
   public Head() throws OpsException
   {
-    super("head");
+    super("jhead");
   }
 
   public List<OpData> execute(OpData input) throws OpsException

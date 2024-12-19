@@ -29,12 +29,7 @@ public class Stream extends BaseOp<Stream> implements JsonSource
   @Parameters(index = "0", arity = "1", description = "The input file.")
   private @Getter @Setter String input;
 
-  @Option(names = { "--size" }, description = "The maximum number of items"
-      + " to cache when using a circular stream.  Default = 10000")
-  private int                    cacheSize = 10000;
-
-  @Option(names = { "--circular" }, description = "Read the file in a "
-      + "circular fashion; over and over again.")
+  @Option(names = { "--array" }, description = "Read the file into a single array at the end.")
   private boolean                circular  = false;
 
   @Option(names = { "--limit" }, description = "Limits the number of "

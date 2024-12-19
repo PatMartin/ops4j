@@ -36,8 +36,9 @@ public class Pipeline extends BaseNodeOp<Pipeline>
 
   public JsonNode execute(JsonNode input) throws OpsException
   {
+    DEBUG("COMMANDS: ", StringUtils.join(getCommands(), ""));
     String cmd = StringUtils.join(getCommands(), "");
-    // syserr("input=", input, " - cmd='", cmd, "'");
+    DEBUG("input=", input, " - cmd='", cmd, "'");
     String cmds[] = StringUtils.split(cmd, "=>");
     JsonNode srcNode;
     if (cmds != null && cmds.length > 0)

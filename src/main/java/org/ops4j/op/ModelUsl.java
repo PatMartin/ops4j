@@ -19,7 +19,7 @@ import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
 
-@AutoService(Op.class) @Command(name = "model:usl",
+@AutoService(Op.class) @Command(name = "model-usl",
     description = "Pause execution for the specified number of milliseconds.")
 public class ModelUsl extends BaseOp<ModelUsl>
 {
@@ -42,7 +42,7 @@ public class ModelUsl extends BaseOp<ModelUsl>
 
   public ModelUsl()
   {
-    super("model:usl");
+    super("model-usl");
     lifecycle().willProvide(PhaseType.OPEN);
   }
 

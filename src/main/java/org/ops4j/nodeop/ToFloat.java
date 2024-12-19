@@ -12,13 +12,13 @@ import com.google.auto.service.AutoService;
 import picocli.CommandLine.Command;
 
 @AutoService(NodeOp.class)
-@Command(name = "to:float", mixinStandardHelpOptions = false,
+@Command(name = "to-float", mixinStandardHelpOptions = false,
     description = "Converts a node to an float.")
 public class ToFloat extends BaseNodeOp<ToFloat>
 {
   public ToFloat()
   {
-    super("to:float");
+    super("to-float");
   }
 
   public JsonNode execute(JsonNode input) throws OpsException

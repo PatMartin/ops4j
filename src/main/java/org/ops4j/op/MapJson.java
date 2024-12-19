@@ -1,5 +1,6 @@
 package org.ops4j.op;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -13,7 +14,6 @@ import org.ops4j.util.JsonMapper;
 
 import com.google.auto.service.AutoService;
 
-import lombok.Getter;
 import lombok.Setter;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Parameters;
@@ -25,13 +25,13 @@ public class MapJson extends BaseOp<MapJson>
 {
   @Parameters(index = "0", arity = "0..*",
       description = "A mapping of the form <dest>=<source> indicating the "
-          + "source to destination mapping.%n%nExamples:%n%n" +
-          "# map top level field 'src' to 'dest'"
+          + "source to destination mapping.%n%nExamples:%n%n"
+          + "# map top level field 'src' to 'dest'"
           + "%n/dest=/src%n# set time to current time%n/time=now:%n"
           + "/yesterday='now(-offset=-86400000)'")
-  private @Getter @Setter Map<String, String> mapping;
+  private @Setter Map<String, String> mapping;
 
-  private JsonMapper                          mapper;
+  private JsonMapper                  mapper;
 
   public MapJson()
   {
@@ -48,6 +48,16 @@ public class MapJson extends BaseOp<MapJson>
   {
     // syserr("MAP-INPUT: ", input.toString());
     return new OpData(mapper.map(input.getJson())).asList();
+  }
+
+  public Map<String, String> getMapping()
+  {
+    if (mapping == null || mapping.size() == 0)
+    {
+      mapping = new HashMap<String, String>();
+      mapping.put("/", "/");
+    }
+    return mapping;
   }
 
   public static void main(String args[]) throws OpsException

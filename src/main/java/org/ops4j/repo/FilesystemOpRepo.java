@@ -46,7 +46,7 @@ public class FilesystemOpRepo extends BaseOpRepo<FilesystemOpRepo>
       {
         if (name.endsWith(".op"))
         {
-          names.add(name);
+          names.add(name.substring(0, name.length()-3));
         }
       }
     }
@@ -97,5 +97,12 @@ public class FilesystemOpRepo extends BaseOpRepo<FilesystemOpRepo>
     Pipeline p = new Pipeline().name("P").add(new NoOp());
     repo.store("pipeline", p);
     Op<?> p2 = repo.load("pipeline");
+  }
+
+  @Override
+  public boolean remove(String name) throws OpsException
+  {
+    File f = new File(getPath() + File.separator + name + ".op");
+    return f.delete();
   }
 }

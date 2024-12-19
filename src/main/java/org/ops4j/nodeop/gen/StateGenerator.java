@@ -13,13 +13,13 @@ import com.google.auto.service.AutoService;
 import picocli.CommandLine.Command;
 
 @AutoService(NodeOp.class)
-@Command(name = "gen:state", mixinStandardHelpOptions = false,
+@Command(name = "gen-state", mixinStandardHelpOptions = false,
     description = "Generate a state.")
 public class StateGenerator extends BaseNodeOp<StateGenerator>
 {
   public StateGenerator()
   {
-    super("gen:state");
+    super("gen-state");
   }
 
   public JsonNode execute(JsonNode input) throws OpsException

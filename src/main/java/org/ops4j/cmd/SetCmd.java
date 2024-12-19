@@ -29,7 +29,7 @@ public class SetCmd extends SubCmd implements Callable<Integer>
     super("set");
   }
 
-  @Parameters(index = "0", arity = "1..*", paramLabel = "<name>=<value>",
+  @Parameters(index = "0", arity = "0..*", paramLabel = "<name>=<value>",
       description = "Zero or more name value pairs indicating the "
           + "configuration options that we wish to set.  These configuration "
           + "options are set within the user's home directory in a file named "

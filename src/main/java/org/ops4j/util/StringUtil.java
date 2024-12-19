@@ -90,6 +90,45 @@ public class StringUtil
     return results;
   }
 
+  public static List<String> columnize(List<String> names, int width)
+  {
+    // Calculate the maximum length of each name
+    int maxNameLength = names.stream().mapToInt(String::length).max().orElse(0);
+
+    // Calculate the number of columns that fit within the given width
+    int columns = Math.max(1, width / (maxNameLength + 1)); // +1 for spacing
+                                                            // between columns
+
+    // Determine the number of rows needed
+    int rows = (int) Math.ceil((double) names.size() / columns);
+
+    // Create a list of lines to hold the columnized output
+    List<String> result = new ArrayList<>();
+
+    // Construct each row
+    for (int row = 0; row < rows; row++)
+    {
+      StringBuilder line = new StringBuilder();
+
+      for (int col = 0; col < columns; col++)
+      {
+        int index = col * rows + row;
+
+        if (index < names.size())
+        {
+          String name = names.get(index);
+
+          // Add the name and pad with spaces to align columns
+          line.append(String.format("%-" + (maxNameLength + 1) + "s", name));
+        }
+      }
+
+      // Trim trailing spaces and add to result
+      result.add(line.toString().stripTrailing());
+    }
+
+    return result;
+  }
 
   public static void main(String args[])
   {

@@ -22,7 +22,8 @@ public class Shuffle extends BaseOp<Shuffle>
 {
   private List<OpData>        data   = new ArrayList<OpData>();
 
-  @Option(names = { "-w", "--window" }, description = "The shuffle window.")
+  @Option(names = { "-w", "--window" }, description = "The shuffle window.%n"
+      + "  DEFAULT='${DEFAULT-VALUE}'")
   private @Getter @Setter int window = 100;
 
   public Shuffle() throws OpsException

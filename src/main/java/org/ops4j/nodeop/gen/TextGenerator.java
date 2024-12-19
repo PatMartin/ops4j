@@ -16,8 +16,8 @@ import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 
 @AutoService(NodeOp.class)
-@Command(name = "gen:text", mixinStandardHelpOptions = false,
-    description = "Generate text." + "%n%nExample: gen:text")
+@Command(name = "gen-text", mixinStandardHelpOptions = false,
+    description = "Generate text." + "%n%nExample: gen-text")
 public class TextGenerator extends BaseNodeOp<TextGenerator>
 {
   @Option(names = { "-p", "-pattern" }, required = false,
@@ -29,7 +29,7 @@ public class TextGenerator extends BaseNodeOp<TextGenerator>
 
   public TextGenerator()
   {
-    super("gen:text");
+    super("gen-text");
   }
 
   public JsonNode execute(JsonNode input) throws OpsException

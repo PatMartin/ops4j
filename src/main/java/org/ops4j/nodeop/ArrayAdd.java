@@ -3,7 +3,6 @@ package org.ops4j.nodeop;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.ops4j.Locator;
 import org.ops4j.Ops4J;
 import org.ops4j.base.BaseNodeOp;
 import org.ops4j.cli.NodeOpCLI;
@@ -11,7 +10,6 @@ import org.ops4j.exception.OpsException;
 import org.ops4j.inf.NodeOp;
 import org.ops4j.util.JacksonUtil;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.TextNode;
@@ -23,7 +21,7 @@ import picocli.CommandLine.Command;
 import picocli.CommandLine.Parameters;
 
 @AutoService(NodeOp.class)
-@Command(name = "array:add", mixinStandardHelpOptions = false,
+@Command(name = "array-add", mixinStandardHelpOptions = false,
     description = "Add to an array.  Create it if it is not "
         + "already present as an array node.")
 public class ArrayAdd extends BaseNodeOp<ArrayAdd>
@@ -34,12 +32,16 @@ public class ArrayAdd extends BaseNodeOp<ArrayAdd>
   
   public ArrayAdd()
   {
-    super("array:add");
+    super("array-add");
   }
 
   public JsonNode execute(JsonNode input) throws OpsException
   {
+    System.out.println("HOWDY FROM ARRAY ADD");
+    getLogger().trace("INPUT='", input, "");
     JsonNode target = getTarget(input);
+    System.out.println("TARGET: " + target);
+    System.out.println("INPUT: " + input);
     ArrayNode array;
 
     if (target == null || !target.isArray())
@@ -55,16 +57,18 @@ public class ArrayAdd extends BaseNodeOp<ArrayAdd>
     {
       if (Ops4J.locator().isNodeOp(path))
       {
-        logger.trace("NodeOp(srcPath='", path, "', src='", input.toString(),
+        System.out.println("NodeOp(srcPath='" + path + "', src='" + input.toString() +
             "')");
         array.add(Ops4J.locator().execute(path, input));
       }
       else if (path.startsWith("/"))
       {
-        array.add(path.equals("/") ? input : input.at(path));
+        System.out.println("PATH2 " + array);
+        array.add(path.equals("/") ? input : input.at(path).deepCopy());
       }
       else
       {
+        System.out.println("PATH3");
         array.add(new TextNode(path));
       }
     }

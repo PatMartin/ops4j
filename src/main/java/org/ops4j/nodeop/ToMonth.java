@@ -12,7 +12,7 @@ import com.google.auto.service.AutoService;
 import picocli.CommandLine.Command;
 
 @AutoService(NodeOp.class)
-@Command(name = "to:month", mixinStandardHelpOptions = false,
+@Command(name = "to-month", mixinStandardHelpOptions = false,
     description = "Converts a numeric node into a month.")
 public class ToMonth extends BaseNodeOp<ToMonth>
 {
@@ -21,7 +21,7 @@ public class ToMonth extends BaseNodeOp<ToMonth>
 
   public ToMonth()
   {
-    super("to:month");
+    super("to-month");
   }
 
   public JsonNode execute(JsonNode input) throws OpsException

@@ -13,13 +13,13 @@ import com.google.auto.service.AutoService;
 import picocli.CommandLine.Command;
 
 @AutoService(NodeOp.class)
-@Command(name = "gen:last", mixinStandardHelpOptions = false,
+@Command(name = "gen-last", mixinStandardHelpOptions = false,
     description = "Generate a last name." + "%n%nExample: gen:last")
 public class LastNameGenerator extends BaseNodeOp<LastNameGenerator>
 {
   public LastNameGenerator()
   {
-    super("gen:last");
+    super("gen-last");
   }
 
   public JsonNode execute(JsonNode input) throws OpsException

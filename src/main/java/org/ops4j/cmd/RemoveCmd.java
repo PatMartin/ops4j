@@ -3,12 +3,8 @@ package org.ops4j.cmd;
 import java.util.concurrent.Callable;
 
 import org.ops4j.Ops4J;
-import org.ops4j.base.BaseOp;
-import org.ops4j.cli.OpCLI;
-import org.ops4j.inf.Op;
 import org.ops4j.inf.OpRepo;
 import org.ops4j.log.OpLogger;
-import org.ops4j.util.JacksonUtil;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -17,22 +13,21 @@ import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
 
-@Command(name = "run", mixinStandardHelpOptions = true,
-    description = "Run the designated operation from the "
-        + "optionally designated op repository.")
-public class RunCmd extends SubCmd implements Callable<Integer>
+@Command(name = "remove", mixinStandardHelpOptions = true, aliases = { "rm" },
+    description = "Remove an operation from the designated repository.")
+public class RemoveCmd extends SubCmd implements Callable<Integer>
 {
   @Option(names = { "-r", "--repo" }, required = false,
-      description = "The repository to run the operation from.")
+      description = "The repository to save the operation to.")
   private @Getter @Setter String repoName = null;
 
   @Parameters(index = "0", arity = "0..1",
-      description = "The name of the operation to run.")
+      description = "The name of the operation to save.")
   private @Getter @Setter String opName   = null;
 
-  public RunCmd()
+  public RemoveCmd()
   {
-    super("run");
+    super("rm");
   }
 
   @Override
@@ -44,18 +39,16 @@ public class RunCmd extends SubCmd implements Callable<Integer>
       return 0;
     }
 
-    if (getOpName() != null)
-    {
-      OpRepo repo = Ops4J.repo();
-      Op<?> op = repo.load(getOpName());
-      OpCLI.cli(op);
-    }
+    OpLogger.syserr("REMOVING: " + getOpName());
+    OpRepo repo = Ops4J.repo();
+    OpLogger.syserr("REPO: name=", repo.name(), ", type=", repo.type());
+    repo.remove(opName);
     return 0;
   }
 
   public static void main(String args[])
   {
-    CommandLine cli = new CommandLine(new RunCmd());
+    CommandLine cli = new CommandLine(new RemoveCmd());
     cli.execute(args);
   }
 }

@@ -16,8 +16,8 @@ import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 
 @AutoService(NodeOp.class)
-@Command(name = "int", mixinStandardHelpOptions = false,
-    description = "Generate a first name." + "%n%nExample: map /score=int(-min=1 -max=100)")
+@Command(name = "gen-int", mixinStandardHelpOptions = false,
+    description = "Generate an integer." + "%n%nExample: map /score=gen-int(-min=1 -max=100)")
 public class IntegerGenerator extends BaseNodeOp<IntegerGenerator>
 {
   @Option(names = { "-min" }, required = false,

@@ -22,7 +22,8 @@ import picocli.CommandLine.Parameters;
         + "channel.")
 public class Print extends BaseOp<Print>
 {
-  @Parameters(index = "0", arity = "0..+", description = "The messages to print.")
+  @Parameters(index = "0", arity = "0..+", description = "The messages to print.%n%nExample:%n"
+      + "print {{/n}}")
   private @Getter @Setter List<String> messages = new ArrayList<>();
 
   public Print()

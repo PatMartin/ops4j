@@ -19,7 +19,7 @@ import picocli.CommandLine.Model.CommandSpec;
 public abstract class BaseSource<T extends BaseSource<T>>
     implements InputSource<T>, OpLogging
 {
-  private @Setter OpLogger         logger   = new OpLogger("ops4j.in");
+  private @Setter OpLogger         logger   = new OpLogger("ops.in");
 
   private @Getter @Setter LogLevel logLevel = LogLevel.WARN;
 

@@ -1,18 +1,20 @@
 package org.ops4j.util;
 
-import java.util.AbstractMap.SimpleEntry;
 import java.math.BigDecimal;
+import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 import org.ops4j.exception.OpsException;
+import org.ops4j.inf.JsonTransform;
 import org.ops4j.log.OpLogger;
 import org.ops4j.log.OpLoggerFactory;
 
@@ -25,6 +27,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.BooleanNode;
 import com.fasterxml.jackson.databind.node.DoubleNode;
 import com.fasterxml.jackson.databind.node.IntNode;
+import com.fasterxml.jackson.databind.node.JsonNodeType;
 import com.fasterxml.jackson.databind.node.LongNode;
 import com.fasterxml.jackson.databind.node.NullNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -540,7 +543,7 @@ public class JacksonUtil
     }
     else if (obj instanceof Map)
     {
-      return mapper().valueToTree((Map)obj);
+      return mapper().valueToTree((Map) obj);
     }
     else
     {
@@ -602,16 +605,16 @@ public class JacksonUtil
       return text;
     }
 
-    Pattern varPattern = Pattern.compile("\\$\\{[^\\}]+\\}");
+    Pattern varPattern = Pattern.compile("\\{\\{[^\\}]+\\}\\}");
     Matcher varMatcher = varPattern.matcher(text);
     List<String> variables = new ArrayList<>();
 
     while (varMatcher.find())
     {
       logger.DEBUG("ADDING VARIABLE: '",
-          text.substring(varMatcher.start() + 2, varMatcher.end() - 1), "'");
+          text.substring(varMatcher.start() + 2, varMatcher.end() - 2), "'");
       variables
-          .add(text.substring(varMatcher.start() + 2, varMatcher.end() - 1));
+          .add(text.substring(varMatcher.start() + 2, varMatcher.end() - 2));
     }
 
     String itext = new String(text);
@@ -622,7 +625,7 @@ public class JacksonUtil
       JsonNode node = context.at(variable);
       if (node != null)
       {
-        itext = itext.replace("${" + variable + "}", node.asText());
+        itext = itext.replace("{{" + variable + "}}", node.asText());
       }
     }
     return itext;
@@ -686,6 +689,77 @@ public class JacksonUtil
   public static ObjectNode getStatistics(JsonNode node)
   {
     return getStatistics(1, 1, node, JacksonUtil.createObjectNode());
+  }
+
+  public static JsonNode transform(JsonNode json, Predicate<JsonNode> cond,
+      JsonTransform transform) throws OpsException
+  {
+    if (json == null)
+    {
+      return null;
+    }
+    return _transform(json.deepCopy(), cond, transform);
+  }
+
+  public static JsonNode _transform(JsonNode json, Predicate<JsonNode> cond,
+      JsonTransform transform) throws OpsException
+  {
+    switch (json.getNodeType())
+    {
+      case OBJECT:
+      {
+        ObjectNode jsonObj = (ObjectNode) json;
+        Iterator<String> fieldIt = jsonObj.fieldNames();
+        ObjectNode onode = JacksonUtil.createObjectNode();
+        while (fieldIt.hasNext())
+        {
+          String fieldName = fieldIt.next();
+          onode.set(fieldName,
+              transform(jsonObj.get(fieldName), cond, transform));
+        }
+        return onode;
+      }
+      case ARRAY:
+      {
+        ArrayNode jsonArr = (ArrayNode) json;
+        Iterator<JsonNode> arrIt = jsonArr.iterator();
+
+        ArrayNode array = JacksonUtil.createArrayNode();
+        while (arrIt.hasNext())
+        {
+          array.add(transform(arrIt.next(), cond, transform));
+        }
+        return array;
+      }
+      default:
+      {
+        if (cond.test(json))
+        {
+          return transform.transform(json);
+        }
+        else
+        {
+          return json;
+        }
+      }
+    }
+  }
+
+  public static void addArray(ArrayNode out, String type, ArrayNode in)
+  {
+    if (in != null && out != null)
+    {
+      Iterator<JsonNode> it = in.iterator();
+      while (it.hasNext())
+      {
+        JsonNode node = it.next();
+        if (node != null && node.getNodeType() == JsonNodeType.OBJECT)
+        {
+          ((ObjectNode) node).put("type", type);
+        }
+        out.add(node);
+      }
+    }
   }
 
   public static ObjectNode getStatistics(int depth, int maxDepth, JsonNode node,

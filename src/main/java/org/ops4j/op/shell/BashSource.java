@@ -21,7 +21,7 @@ import com.google.auto.service.AutoService;
 
 import picocli.CommandLine.Command;
 
-@AutoService(Op.class) @Command(name = "bash:source",
+@AutoService(Op.class) @Command(name = "bash-source",
     description = "Use the output from a bash process as input.")
 public class BashSource extends ShellOp<BashSource> implements JsonSource
 {
@@ -31,7 +31,7 @@ public class BashSource extends ShellOp<BashSource> implements JsonSource
 
   public BashSource()
   {
-    super("bash:source");
+    super("bash-source");
     lifecycle().willProvide(PhaseType.OPEN, PhaseType.EXECUTE, PhaseType.CLOSE);
   }
 
@@ -43,7 +43,7 @@ public class BashSource extends ShellOp<BashSource> implements JsonSource
       getCommands().add(0, "bash");
       super.open();
 
-      stdout = proc.getInputStream();
+      stdout = getProcess().getInputStream();
       reader = new BufferedReader(new InputStreamReader(stdout));
       jnit = JsonNodeIterator.fromReader(reader);
     }

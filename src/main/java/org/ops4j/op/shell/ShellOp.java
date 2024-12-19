@@ -20,8 +20,8 @@ public abstract class ShellOp<T extends ShellOp<?>> extends BaseOp<ShellOp<T>>
       description = "The command to execute.")
   private @Getter @Setter List<String> commands = new ArrayList<String>();
 
-  protected Process                      proc;
-  
+  protected @Getter @Setter Process                    process;
+
   public ShellOp(String name)
   {
     super(name);
@@ -37,14 +37,19 @@ public abstract class ShellOp<T extends ShellOp<?>> extends BaseOp<ShellOp<T>>
     super.open();
     try
     {
-      DEBUG("COMMANDS: ", getCommands());
-      proc = Runtime.getRuntime().exec(getCommands().toArray(new String[0]));
+      DEBUG("EXECUTE COMMANDS: ", getCommands());
+      setProcess(Runtime.getRuntime().exec(getCommands().toArray(new String[0])));
     }
     catch(IOException ex)
     {
       throw new OpsException(ex);
     }
     return this;
+  }
+
+  public List<OpData> execute(OpData input) throws OpsException
+  {
+    return input.asList();
   }
 
   public List<OpData> close() throws OpsException

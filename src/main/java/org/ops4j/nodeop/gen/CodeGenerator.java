@@ -15,13 +15,13 @@ import com.google.auto.service.AutoService;
 
 import picocli.CommandLine.Command;
 
-@AutoService(NodeOp.class) @Command(name = "gen:code",
+@AutoService(NodeOp.class) @Command(name = "gen-code",
     mixinStandardHelpOptions = false, description = "Generate codes.")
 public class CodeGenerator extends BaseNodeOp<CodeGenerator>
 {
   public CodeGenerator()
   {
-    super("gen:code");
+    super("gen-code");
   }
 
   public JsonNode execute(JsonNode input) throws OpsException

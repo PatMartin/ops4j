@@ -12,13 +12,13 @@ import com.google.auto.service.AutoService;
 import picocli.CommandLine.Command;
 
 @AutoService(NodeOp.class)
-@Command(name = "to:double", mixinStandardHelpOptions = false,
+@Command(name = "to-double", mixinStandardHelpOptions = false,
     description = "Converts a node to an double.")
 public class ToDouble extends BaseNodeOp<ToDouble>
 {
   public ToDouble()
   {
-    super("to:double");
+    super("to-double");
   }
 
   public JsonNode execute(JsonNode input) throws OpsException

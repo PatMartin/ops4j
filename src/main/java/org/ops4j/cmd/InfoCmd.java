@@ -60,7 +60,9 @@ public class InfoCmd extends SubCmd implements Callable<Integer>
       pattern = ".*";
     }
 
-    Pattern p = Pattern.compile(pattern);
+    
+    Pattern p = Pattern.compile(".*" + pattern + ".*");
+
     if (infoType == null || infoType == InfoType.ALL || infoType == InfoType.OP)
     {
       System.out.println(StringBuddy.from("== OPERATIONS ==").banner());
@@ -170,18 +172,18 @@ public class InfoCmd extends SubCmd implements Callable<Integer>
         || infoType == InfoType.REPO)
     {
       System.out.println(StringBuddy.from("== OP-REPOSITORIES ==").banner());
-      Map<String, OpRepo> modules = Ops4J.locator().getRepos();
-      for (String name : modules.keySet())
+      Map<String, OpRepo> repos = Ops4J.locator().getRepos();
+      for (String name : repos.keySet())
       {
         if (p.matcher(name).matches())
         {
           if (longListing)
           {
-            System.out.println(HelpUtil.getHelp(modules.get(name)));
+            System.out.println(HelpUtil.getHelp(repos.get(name)));
           }
           else
           {
-            System.out.println(HelpUtil.getUsage(modules.get(name)));
+            System.out.println(HelpUtil.getUsage(repos.get(name)));
           }
         }
       }

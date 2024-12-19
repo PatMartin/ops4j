@@ -14,21 +14,21 @@ import com.google.auto.service.AutoService;
 
 import picocli.CommandLine.Command;
 
-@AutoService(NodeOp.class) @Command(name = "gen:address",
+@AutoService(NodeOp.class) @Command(name = "gen-lat-long",
     mixinStandardHelpOptions = false, description = "Generate an address.")
 public class LatLongGenerator extends BaseNodeOp<LatLongGenerator>
 {
   public LatLongGenerator()
   {
-    super("gen:latlong");
+    super("gen-lat-long");
   }
 
   public JsonNode execute(JsonNode input) throws OpsException
   {
     Address address = FakerUtil.faker().address();
     ObjectNode node = JacksonUtil.createObjectNode();
-    node.put("latitutde", address.latitude());
-    node.put("longitutde", address.longitude());
+    node.put("latitude", address.latitude());
+    node.put("longitude", address.longitude());
     return node;
   }
 

@@ -8,12 +8,14 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.ops4j.OpData;
 import org.ops4j.base.BaseOp;
 import org.ops4j.cli.OpCLI;
 import org.ops4j.exception.OpsException;
+import org.ops4j.inf.JsonSource;
 import org.ops4j.inf.Op;
 import org.ops4j.util.JsonNodeIterator;
 
@@ -28,7 +30,7 @@ import picocli.CommandLine.Parameters;
 
 @AutoService(Op.class)
 @Command(name = "shell", description = "Execute a shell script.")
-public class Shell extends BaseOp<Shell>
+public class Shell extends BaseOp<Shell> implements JsonSource
 {
   private OutputStream stdin;
 
@@ -71,6 +73,11 @@ public class Shell extends BaseOp<Shell>
       proc = Runtime.getRuntime().exec(getCommands().toArray(new String[0]));
 
       if (getShellType() == ShellType.FILTER)
+      {
+        stdin = proc.getOutputStream();
+        writer = new BufferedWriter(new OutputStreamWriter(stdin));
+      }
+      if (getShellType() == ShellType.SOURCE)
       {
         stdin = proc.getOutputStream();
         writer = new BufferedWriter(new OutputStreamWriter(stdin));
@@ -209,5 +216,17 @@ public class Shell extends BaseOp<Shell>
   public static void main(String args[]) throws OpsException
   {
     OpCLI.cli(new Shell(), args);
+  }
+
+  public boolean isJsonSource()
+  {
+    return getShellType() == ShellType.SOURCE;
+  }
+
+  @Override
+  public Iterator<JsonNode> getIterator()
+  {
+    // TODO Auto-generated method stub
+    return null;
   }
 }

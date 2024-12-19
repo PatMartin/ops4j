@@ -16,13 +16,13 @@ import com.google.auto.service.AutoService;
 import picocli.CommandLine.Command;
 
 @AutoService(NodeOp.class)
-@Command(name = "gen:address", mixinStandardHelpOptions = false,
+@Command(name = "gen-address", mixinStandardHelpOptions = false,
     description = "Generate an address.")
 public class AddressGenerator extends BaseNodeOp<AddressGenerator>
 {
   public AddressGenerator()
   {
-    super("gen:address");
+    super("gen-address");
   }
 
   public JsonNode execute(JsonNode input) throws OpsException

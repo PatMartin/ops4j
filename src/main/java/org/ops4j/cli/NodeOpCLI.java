@@ -46,7 +46,9 @@ public class NodeOpCLI implements Callable<Integer>
   private @Getter @Setter List<String> targets    = new ArrayList<String>();
 
   @Option(names = { "-O", "--output" },
-      description = "The output format for " + "this operation.")
+      description = "The output format for this operation.%n"
+          + "  DEFAULT='${DEFAULT-VALUE}'%n"
+          + "  VALID VALUES: ${COMPLETION-CANDIDATES})")
   private @Getter @Setter OutputType   outputType = OutputType.JSON;
 
   @Option(names = { "-h", "--help" }, description = "Get help.")

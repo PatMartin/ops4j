@@ -35,7 +35,9 @@ public class OutputDestinationCLI implements Callable<Integer>
   private @Getter @Setter String     dataSource = null;
 
   @Option(names = { "-O", "--output" }, required = false,
-      description = "The output format for " + "this operation.")
+      description = "The output format for this operation.%n"
+          + "  DEFAULT='${DEFAULT-VALUE}'%n"
+          + "  VALID VALUES: ${COMPLETION-CANDIDATES})")
   private @Getter @Setter OutputType outputType = OutputType.ALL;
 
   @Option(names = { "-b", "-buffer-size" }, required = false,

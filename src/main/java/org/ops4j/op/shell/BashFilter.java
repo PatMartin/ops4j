@@ -14,7 +14,6 @@ import org.ops4j.OpData;
 import org.ops4j.cli.OpCLI;
 import org.ops4j.exception.OpsException;
 import org.ops4j.inf.Op;
-import org.ops4j.op.Shell;
 import org.ops4j.util.JsonNodeIterator;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -22,7 +21,7 @@ import com.google.auto.service.AutoService;
 
 import picocli.CommandLine.Command;
 
-@AutoService(Op.class) @Command(name = "bash:filter",
+@AutoService(Op.class) @Command(name = "bash-filter",
     description = "Filter a stream through a bash process.")
 public class BashFilter extends ShellOp<BashFilter>
 {
@@ -34,7 +33,7 @@ public class BashFilter extends ShellOp<BashFilter>
 
   public BashFilter()
   {
-    super("bash:filter");
+    super("bash-filter");
     lifecycle().willProvide(PhaseType.OPEN, PhaseType.EXECUTE, PhaseType.CLOSE);
   }
 
@@ -46,10 +45,10 @@ public class BashFilter extends ShellOp<BashFilter>
       getCommands().add(0, "bash");
       super.open();
 
-      stdin = proc.getOutputStream();
+      stdin = getProcess().getOutputStream();
       writer = new BufferedWriter(new OutputStreamWriter(stdin));
 
-      stdout = proc.getInputStream();
+      stdout = getProcess().getInputStream();
       reader = new BufferedReader(new InputStreamReader(stdout));
       jnit = JsonNodeIterator.fromReader(reader);
     }

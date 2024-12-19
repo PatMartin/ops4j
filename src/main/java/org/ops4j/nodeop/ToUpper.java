@@ -12,13 +12,13 @@ import com.google.auto.service.AutoService;
 import picocli.CommandLine.Command;
 
 @AutoService(NodeOp.class)
-@Command(name = "to:upper", mixinStandardHelpOptions = false,
+@Command(name = "to-upper", mixinStandardHelpOptions = false,
     description = "Converts a text node to upper case.")
 public class ToUpper extends BaseNodeOp<ToUpper>
 {
   public ToUpper()
   {
-    super("to:upper");
+    super("to-upper");
   }
 
   public JsonNode execute(JsonNode input) throws OpsException

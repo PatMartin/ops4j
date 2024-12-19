@@ -16,8 +16,8 @@ import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 
 @AutoService(NodeOp.class)
-@Command(name = "gen:array:int", mixinStandardHelpOptions = false,
-    description = "Generate a date.%n" + "%nExample: gen:date")
+@Command(name = "gen-int-array", mixinStandardHelpOptions = false,
+    description = "Generate an integer array.")
 public class IntArrayGenerator extends BaseNodeOp<IntArrayGenerator>
 {
   @Option(names = { "-s", "-start" }, description = "The starting value.")
@@ -31,7 +31,7 @@ public class IntArrayGenerator extends BaseNodeOp<IntArrayGenerator>
 
   public IntArrayGenerator()
   {
-    super("gen:array:int");
+    super("gen-int-array");
   }
 
   public JsonNode execute(JsonNode input) throws OpsException
@@ -46,6 +46,6 @@ public class IntArrayGenerator extends BaseNodeOp<IntArrayGenerator>
 
   public static void main(String args[]) throws OpsException
   {
-    NodeOpCLI.cli(new NameGenerator(), args);
+    NodeOpCLI.cli(new IntArrayGenerator(), args);
   }
 }

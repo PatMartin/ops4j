@@ -7,7 +7,6 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 
 import org.ops4j.exception.OpsException;
-import org.ops4j.log.OpLogger;
 
 import com.google.auto.service.AutoService;
 

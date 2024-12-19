@@ -36,12 +36,14 @@ public class Backlog extends BaseOp<Backlog>
   private @Getter @Setter String      commands;
 
   @Option(names = { "-iqt", "--input-queue-type" },
-      description = "The input queue type.")
+      description = "The input queue type.  DEFAULT='${DEFAULT-VALUE}'"
+          + "%nVALID VALUES: ${COMPLETION-CANDIDATES}")
   @Getter @Setter
   QueuesOf.QueueType                  inputQueueType  = QueuesOf.QueueType.BLOCKING_ARRAY;
 
   @Option(names = { "-oqt", "--output-queue-type" },
-      description = "The output queue type.")
+      description = "The output queue type.  DEFAULT='${DEFAULT-VALUE}'"
+          + "%nVALID VALUES: ${COMPLETION-CANDIDATES})")
   @Getter @Setter
   QueuesOf.QueueType                  outputQueueType = QueuesOf.QueueType.CONCURRENT_LINKED;
 
@@ -53,12 +55,14 @@ public class Backlog extends BaseOp<Backlog>
   Pipeline                            pipeline;
 
   @Option(names = { "-min", "--min-threads" },
-      description = "The minimum number of threads.")
+      description = "The minimum number of threads."
+          + "  DEFAULT='${DEFAULT-VALUE}'")
   @Getter @Setter
   int                                 minThreads      = 1;
 
   @Option(names = { "-max", "--max-threads" },
-      description = "The maximum number of threads.")
+      description = "The maximum number of threads."
+          + "  DEFAULT='${DEFAULT-VALUE}'")
   @Getter @Setter
   int                                 maxThreads      = 1;
 
@@ -79,11 +83,13 @@ public class Backlog extends BaseOp<Backlog>
     }
     pipeline = new Pipeline().ops(ops).initialize();
     executor = Executors.newFixedThreadPool(minThreads());
+    DEBUG("CREATED EXECUTOR: ", executor);
     return this;
   }
 
   public Backlog open() throws OpsException
   {
+    DEBUG("OPEN ", pipeline);
     pipeline.open();
     return this;
   }
@@ -110,6 +116,7 @@ public class Backlog extends BaseOp<Backlog>
     });
     outputQueue.removeAll(completed);
     completed.clear();
+    DEBUG("EXECUTING EXECUTOR=", executor);
     return output;
   }
 

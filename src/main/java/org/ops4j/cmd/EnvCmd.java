@@ -25,9 +25,7 @@ public class EnvCmd extends SubCmd implements Callable<Integer>
   private @Getter @Setter boolean unix            = false;
 
   @Option(names = { "--launcher" }, required = false,
-      description = "An optional namespace to be prepended to operation "
-          + "aliases to prevent any collisions with existing OS utilities "
-          + "or other ops4j aliases.")
+      description = "The launcher and it's arguments%n  DEFAULT='${DEFAULT-VALUE}'")
   private @Getter @Setter String  launcher        = "java";
 
   @Option(names = { "-nodeop-ns", "-node-op-namespace" }, required = false,

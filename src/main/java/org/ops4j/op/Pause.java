@@ -21,7 +21,8 @@ import picocli.CommandLine.Parameters;
 public class Pause extends BaseOp<Pause>
 {
   @Parameters(index = "0", arity = "1",
-      description = "The number of milliseconds to pause.")
+      description = "The number of milliseconds to pause.%n"
+          + "DEFAULT='${DEFAULT-VALUE}'")
   private @Getter @Setter Long pause = 1000L;
 
   public Pause()

@@ -17,13 +17,13 @@ import picocli.CommandLine.Command;
 import picocli.CommandLine.Parameters;
 
 @AutoService(NodeOp.class)
-@Command(name = "to:int", mixinStandardHelpOptions = false,
+@Command(name = "to-int", mixinStandardHelpOptions = false,
     description = "Converts a text node to an integer.")
 public class ToInteger extends BaseNodeOp<ToInteger>
 {
   public ToInteger()
   {
-    super("to:int");
+    super("to-int");
   }
 
   public JsonNode execute(JsonNode input) throws OpsException

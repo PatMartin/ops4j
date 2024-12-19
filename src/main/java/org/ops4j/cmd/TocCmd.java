@@ -10,6 +10,7 @@ import org.ops4j.buddies.StringBuddy;
 import org.ops4j.exception.OpsException;
 import org.ops4j.inf.NodeOp;
 import org.ops4j.inf.Op;
+import org.ops4j.inf.OpModule;
 import org.ops4j.io.InputSource;
 import org.ops4j.io.OutputDestination;
 import org.ops4j.util.StringUtil;
@@ -25,15 +26,37 @@ import picocli.CommandLine.Parameters;
 public class TocCmd extends SubCmd implements Callable<Integer>
 {
   private enum TocTypes {
-    OP, NODEOP, ALL, SRC, DST
+    OP, NODEOP, ALL, SRC, DST, MODULE
   };
 
   @Parameters(index = "0", arity = "0..1", paramLabel = "<pattern>",
       description = "A search pattern.")
   private @Getter @Setter String   pattern = null;
 
-  @Option(names = { "--type" }, description = "The type.")
+  @Option(names = { "-t", "--type" }, description = "The type.")
   private @Getter @Setter TocTypes type    = TocTypes.ALL;
+
+  private class OpModuleComparator implements Comparator<OpModule>
+  {
+    @Override
+    public int compare(OpModule module1, OpModule module2)
+    {
+      if (module1 == null)
+      {
+        if (module2 == null)
+        {
+          return 0;
+        }
+        return -1;
+      }
+      if (module2 == null)
+      {
+        return 1;
+      }
+
+      return (module1.getName().compareTo(module2.getName()));
+    }
+  }
 
   private class OpComparator implements Comparator<Op>
   {
@@ -82,6 +105,17 @@ public class TocCmd extends SubCmd implements Callable<Integer>
   public TocCmd()
   {
     super("toc");
+  }
+
+  private void modulesToc() throws OpsException
+  {
+    Map<String, OpModule<?>> modules = Ops4J.locator().getModules();
+    System.out.println(StringBuddy.from("MODULES").banner("-", 60));
+
+    System.out.println(StringUtil.align(modules.values().stream()
+        .sorted(new OpModuleComparator()).map(OpModule::getName)
+        .filter(name -> getPattern() == null || name.indexOf(getPattern()) > -1)
+        .collect(Collectors.toList())) + "\n");
   }
 
   private void opsToc() throws OpsException
@@ -138,6 +172,7 @@ public class TocCmd extends SubCmd implements Callable<Integer>
     if (isHelp())
     {
       help(this);
+      return 0;
     }
 
     if (getType() == TocTypes.ALL || getType() == TocTypes.OP)
@@ -156,7 +191,11 @@ public class TocCmd extends SubCmd implements Callable<Integer>
     {
       dstToc();
     }
-
+    if (getType() == TocTypes.ALL || getType() == TocTypes.MODULE)
+    {
+      modulesToc();
+    }
+    
     return 0;
   }
 

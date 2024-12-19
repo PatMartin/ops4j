@@ -12,13 +12,13 @@ import com.google.auto.service.AutoService;
 import picocli.CommandLine.Command;
 
 @AutoService(NodeOp.class)
-@Command(name = "to:string", mixinStandardHelpOptions = false,
+@Command(name = "to-string", mixinStandardHelpOptions = false,
     description = "Converts a node to a string node.")
 public class ToString extends BaseNodeOp<ToString>
 {
   public ToString()
   {
-    super("to:string");
+    super("to-string");
   }
 
   public JsonNode execute(JsonNode input) throws OpsException

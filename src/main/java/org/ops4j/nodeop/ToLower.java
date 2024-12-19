@@ -12,13 +12,13 @@ import com.google.auto.service.AutoService;
 import picocli.CommandLine.Command;
 
 @AutoService(NodeOp.class)
-@Command(name = "to:lower", mixinStandardHelpOptions = false,
+@Command(name = "to-lower", mixinStandardHelpOptions = false,
     description = "Converts a text node to lower case.")
 public class ToLower extends BaseNodeOp<ToLower>
 {
   public ToLower()
   {
-    super("to:lower");
+    super("to-lower");
   }
 
   public JsonNode execute(JsonNode input) throws OpsException

@@ -16,20 +16,20 @@ import com.jayway.jsonpath.spi.json.JacksonJsonProvider;
 import lombok.Getter;
 import lombok.Setter;
 import picocli.CommandLine.Command;
-import picocli.CommandLine.Option;
+import picocli.CommandLine.Parameters;
 
 @AutoService(NodeOp.class)
-@Command(name = "jp", mixinStandardHelpOptions = false,
+@Command(name = "jpath", mixinStandardHelpOptions = false,
     description = "Returns the result of the specified jsonpath "
         + "expression run upon he input node.")
 public class JsonPath extends BaseNodeOp<JsonPath>
 {
-  @Option(names = { "-x", "-expression" }, description = "The operand.")
+  @Parameters(index="0", description = "The operand.")
   private @Getter @Setter String expression;
 
   public JsonPath()
   {
-    super("jp");
+    super("jpath");
   }
 
   public JsonNode execute(JsonNode input) throws OpsException
