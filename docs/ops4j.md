@@ -1,6 +1,166 @@
 # Ops4J
 
-This is a reference guide for Ops4J.
+Ops4J is an embeddable JVM based JSON processing pipeline which integrates seamlessly into a diverse set of platforms such as any platform where the JVM runs.  It also integrates seamlessly into any `bash` shell, allowing OPS4J operations to present themselves as native CLI tooling.
+
+With Ops4J we can:
+
+> Generate massive amounts of synthetic data:
+
+```bash
+map -D 1000000 /=gen-person: > people.json
+```
+
+> with benchmarking:
+
+```bash
+# Make 1 million people
+map -D 1000000 /=gen-person: | benchmark > people.json
+```
+
+> we can explore data:
+
+The http-server is an extensible server which hosts a number of powerful data exploration applications.
+
+```bash
+cat data.json | http-server
+cat data.csv | http-server -D csv:stdin:
+mongo-stream -d my_db -c my_collection | http-server
+```
+
+> we can persist useful views of data.
+
+```bash
+cat data.json | groovy-template 
+```
+
+> we can ask questions of AI without all the barriers.
+
+You'll start using AI more often once it becomes ubiquitous.
+
+```bash
+# Just ask chat-gpt a question:
+ask 'please explain why the sky is blue.'
+
+# Ask a different ai:
+ask -C AI.GITHUB -m GITHUB -gh meta-llama-3-70b-instruct \
+  'please explain why the sky is blue.'
+```
+
+> we can create our own prompts.
+
+```bash
+# Prompts give you better results with less effort:
+prompt -p novice.pr 'please explain why...'
+prompt -p expert.pr 'please explain why...'
+prompt -p writeop.pr 'please write an operation that...'
+prompt -p nodeop.pr 'please write a node operation that...'
+```
+
+> Inspect images:
+
+```bash
+query-image <image> 'what do you see in this image?'
+
+# Repetitive task of image name suggestion.
+query-image <image> 'what should I call this image?' \
+  'Limit it to 30 characters and make it easy to remember.'
+
+# Same as the previous example:
+# 'suggest-name.pr' contains the 0 arg prompt.
+query-image <image> -p suggest-name.pr
+```
+
+> Create new images.
+
+```bash
+gen-image 'an eagle flying high in the sky next to a monarch butterfly.'
+```
+
+> Reading data from different places feels the same.
+
+```bash
+mongo-stream -d mydb -c contacts > contacts.json
+jdbc-stream -d mydb 'select * from contacts' > contacts.json
+```
+
+## Installation
+
+## Post-Installation
+
+Once installed, we are connected to our tooling via the `ops` command:
+
+```bash
+# Give help on how to use ops4j
+ops -h
+```
+
+where we see we can get a table of contents of commands:
+
+```bash
+# Get a table of contents for ops4j
+ops toc
+```
+
+which gives us an inventory of everything our ops4j installation can do.
+
+```bash
+------------------------------------------------------------
+--                       OPERATIONS                       --
+------------------------------------------------------------
+ask              backlog          bash-exec        bash-filter
+bash-source      benchmark        disruptor        draw
+filter           flatten          gen-image        groovy-template
+http-client      http-get         http-server      http-view
+jdbc-create      jdbc-drop        jdbc-insert      jdbc-stream
+jhead            logphases        logtest          map
+model-usl        mongo-insert     mongo-stream     noop
+op-info          pause            pipeline         poe
+print            prompt           query-image      rag
+remove-nulls     route            shell            shuffle
+simulate         smile-cluster    sort             stream
+stream-lines     tail             unwind           viz-flow
+viz-sequence     viz-tree         vw               web-view
+wss              xray
+```
+
+Our native shell is now extended with these additional operations.  Better yet, we can write our own if we desire.  
+
+# Examples
+
+## Dr. Who
+
+Suppose we are interested in Dr. Who.  And who isn't?   Using curl, we can download the sample drwho.csv dataset.
+
+```bash
+curl -k https://raw.githubusercontent.com/PatMartin/Dex/refs/heads/master/data/drwho.csv > drwho.csv
+```
+
+Now that we have the data, we can quickly explore via the our `http-server` operation.  Here we run it using the CSV we just downloaded as its input.
+
+```bash
+# Read it via the read-csv operation feeding http-server
+read-csv drwho.csv | http-server
+
+# Or we can just read it directly
+http-server -D csv:http-server
+```
+
+Now we can take a quick look at the data via the http-server operation within Ops4J.  By default, this server will run at http://localhost:4242/index.html unless configured otherwise.  The server hosts set of visualization applications and other complimentary applications which allow us to quickly get to interactive views such as:
+
+![](C:\ws\ops4j\ops4j\docs\images\dr-who-treemap.png)
+
+or quickly delve into visual analysis such as villain motiviation:
+
+![](C:\ws\ops4j\ops4j\docs\images\dr-who-pc.png)
+
+```bash
+$ map -D 2 /name=gen-name: /phone=gen-phone:
+
+{"name":"Gertrude Vandervort","phone":"1-549-867-5917"}
+{"name":"Angeline Bins","phone":"032-454-6283 x5961"}
+```
+
+# Introduction
 
 # Operations
 
@@ -129,7 +289,6 @@ Class: org.ops4j.op.Backlog
 Usage: benchmark [<transactionThreshold>]
 
 Benchmark something.
-
 ```
 
 **<u>help:</u>**
@@ -144,8 +303,6 @@ Benchmark something.
                            0 = No progress reports
 
 Class: org.ops4j.op.Benchmark
-
-
 ```
 
 **<u>examples:</u>**
@@ -202,8 +359,6 @@ Filter records.
                          The excludes.
 
 Class: org.ops4j.op.Filter
-
-
 ```
 
 **<u>examples:</u>**
@@ -233,7 +388,6 @@ map -D 100 /=gen-person: | \
 flatten
 
 Flatten a nested JSON.
-
 ```
 
 **<u>help:</u>**
@@ -263,8 +417,6 @@ Usage: groovy-template [-C=<view>] [-L=<logLevel>] [-N=<name>]
                        [-t=<templatePath>]
 
 Render a Groovy template.
-
-
 ```
 
 **<u>help:</u>**
@@ -279,8 +431,6 @@ Render a Groovy template.
                          The template.
 
 Class: org.ops4j.groovy.op.GroovyTemplate
-
-
 ```
 
 **<u>examples:</u>**
