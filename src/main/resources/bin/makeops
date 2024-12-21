@@ -1,0 +1,29 @@
+#!/usr/bin/bash
+
+CURDIR="${PWD}"
+
+OPS4J_HOME=C:/ws/ops4j
+
+PROJECTS=(ai groovy http jdbc mongo smile visual)
+
+echo "============================================="
+echo "Building core..."
+cd "${OPS4J_HOME}/ops4j-core" && mvn clean install
+
+echo "============================================="
+echo "Building modules concurrently..."
+for P in "${PROJECTS[@]}"
+do
+  (cd "${OPS4J_HOME}/${P}-ops" && mvn clean install) &
+done
+
+echo "============================================="
+echo "Waiting for tasks to complete..."
+echo "============================================="
+wait
+
+echo "Building ops4j..."
+cd ${OPS4J_HOME}/ops4j
+mvn clean install dependency:copy-dependencies
+echo "============================================="
+cd ${CURDIR}

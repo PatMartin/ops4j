@@ -1,0 +1,21 @@
+#!/usr/bin/bash
+
+CURDIR="${PWD}"
+
+for P in "$*"
+do
+  if [ "${P}" == "core" ]
+  then
+    echo "Making core"
+    cd ${OPS4J_HOME}/ops4j-core
+    mvn clean install
+  else
+    echo "Making ${P}"
+    cd "${OPS4J_HOME}/${P}-ops" && mvn clean install
+  fi
+done
+
+cd ${OPS4J_HOME}/ops4j
+mvn clean install dependency:copy-dependencies
+
+cd ${CURDIR}
