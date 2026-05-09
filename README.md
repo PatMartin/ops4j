@@ -15,9 +15,9 @@ Generate 1 million records and insert them into MongoDB:
 map -D 1000000 /=gen-person: | mongo-insert -d test -c people | benchmark
 ```
 
-👉 In one pipeline, you: - generate structured JSON data\
-- transform it\
-- persist it\
+👉 In one pipeline, you: - generate structured JSON data
+- transform it
+- persist it
 - measure throughput
 
 No glue code. No orchestration layer. Just composable operations.
@@ -27,16 +27,16 @@ No glue code. No orchestration layer. Just composable operations.
 # 🧠 Why Ops4J exists
 
 Modern data work often looks like this: - shell scripts glued together
-with pipes\
-- Python scripts for transformations\
+with pipes
+- Python scripts for transformations
 - separate tools for databases, APIs, ML, and AI
 
 Ops4J replaces that with a **single, composable model**:
 
--   🧩 Small, reusable operations\
+-   🧩 Small, reusable operations
 -   🔗 Pipeline composition (like Unix pipes)\
--   📦 JSON-first data model\
--   ⚙️ Runs as CLI, shell pipeline, or embedded Java\
+-   📦 JSON-first data model
+-   ⚙️ Runs as CLI, shell pipeline, or embedded Java
 -   🔌 Plugin-based (DB, HTTP, AI, ML, visualization, etc.)
 
 ------------------------------------------------------------------------
