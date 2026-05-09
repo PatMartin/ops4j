@@ -12,13 +12,15 @@ Think: **jq + bash pipes + Apache Camel --- in one tool.**
 Generate 1 million records and insert them into MongoDB:
 
 ``` bash
-map -D 1000000 /=gen-person: | mongo-insert -d test -c people | benchmark
+map -D 1000000 /name=gen-name: /phone=gen-phone: \
+  | mongo-insert -d mydb -c contacts \
+  | benchmark
 ```
 
 👉 In one pipeline, you: - generate structured JSON data
-- transform it
-- persist it
-- measure throughput
+- generate
+- persist
+- benchmark
 
 No glue code. No orchestration layer. Just composable operations.
 
